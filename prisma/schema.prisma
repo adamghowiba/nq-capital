@@ -1,0 +1,206 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+}
+
+model User {
+  id                   Int                  @id @default(autoincrement())
+  first_name           String
+  middle_name          String?
+  last_name            String
+  password             String
+  avatar               String?
+  mobile_number        String?
+  email                String               @unique
+  role                 UserRole             @default(MANAGER)
+  password_reset_token PasswordResetToken[]
+  sent_invitations     Invitation[]
+  created_at           DateTime             @default(now())
+  updated_at           DateTime             @updatedAt
+}
+
+enum InvestorAccountStatus {
+  ONBOARDING
+  ACTIVE
+  DISABLED
+}
+
+// TODO
+// Store payment modes (bank details, paypal, etc)
+// Create separate table for payment modes
+model Investor {
+  id              Int                   @id @default(autoincrement())
+  first_name      String
+  middle_name     String?
+  last_name       String
+  email           String                @unique
+  password        String?
+  passport_number String?
+  national_id     String?
+  date_of_birth   DateTime?
+  nationality     String?
+  company_name    String?
+  company_tax_id  String?
+  is_accredited   Boolean?
+  avatar          String?
+  mobile_number   String?
+  account_status  InvestorAccountStatus @default(ACTIVE)
+  address         Address?              @relation(fields: [address_id], references: [id])
+  address_id      Int?
+  invitations     Invitation[]
+  invested_funds  InvestorFund[]
+  created_at      DateTime              @default(now())
+  updated_at      DateTime              @updatedAt
+}
+
+model Fund {
+  id         Int            @id @default(autoincrement())
+  name       String         @unique
+  balance    Decimal
+  investors  InvestorFund[]
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
+}
+
+model InvestorFund {
+  id                 Int      @id @default(autoincrement())
+  stake_percentage   Decimal
+  initial_investment Decimal
+  investor           Investor @relation(fields: [investor_id], references: [id])
+  investor_id        Int
+  fund               Fund     @relation(fields: [fund_id], references: [id])
+  fund_id            Int
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  REVOKED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  DIVIDED
+  ADJUSTMENT
+  FEE
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REVERSED
+}
+
+model Transaction {
+  id            Int               @id @default(autoincrement())
+  type          TransactionType
+  amount        Decimal
+  currency_code String            @default("USD")
+  balance_after Decimal
+  description   String?
+  fee           Decimal?
+  external_id   String?
+  status        TransactionStatus
+  // original_transaction_id Transaction
+  date          DateTime          @default(now())
+  // investorFund    InvestorFund    @relation(fields: [investorFundId], references: [id])
+  // investor_fund_id Int
+}
+
+enum PaymentMethod {
+  ACH
+  WIRE
+  CHECK
+  PAYPAL
+  DIRECT_DEPOSIT
+  MONEY_ORDER
+  CRYPTO
+}
+
+model Invitation {
+  id                 Int              @id @default(autoincrement())
+  email              String
+  invitation_code    String
+  status             InvitationStatus @default(PENDING)
+  investor           Investor?        @relation(fields: [investor_id], references: [id])
+  investor_id        Int?
+  invited_by         User             @relation(fields: [invited_by_user_id], references: [id])
+  invited_by_user_id Int
+  responded_at       DateTime?
+  resent_count       Int              @default(0)
+  expires_at         DateTime         @default(dbgenerated("CURRENT_TIMESTAMP + INTERVAL '4 days'"))
+  sent_at            DateTime         @default(now())
+  updated_at         DateTime         @updatedAt
+}
+
+model Address {
+  id              Int        @id @default(autoincrement())
+  street          String
+  street_2        String?
+  city            String
+  state_province  String
+  postal_zip_code String?
+  country         String
+  country_code    String
+  latitude        Decimal
+  longitude       Decimal
+  additional_info Json?
+  verified        Boolean    @default(true)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  investors       Investor[]
+}
+
+// TODO: Is profile required?
+// model Profile {
+//   id     Int  @id @default(autoincrement())
+//   user   User @relation(fields: [userId], references: [id])
+//   userId Int  @unique
+// }
+
+model PasswordResetToken {
+  id              Int      @id @default(autoincrement())
+  token           String
+  expiration_date DateTime
+  is_deactivated  Boolean  @default(false)
+  user            User     @relation(fields: [user_id], references: [id])
+  user_id         Int
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
+}
+
+enum AssetType {
+  PDF
+  IMAGE
+  WORD
+  EXCEL
+  UNKNOWN
+}
+
+model Asset {
+  id         Int       @id @default(autoincrement())
+  uuid       String
+  url        String
+  asset_type AssetType @default(UNKNOWN)
+  mime_type  String
+}
