@@ -56,13 +56,64 @@ model Investor {
   is_accredited   Boolean?
   avatar          String?
   mobile_number   String?
+  notes           Note[]
   account_status  InvestorAccountStatus @default(ACTIVE)
-  address         Address?              @relation(fields: [address_id], references: [id])
-  address_id      Int?
   invitations     Invitation[]
   invested_funds  InvestorFund[]
+  bank_accounts   BankAccount[]
+  address         Address?              @relation(fields: [address_id], references: [id])
+  address_id      Int?
   created_at      DateTime              @default(now())
   updated_at      DateTime              @updatedAt
+}
+
+model Note {
+  id          Int      @id @default(autoincrement())
+  title       String?
+  content     String
+  investor    Investor @relation(fields: [investor_id], references: [id])
+  investor_id Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+}
+
+model BankAccount {
+  id                  Int              @id @default(autoincrement())
+  nickname            String?
+  bank_name           String
+  account_number      String
+  account_holder_name String
+  type                BankAccountType?
+  bank_country        String // ISO 3166-1 alpha-2 country code
+  currency            String // ISO 4217 currency code
+  routing_number      String?
+  swift_code          String? // SWIFT/BIC code for international transfers
+  iban                String? // International Bank Account Number
+  sort_code           String? // Sort code for UK banks
+  bsb_number          String? // Bank State Branch number for Australian banks
+  bank_code           String? // Used in some countries instead of routing number/sort code
+  branch_code         String? // Specific branch code if applicable
+  branch_address      String? // Physical address of the bank's branch
+  is_primary          Boolean          @default(false)
+  investor            Investor         @relation(fields: [investor_id], references: [id])
+  investor_id         Int
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @updatedAt
+}
+
+enum PaymentMethodType {
+  ACH
+  WIRE
+  CHECK
+  PAYPAL
+  DIRECT_DEPOSIT
+  MONEY_ORDER
+  CRYPTO
 }
 
 model Fund {
@@ -97,7 +148,6 @@ enum InvitationStatus {
 enum TransactionType {
   DEPOSIT
   WITHDRAWAL
-  DIVIDED
   ADJUSTMENT
   FEE
   REFUND
@@ -106,9 +156,46 @@ enum TransactionType {
 enum TransactionStatus {
   PENDING
   COMPLETED
-  FAILED
   CANCELLED
   REVERSED
+  FAILED
+}
+
+enum TicketType {
+  WITHDRAW
+  SUPPORT
+}
+
+enum TicketStatus {
+  CLOSED
+  OPEN
+  UNDER_REVIEW
+}
+
+// todo request tickets (deposit, withdrawal, etc)
+// One ticket for them all, or multiple tickets
+model Ticker {
+  id         Int          @id @default(autoincrement())
+  data       Json
+  type       TicketType
+  status     TicketStatus @default(OPEN)
+  updated_at DateTime     @updatedAt
+  created_at DateTime     @default(now())
+}
+
+enum TicketResponseType {
+  USER
+  INVESTOR
+}
+
+model TicketResponse {
+  id         Int                @id @default(autoincrement())
+  content    String
+  type       TicketResponseType
+
+  edit_count Int                @default(0)
+  updated_at DateTime           @updatedAt
+  created_at DateTime           @default(now())
 }
 
 model Transaction {
@@ -117,24 +204,17 @@ model Transaction {
   amount        Decimal
   currency_code String            @default("USD")
   balance_after Decimal
+  // todo fund its related to
   description   String?
   fee           Decimal?
-  external_id   String?
-  status        TransactionStatus
+  external_id   String? // Link to any external id
+  status        TransactionStatus @default(PENDING)
+  meta          Json?
+  created_at    DateTime          @default(now())
+  updated_at    DateTime          @updatedAt
   // original_transaction_id Transaction
-  date          DateTime          @default(now())
   // investorFund    InvestorFund    @relation(fields: [investorFundId], references: [id])
   // investor_fund_id Int
-}
-
-enum PaymentMethod {
-  ACH
-  WIRE
-  CHECK
-  PAYPAL
-  DIRECT_DEPOSIT
-  MONEY_ORDER
-  CRYPTO
 }
 
 model Invitation {
@@ -170,13 +250,6 @@ model Address {
   updatedAt       DateTime   @updatedAt
   investors       Investor[]
 }
-
-// TODO: Is profile required?
-// model Profile {
-//   id     Int  @id @default(autoincrement())
-//   user   User @relation(fields: [userId], references: [id])
-//   userId Int  @unique
-// }
 
 model PasswordResetToken {
   id              Int      @id @default(autoincrement())
