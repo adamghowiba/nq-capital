@@ -174,7 +174,7 @@ enum TicketStatus {
 
 // todo request tickets (deposit, withdrawal, etc)
 // One ticket for them all, or multiple tickets
-model Ticker {
+model Ticket {
   id         Int          @id @default(autoincrement())
   data       Json
   type       TicketType
