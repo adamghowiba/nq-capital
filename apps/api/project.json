@@ -15,7 +15,15 @@
         "main": "apps/api/src/main.ts",
         "tsConfig": "apps/api/tsconfig.app.json",
         "assets": ["apps/api/src/assets"],
-        "webpackConfig": "apps/api/webpack.config.js"
+        "webpackConfig": "apps/api/webpack.config.js",
+        "transformers": [
+          {
+            "name": "@nestjs/graphql/plugin",
+            "options": {
+              "introspectComments": true
+            }
+          }
+        ]
       },
       "configurations": {
         "development": {},
