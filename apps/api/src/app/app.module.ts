@@ -8,6 +8,7 @@ import { isDevelopment } from '../common/environment/app.environment';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPlugin } from '@apollo/server';
 import { ComplexityPlugin } from '../common/plugins/complexity.plugin';
+import { DatabaseModule } from '@nq-capital/service-database';
 
 const APP_MODULES = [UsersModule];
 
@@ -19,6 +20,7 @@ if (isDevelopment)
 @Module({
   imports: [
     ...APP_MODULES,
+    DatabaseModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: isDevelopment ? false : true,

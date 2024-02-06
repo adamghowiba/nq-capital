@@ -15,12 +15,12 @@ export class UsersResolver {
 
   @Query(() => [UserEntity], { name: 'users' })
   findAll() {
-    return this.usersService.findAll();
+    return this.usersService.list();
   }
 
   @Query(() => UserEntity, { name: 'user' })
   findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.findOne(id);
+    return this.usersService.retrieve({ id });
   }
 
   @Mutation(() => UserEntity)

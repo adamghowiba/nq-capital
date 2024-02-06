@@ -2,42 +2,38 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserEntity } from './entities/user.entity';
+import { PrismaService } from '@nq-capital/service-database';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly prisma: PrismaService) {}
 
+  async create(createUserInput: CreateUserInput) {
+    const user = await this.prisma.user.create({ data: createUserInput });
 
-  create(createUserInput: CreateUserInput) {
-    return 'This action adds a new user';
+    return user;
   }
 
-  async findAll(): Promise<UserEntity[]> {
-    return [
-      {
-        avatar: 'http',
-        created_at: new Date(),
-        email: 'adam@web',
-        first_name: 'adam',
-        id: 1,
-        last_name: 'smith',
-        middle_name: 'dawd',
-        mobile_number: 'dawd',
-        password: 'dawd',
-        role: 'ADMIN',
-        updated_at: new Date(),
-      },
-    ];
+  async list(): Promise<UserEntity[]> {
+    const users = await this.prisma.user.findMany({});
+
+    return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async retrieve(params: { id: number }) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: params.id },
+    });
+
+    return user;
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+    throw new GraphQLError('Not implemented');
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    throw new GraphQLError('Not implemented');
   }
 }
