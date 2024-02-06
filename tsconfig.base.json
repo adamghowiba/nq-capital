@@ -15,7 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@nq-capital/service-database": ["libs/api/service-database/src/index.ts"]
+      "@nq-capital/service-database": [
+        "libs/api/service-database/src/index.ts"
+      ],
+      "@nq-capital/utils-nest/nest-utils": [
+        "libs/utils-nest/nest-utils/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

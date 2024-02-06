@@ -1,0 +1,27 @@
+{
+  "name": "utils-nest-nest-utils",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/utils-nest/nest-utils/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/utils-nest/nest-utils",
+        "tsConfig": "libs/utils-nest/nest-utils/tsconfig.lib.json",
+        "packageJson": "libs/utils-nest/nest-utils/package.json",
+        "main": "libs/utils-nest/nest-utils/src/index.ts",
+        "assets": ["libs/utils-nest/nest-utils/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/utils-nest/nest-utils/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

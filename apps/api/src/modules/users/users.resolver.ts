@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { UserEntity } from './entities/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { PaginatedQuery, getPaginatedEntity } from '../../common/decorators/api-pagination.decorator';
 
 @Resolver(() => UserEntity)
 export class UsersResolver {
@@ -13,13 +14,13 @@ export class UsersResolver {
     return this.usersService.create(createUserInput);
   }
 
-  @Query(() => [UserEntity], { name: 'users' })
-  findAll() {
+  @PaginatedQuery(UserEntity, { name: 'users' })
+  list() {
     return this.usersService.list();
   }
 
   @Query(() => UserEntity, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.retrieve({ id });
   }
 
