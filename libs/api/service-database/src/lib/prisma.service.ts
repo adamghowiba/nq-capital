@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 
 @Injectable()

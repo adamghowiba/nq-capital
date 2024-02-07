@@ -1,10 +1,13 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { UsersService } from './users.service';
-import { UserEntity } from './entities/user.entity';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateUserInput } from './dto/create-user.input';
+import { ListUserArgs } from './dto/get-user.args';
 import { UpdateUserInput } from './dto/update-user.input';
-import { PaginatedQuery, getPaginatedEntity } from '../../common/decorators/api-pagination.decorator';
+import { PaginatedUserEntity, UserEntity } from './entities/user.entity';
+import { UsersService } from './users.service';
+import { UseInterceptors } from '@nestjs/common';
+import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
 
+@UseInterceptors(PaginationInterceptor)
 @Resolver(() => UserEntity)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
@@ -14,9 +17,9 @@ export class UsersResolver {
     return this.usersService.create(createUserInput);
   }
 
-  @PaginatedQuery(UserEntity, { name: 'users' })
-  list() {
-    return this.usersService.list();
+  @Query(() => PaginatedUserEntity, { name: 'users' })
+  list(@Args() listUserArgs: ListUserArgs) {
+    return this.usersService.list(listUserArgs);
   }
 
   @Query(() => UserEntity, { name: 'user' })

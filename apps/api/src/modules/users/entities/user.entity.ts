@@ -1,10 +1,23 @@
-import { ObjectType, Field, Int, ID, registerEnumType } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  Int,
+  ID,
+  registerEnumType,
+  HideField,
+} from '@nestjs/graphql';
 import { $Enums, User, UserRole } from '@prisma/client';
+import { Paginated } from '../../../common/entities/api-pagination.entity';
+import { isNullableType } from 'graphql';
 
 registerEnumType(UserRole, {
   name: 'UserRole',
   description: 'Role of a given user',
 });
+
+type NullableToOptional<T extends Record<string, any>> = {
+  [K in keyof T]: T[K] extends null ? T[K] | undefined : T[K];
+};
 
 @ObjectType()
 export class UserEntity implements User {
@@ -12,26 +25,33 @@ export class UserEntity implements User {
    * Incremental based user ID
    */
   @Field(() => ID)
-  id: number;
+  id!: number;
 
-  first_name: string;
+  first_name!: string;
 
-  middle_name: string;
+  last_name!: string;
 
-  last_name: string;
+  email!: string;
 
-  password: string;
+  @Field({ nullable: true })
+  middle_name!: string | null;
 
-  avatar: string;
+  @Field({ nullable: true })
+  avatar!: string | null;
 
-  mobile_number: string;
-
-  email: string;
+  @Field({ nullable: true })
+  mobile_number!: string | null;
 
   @Field(() => UserRole)
-  role: UserRole;
+  role!: UserRole;
 
-  created_at: Date;
+  @HideField()
+  password!: string;
 
-  updated_at: Date;
+  created_at!: Date;
+
+  updated_at!: Date;
 }
+
+@ObjectType()
+export class PaginatedUserEntity extends Paginated(UserEntity) {}

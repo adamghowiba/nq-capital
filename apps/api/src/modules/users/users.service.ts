@@ -1,22 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
-import { UserEntity } from './entities/user.entity';
 import { PrismaService } from '@nq-capital/service-database';
 import { GraphQLError } from 'graphql';
+import { CreateUserInput } from './dto/create-user.input';
+import { ListUserArgs } from './dto/get-user.args';
+import { UpdateUserInput } from './dto/update-user.input';
+import { UserEntity } from './entities/user.entity';
+import { hash } from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUserInput: CreateUserInput) {
-    const user = await this.prisma.user.create({ data: createUserInput });
+    const hashedPassword = await hash(createUserInput.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: { ...createUserInput, password: hashedPassword },
+    });
 
     return user;
   }
 
-  async list(): Promise<UserEntity[]> {
-    const users = await this.prisma.user.findMany({});
+  async list(params: ListUserArgs): Promise<UserEntity[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        role: params?.role,
+      },
+      ...params.offset,
+    });
 
     return users;
   }
@@ -33,7 +44,9 @@ export class UsersService {
     throw new GraphQLError('Not implemented');
   }
 
-  remove(id: number) {
-    throw new GraphQLError('Not implemented');
+  async remove(id: number) {
+    const user = await this.prisma.user.delete({ where: { id } });
+
+    return user;
   }
 }

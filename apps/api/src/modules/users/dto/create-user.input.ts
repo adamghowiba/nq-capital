@@ -1,26 +1,29 @@
 import { Field, HideField, InputType } from '@nestjs/graphql';
 import { Prisma, UserRole } from '@prisma/client';
+import { IsEmail, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreateUserInput implements Prisma.UserUncheckedCreateInput {
-  id?: number;
+  @IsEmail()
+  email!: string;
 
-  email: string;
-
-  @Field(() => UserRole, { nullable: true })
-  role?: UserRole;
-
-  first_name: string;
+  first_name!: string;
 
   middle_name?: string;
 
-  last_name: string;
+  last_name!: string;
 
-  password: string;
+  password!: string;
 
   avatar?: string;
 
-  mobile_number?: string;
+  mobile_number?: string | null;
+
+  @HideField()
+  role?: UserRole;
+
+  @HideField()
+  id?: number;
 
   @HideField()
   password_reset_token?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput;
