@@ -1,0 +1,98 @@
+'use client';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
+import { FC } from 'react';
+import DContainer from '../DContainer/DContainer';
+import { defineConfig, Config } from '@pandacss/dev';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface NavbarProps {}
+
+const Navbar: FC<NavbarProps> = ({ ...props }) => {
+  const pathname = usePathname();
+
+  const NAVBAR_ITEMS: {
+    name: string;
+    href: string;
+    isDisabled?: boolean;
+    dropdown?: { name: string; href: string }[];
+  }[] = [
+    {
+      name: 'Overview',
+      href: '/',
+    },
+    {
+      name: 'Orders',
+      href: '/orders',
+    },
+    {
+      name: 'Consumptions',
+      href: '/consumptions',
+    },
+    {
+      name: 'Analytics',
+      href: '/analytics',
+    },
+    {
+      name: 'Flights',
+      href: '/flights',
+    },
+  ];
+
+  const getActiveItem = () => {
+    const activeItem = NAVBAR_ITEMS.find((item) => item.href === pathname);
+
+    return activeItem;
+  };
+
+  const activeItem = getActiveItem();
+
+  return (
+    <>
+      <Stack direction="row" bgcolor="white" height="48px">
+        <DContainer borderBottom="1px solid #EBEBEB">
+          <Stack direction="row" height="100%">
+            {NAVBAR_ITEMS.map((item) => (
+              <Stack
+                key={item.name}
+                height="100%"
+                borderBottom="2px solid"
+                borderColor={
+                  item.name === activeItem?.name ? 'black' : 'transparent'
+                }
+                alignItems="center"
+                justifyContent="center"
+                px={2}
+                color={item.name === activeItem?.name ? '#202020' : '#8D8D8D'}
+                sx={{
+                  transition: 'color 0.1s linear',
+                  '&:hover': {
+                    color: 'black',
+                  },
+                  cursor: 'pointer',
+                }}
+              >
+                <Link key={item.name} href={item.href}>
+                  <Stack direction="row" alignItems="center">
+                    <Typography
+                      color={'inherit'}
+                      fontSize="14px"
+                      fontWeight="500"
+                      lineHeight="1"
+                    >
+                      {item.name}
+                    </Typography>
+                  </Stack>
+                </Link>
+              </Stack>
+            ))}
+          </Stack>
+        </DContainer>
+      </Stack>
+    </>
+  );
+};
+
+export default Navbar;
