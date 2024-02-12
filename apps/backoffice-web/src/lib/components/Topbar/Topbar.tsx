@@ -9,11 +9,11 @@ import { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Tooltip from '@mui/material/Tooltip';
 import DContainer from '../DContainer/DContainer';
+import TopbarSearch from './TopbarSearch';
 
 export interface TopbarProps {}
 
 const Topbar: FC<TopbarProps> = ({ ...props }) => {
-
   return (
     <>
       <Box width="100%" bgcolor="#F9F9F9" height="56px">
@@ -40,29 +40,7 @@ const Topbar: FC<TopbarProps> = ({ ...props }) => {
             </Grid>
 
             <Grid item xs>
-              <TextField
-                placeholder="Search order..."
-                size="small"
-                fullWidth
-                sx={{
-                  bgcolor: 'white',
-                }}
-                InputProps={{
-                  readOnly: true,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      {/* <SearchRounded /> */}
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <Typography color="var(--neutral-400)" variant="caption">
-                        ⌘K
-                      </Typography>
-                    </InputAdornment>
-                  ),
-                }}
-              />
+              <TopbarSearch />
             </Grid>
 
             <Grid

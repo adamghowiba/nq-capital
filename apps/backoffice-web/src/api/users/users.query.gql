@@ -1,0 +1,23 @@
+query ListUsers($limit: Int, $page: Int) {
+  users(limit: $limit, page: $page) {
+    data {
+      id
+      middle_name
+      avatar
+      mobile_number
+      last_name
+    }
+  }
+}
+
+query ListReqUsers($limit: Int!, $page: Int!) {
+  users(limit: $limit, page: $page) {
+    data {
+      id
+      middle_name
+      avatar
+      mobile_number
+      last_name
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
 import '../styles/global.css';
+import { Providers } from '../lib/components/Providers/Providers';
 
 export const metadata = {
   title: 'Welcome to backoffice-web',
@@ -15,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AppRouterCacheProvider>
-          {children}
+          <Providers>{children}</Providers>
         </AppRouterCacheProvider>
       </body>
     </html>

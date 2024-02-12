@@ -1,0 +1,4 @@
+schema:
+  - schema.gql
+# documents:
+#   - "apps/**/*.graphql"

@@ -31,10 +31,8 @@ if (isDevelopment)
       playground: isDevelopment ? false : true,
       introspection: true,
       autoSchemaFile: 'schema.gql',
-      resolverValidationOptions: {
-        requireResolversForAllFields: 'ignore',
-        requireResolversToMatchSchema: 'warn',
-        requireResolversForResolveType: 'warn',
+      buildSchemaOptions: {
+        numberScalarMode: 'integer'
       },
       plugins: [...APOLLO_PLUGINS],
     }),

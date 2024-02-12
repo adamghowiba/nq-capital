@@ -29,6 +29,12 @@ export class UsersService {
       ...params.offset,
     });
 
+    return new Promise((res) => {
+      setTimeout(() => {
+        res(users);
+      }, 5000);
+    })
+
     return users;
   }
 

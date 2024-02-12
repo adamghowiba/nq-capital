@@ -1,30 +1,24 @@
 import {
-  ObjectType,
   Field,
-  Int,
-  ID,
-  registerEnumType,
   HideField,
+  Int,
+  ObjectType,
+  registerEnumType
 } from '@nestjs/graphql';
-import { $Enums, User, UserRole } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { Paginated } from '../../../common/entities/api-pagination.entity';
-import { isNullableType } from 'graphql';
 
 registerEnumType(UserRole, {
   name: 'UserRole',
   description: 'Role of a given user',
 });
 
-type NullableToOptional<T extends Record<string, any>> = {
-  [K in keyof T]: T[K] extends null ? T[K] | undefined : T[K];
-};
-
 @ObjectType()
 export class UserEntity implements User {
   /**
    * Incremental based user ID
    */
-  @Field(() => ID)
+  @Field(() => Int)
   id!: number;
 
   first_name!: string;

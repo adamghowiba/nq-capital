@@ -4,7 +4,7 @@
 
 type UserEntity {
   """Incremental based user ID"""
-  id: ID!
+  id: Int!
   middle_name: String
   avatar: String
   mobile_number: String
