@@ -3,7 +3,7 @@ import {
   Float,
   GraphQLISODateTime,
   Int,
-  ObjectType,
+  ObjectType
 } from '@nestjs/graphql';
 import { Fund } from '@prisma/client';
 

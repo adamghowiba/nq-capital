@@ -1,8 +1,17 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { FundsService } from './funds.service';
-import { FundEntity } from './entities/fund.entity';
+import {
+  Args,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { InvestorEntity } from '../investors/entities/investor.entity';
 import { CreateFundInput } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
+import { FundEntity } from './entities/fund.entity';
+import { FundsService } from './funds.service';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {

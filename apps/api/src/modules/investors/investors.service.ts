@@ -3,7 +3,8 @@ import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { Decimal } from '@prisma/client/runtime/library';
-import { InvestorFundEntity, InvestorFundWithBalanceEntity } from './entities/investor-fund.entity';
+import { InvestorFundEntity } from './entities/investor-fund.entity';
+import { InvestorEntity } from './entities/investor.entity';
 
 @Injectable()
 export class InvestorsService {
@@ -17,13 +18,15 @@ export class InvestorsService {
     return investor;
   }
 
-  async list() {
+  async list(): Promise<InvestorEntity[]> {
     const investors = await this.prisma.investor.findMany();
 
     return investors;
   }
 
-  async listInvestorFunds(params: { investorId: number }): Promise<InvestorFundWithBalanceEntity[]> {
+  async listInvestorFunds(params: {
+    investorId: number;
+  }): Promise<InvestorFundEntity[]> {
     const investorFunds = await this.prisma.investorFund.findMany({
       where: { investor_id: params.investorId },
       include: { investor: true, fund: true },

@@ -4,10 +4,9 @@ import {
   GraphQLISODateTime,
   Int,
   ObjectType,
-  OmitType,
+  OmitType
 } from '@nestjs/graphql';
 import { InvestorFund } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
 import { FundEntity } from '../../funds/entities/fund.entity';
 import { InvestorEntity } from './investor.entity';
 
@@ -33,6 +32,9 @@ export class InvestorFundEntity
   @Field(() => InvestorEntity)
   investor!: InvestorEntity;
 
+  @Field(() => Float)
+  investor_balance_in_fund!: number;
+
   @Field(() => FundEntity)
   fund!: FundEntity;
 
@@ -44,7 +46,6 @@ export class InvestorFundEntity
 }
 
 @ObjectType()
-export class InvestorFundWithBalanceEntity extends InvestorFundEntity {
-  @Field(() => Float)
-  investor_balance_in_fund!: number;
-}
+export class InvestorFundWithoutInvestor extends OmitType(InvestorFundEntity, [
+  'investor',
+]) {}

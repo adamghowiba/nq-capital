@@ -9,7 +9,7 @@ export class FundsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createFundInput: CreateFundInput) {
-    const {initial_balance, ...rest} = createFundInput
+    const { initial_balance, ...rest } = createFundInput;
 
     const fund = await this.prisma.fund.create({
       data: {
@@ -26,6 +26,10 @@ export class FundsService {
     return fund;
   }
 
+  async updateFundInvestors() {
+    // TODO: Function to remove or add investors to fund
+  }
+
   async list() {
     const fund = await this.prisma.fund.findMany({});
 
@@ -35,7 +39,7 @@ export class FundsService {
   async retrieve(id: number): Promise<FundEntity> {
     const fund = await this.prisma.fund.findUniqueOrThrow({ where: { id } });
 
-    return fund
+    return fund;
   }
 
   async retrieveByName(name: string) {
