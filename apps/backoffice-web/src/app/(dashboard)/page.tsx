@@ -1,31 +1,26 @@
-'use client';
-import { DataGrid } from '@mui/x-data-grid';
-import { Suspense, useMemo } from 'react';
-import { useListUsersQuery } from '../../api/gql-client';
+import { GraphQLClient, request } from 'graphql-request';
+import { Suspense } from 'react';
 import Box from '../../lib/components/Box/Box';
 import DContainer from '../../lib/components/DContainer/DContainer';
-import { formatGridColumns } from '../../lib/components/StyledDataGrid/helpers/data-grid.utils';
-import Loading from './loading';
 import Test from './test';
+import { ListUsersDocument } from '../../api/gql/graphql';
+import Loading from './loading';
 
+const client = new GraphQLClient('http://localhost:5010/graphql');
 
-export default function Index() {
-  const users = useListUsersQuery({}, { select: (data) => data.users.data });
+export const revalidate = 2000
 
-  console.log(users.data);
+export default async function Index() {
+  const users = await client.request(ListUsersDocument, { limit: 100 });
 
-  const columns = useMemo(() => {
-    if (!users.data?.length) return [];
-
-    return formatGridColumns(users?.data[0], {});
-  }, [users.data]);
+  console.log(users);
 
   return (
     <>
       <DContainer my={5}>
         <Box h="60vh">
           <Suspense fallback={<Loading />}>
-            <Test />
+            <Test users={users.users.data} />
             {/* <DataGrid rows={users.data || []} columns={[{ field: 'id' }]} /> */}
           </Suspense>
         </Box>

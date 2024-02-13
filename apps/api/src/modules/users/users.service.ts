@@ -33,7 +33,7 @@ export class UsersService {
       setTimeout(() => {
         res(users);
       }, 5000);
-    })
+    });
 
     return users;
   }

@@ -12,18 +12,6 @@ import {
   simpleEstimator,
 } from 'graphql-query-complexity';
 
-// @Plugin()
-// export class ComplexityPlugin implements ApolloServerPlugin {
-//   async requestDidStart(): Promise<GraphQLRequestListener<any>> {
-//     console.log('Request started');
-//     return {
-//       async willSendResponse() {
-//         console.log('Will send response');
-//       },
-//     };
-//   }
-// }
-
 @Plugin()
 export class ComplexityPlugin implements ApolloServerPlugin {
   constructor(private gqlSchemaHost: GraphQLSchemaHost) {}
@@ -55,7 +43,7 @@ export class ComplexityPlugin implements ApolloServerPlugin {
 
         if (isIntrospection) return;
 
-        console.log('Query Complexity:', complexity);
+        console.log(`Query Complexity (${ctx.operationName}):`, complexity);
       },
     };
   }
