@@ -35,6 +35,45 @@ type PaginatedUserEntity {
   hasNextPage: Boolean!
 }
 
+type InvestorEntity {
+  id: Int!
+  first_name: String!
+  middle_name: String
+  last_name: String!
+  email: String!
+  password: String
+  passport_number: String
+  national_id: String
+  date_of_birth: DateTime
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  avatar: String
+  mobile_number: String
+  account_status: InvestorAccountStatus
+  address_id: Int
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum InvestorAccountStatus {
+  ONBOARDING
+  ACTIVE
+  DISABLED
+}
+
+type FundEntity {
+  id: Int!
+  name: String!
+  balance: Float!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+"""Prisma Decimal Scalar"""
+scalar Decimal
+
 type Query {
   users(
     """The page number to retrieve starting from zero"""
@@ -47,12 +86,22 @@ type Query {
     role: UserRole
   ): PaginatedUserEntity!
   user(id: Int!): UserEntity!
+  investors: [InvestorEntity!]!
+  investor(id: Int!): InvestorEntity!
+  funds: [FundEntity!]!
+  fund(id: Int!): FundEntity!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): UserEntity!
   updateUser(updateUserInput: UpdateUserInput!): UserEntity!
   removeUser(id: Int!): UserEntity!
+  createInvestor(createInvestorInput: CreateInvestorInput!): InvestorEntity!
+  updateInvestor(updateInvestorInput: UpdateInvestorInput!): InvestorEntity!
+  removeInvestor(id: Int!): InvestorEntity!
+  createFund(createFundInput: CreateFundInput!): FundEntity!
+  updateFund(updateFundInput: UpdateFundInput!): FundEntity!
+  removeFund(id: Int!): FundEntity!
 }
 
 input CreateUserInput {
@@ -73,5 +122,75 @@ input UpdateUserInput {
   password: String
   avatar: String
   mobile_number: String
+  id: Int!
+}
+
+input CreateInvestorInput {
+  date_of_birth: DateTime
+  account_status: InvestorAccountStatus
+
+  """Investor first name"""
+  first_name: String!
+
+  """Investor middle name"""
+  middle_name: String
+  last_name: String!
+  email: String!
+  password: String
+  passport_number: String
+  national_id: String
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  avatar: String
+  mobile_number: String
+  address_id: Int
+}
+
+input UpdateInvestorInput {
+  date_of_birth: DateTime
+  account_status: InvestorAccountStatus
+
+  """Investor first name"""
+  first_name: String
+
+  """Investor middle name"""
+  middle_name: String
+  last_name: String
+  email: String
+  password: String
+  passport_number: String
+  national_id: String
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  avatar: String
+  mobile_number: String
+  address_id: Int
+  id: Int!
+}
+
+input CreateFundInput {
+  name: String!
+  initial_balance: Int
+
+  """Investor fund"""
+  investors: [CreateNestedInvestorFundWithoutFundInput!]
+}
+
+input CreateNestedInvestorFundWithoutFundInput {
+  """Percentage of the fund the investor has staked.. e.g. 0.5 for 50%"""
+  stake_percentage: Float!
+  initial_investment: Float!
+  investor_id: Int!
+}
+
+input UpdateFundInput {
+  name: String
+
+  """Investor fund"""
+  investors: [CreateNestedInvestorFundWithoutFundInput!]
   id: Int!
 }

@@ -119,7 +119,7 @@ enum PaymentMethodType {
 model Fund {
   id         Int            @id @default(autoincrement())
   name       String         @unique
-  balance    Decimal
+  balance    Float          @db.DoublePrecision()
   investors  InvestorFund[]
   created_at DateTime       @default(now())
   updated_at DateTime       @updatedAt
@@ -128,7 +128,7 @@ model Fund {
 model InvestorFund {
   id                 Int      @id @default(autoincrement())
   stake_percentage   Decimal
-  initial_investment Decimal
+  initial_investment Float    @db.DoublePrecision()
   investor           Investor @relation(fields: [investor_id], references: [id])
   investor_id        Int
   fund               Fund     @relation(fields: [fund_id], references: [id])
@@ -189,21 +189,21 @@ enum TicketResponseType {
 }
 
 model TicketResponse {
-  id         Int                @id @default(autoincrement())
-  content    String
-  type       TicketResponseType
+  id      Int                @id @default(autoincrement())
+  content String
+  type    TicketResponseType
 
-  edit_count Int                @default(0)
-  updated_at DateTime           @updatedAt
-  created_at DateTime           @default(now())
+  edit_count Int      @default(0)
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
 }
 
 model Transaction {
   id            Int               @id @default(autoincrement())
   type          TransactionType
-  amount        Decimal
+  amount        Float             @db.DoublePrecision()
   currency_code String            @default("USD")
-  balance_after Decimal
+  balance_after Float             @db.DoublePrecision()
   // todo fund its related to
   description   String?
   fee           Decimal?

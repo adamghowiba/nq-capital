@@ -14,8 +14,11 @@ import { ApolloServerPlugin } from '@apollo/server';
 import { ComplexityPlugin } from '../common/plugins/complexity.plugin';
 import { DatabaseModule } from '@nq-capital/service-database';
 import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { InvestorsModule } from '../modules/investors/investors.module';
+import { FundsModule } from '../modules/funds/funds.module';
+import { PrismaDecimalScalar } from '../common/scalars/prisma-decimal.scalar';
 
-const APP_MODULES = [UsersModule];
+const APP_MODULES = [UsersModule, InvestorsModule, FundsModule];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
 
@@ -32,7 +35,7 @@ if (isDevelopment)
       introspection: true,
       autoSchemaFile: 'schema.gql',
       buildSchemaOptions: {
-        numberScalarMode: 'integer'
+        numberScalarMode: 'integer',
       },
       plugins: [...APOLLO_PLUGINS],
     }),
@@ -41,6 +44,7 @@ if (isDevelopment)
   providers: [
     AppService,
     ComplexityPlugin,
+    PrismaDecimalScalar,
     {
       provide: APP_PIPE,
       useValue: new ValidationPipe({}),
