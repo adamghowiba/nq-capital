@@ -3,6 +3,7 @@ import { InvestorsService } from './investors.service';
 import { InvestorEntity } from './entities/investor.entity';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
+import { InvestorFundEntity, InvestorFundWithBalanceEntity } from './entities/investor-fund.entity';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
@@ -16,13 +17,20 @@ export class InvestorsResolver {
   }
 
   @Query(() => [InvestorEntity], { name: 'investors' })
-  findAll() {
+  list() {
     return this.investorsService.list();
   }
 
   @Query(() => InvestorEntity, { name: 'investor' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.investorsService.retrieve(id);
+  }
+
+  @Query(() => [InvestorFundWithBalanceEntity], { name: 'investorFunds' })
+  listInvestorFunds(
+    @Args('investorId', { type: () => Int }) investorId: number
+  ) {
+    return this.investorsService.listInvestorFunds({ investorId });
   }
 
   @Mutation(() => InvestorEntity)

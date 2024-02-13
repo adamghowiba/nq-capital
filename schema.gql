@@ -71,6 +71,19 @@ type FundEntity {
   updated_at: DateTime!
 }
 
+type InvestorFundWithBalanceEntity {
+  id: Int!
+  stake_percentage: Float!
+  initial_investment: Int!
+  investor_id: Int!
+  fund_id: Int!
+  investor: InvestorEntity!
+  fund: FundEntity!
+  created_at: DateTime!
+  updated_at: DateTime!
+  investor_balance_in_fund: Float!
+}
+
 """Prisma Decimal Scalar"""
 scalar Decimal
 
@@ -88,6 +101,7 @@ type Query {
   user(id: Int!): UserEntity!
   investors: [InvestorEntity!]!
   investor(id: Int!): InvestorEntity!
+  investorFunds(investorId: Int!): [InvestorFundWithBalanceEntity!]!
   funds: [FundEntity!]!
   fund(id: Int!): FundEntity!
 }
