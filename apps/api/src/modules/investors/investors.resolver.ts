@@ -18,6 +18,7 @@ import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { PrismaService } from '@nq-capital/service-database';
+import { BankAccountEntity } from './entities/bank-account.entity';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
@@ -71,7 +72,7 @@ export class InvestorsResolver {
     complexity: 10,
     nullable: true,
   })
-  async getAddress(
+  async resolveAddress(
     @Parent() investor: InvestorEntity
   ): Promise<AddressEntity | null> {
     const address = await this.prisma.investor
@@ -79,5 +80,18 @@ export class InvestorsResolver {
       .address();
 
     return address;
+  }
+
+  @ResolveField(() => [BankAccountEntity], {
+    name: 'bank_accounts',
+    complexity: 10,
+    nullable: true,
+  })
+  async resolveBankAccounts(@Parent() investor: InvestorEntity) {
+    const bankAccounts = await this.investorsService.listInvestorBankAccounts({
+      investorId: investor.id,
+    });
+
+    return bankAccounts;
   }
 }

@@ -4,6 +4,9 @@
   "license": "MIT",
   "scripts": {},
   "private": true,
+  "prisma": {
+    "seed": "npx ts-node ./prisma/seed/seed.ts"
+  },
   "dependencies": {
     "@apollo/server": "^4.10.0",
     "@emotion/cache": "^11.11.0",

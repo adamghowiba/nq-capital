@@ -12,7 +12,10 @@ export class InvestorsService {
 
   async create(createInvestorInput: CreateInvestorInput) {
     const investor = await this.prisma.investor.create({
-      data: createInvestorInput,
+      data: {
+        ...createInvestorInput,
+        bank_accounts: createInvestorInput.bankAccountsCreateMany,
+      },
     });
 
     return investor;
@@ -47,6 +50,14 @@ export class InvestorsService {
     return transformedInvestorFunds;
   }
 
+  async listInvestorBankAccounts(params: { investorId: number }) {
+    const bankAccounts = await this.prisma.investor
+      .findUnique({ where: { id: params.investorId } })
+      .bank_accounts();
+
+    return bankAccounts;
+  }
+
   async retrieve(id: number) {
     const investor = await this.prisma.investor.findUnique({ where: { id } });
 
@@ -56,7 +67,9 @@ export class InvestorsService {
   async update(id: number, updateInvestorInput: UpdateInvestorInput) {
     const investor = await this.prisma.investor.update({
       where: { id },
-      data: updateInvestorInput,
+      data: {
+        ...updateInvestorInput,
+      },
     });
 
     return investor;

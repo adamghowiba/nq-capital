@@ -35,6 +35,14 @@ type PaginatedUserEntity {
   hasNextPage: Boolean!
 }
 
+type FundEntity {
+  id: Int!
+  name: String!
+  balance: Float!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
 type InvestorEntity {
   id: Int!
   first_name: String!
@@ -55,6 +63,8 @@ type InvestorEntity {
   address_id: Int
   created_at: DateTime!
   updated_at: DateTime!
+  address: AddressEntity
+  bank_accounts: [BankAccountEntity!]
 }
 
 enum InvestorAccountStatus {
@@ -63,25 +73,62 @@ enum InvestorAccountStatus {
   DISABLED
 }
 
-type FundEntity {
-  id: Int!
-  name: String!
-  balance: Float!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
-type InvestorFundWithBalanceEntity {
+type InvestorFundEntity {
   id: Int!
   stake_percentage: Float!
+  invested_amount: Float!
   initial_investment: Int!
   investor_id: Int!
   fund_id: Int!
   investor: InvestorEntity!
+  investor_balance_in_fund: Float!
   fund: FundEntity!
   created_at: DateTime!
   updated_at: DateTime!
-  investor_balance_in_fund: Float!
+}
+
+type AddressEntity {
+  id: Int!
+  street: String!
+  street_2: String
+  city: String!
+  state_province: String!
+  postal_zip_code: String
+  country: String!
+  country_code: String!
+  latitude: Float!
+  longitude: Float!
+  verified: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BankAccountEntity {
+  id: Int!
+  nickname: String
+  bank_name: String!
+  account_number: String!
+  account_holder_name: String!
+  type: BankAccountType
+  bank_country: String!
+  currency: String!
+  routing_number: String
+  swift_code: String
+  iban: String
+  sort_code: String
+  bsb_number: String
+  bank_code: String
+  branch_code: String
+  branch_address: String
+  is_primary: Boolean!
+  investor_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
 }
 
 """Prisma Decimal Scalar"""
@@ -101,7 +148,7 @@ type Query {
   user(id: Int!): UserEntity!
   investors: [InvestorEntity!]!
   investor(id: Int!): InvestorEntity!
-  investorFunds(investorId: Int!): [InvestorFundWithBalanceEntity!]!
+  investorFunds(investorId: Int!): [InvestorFundEntity!]!
   funds: [FundEntity!]!
   fund(id: Int!): FundEntity!
 }
@@ -115,6 +162,7 @@ type Mutation {
   removeInvestor(id: Int!): InvestorEntity!
   createFund(createFundInput: CreateFundInput!): FundEntity!
   updateFund(updateFundInput: UpdateFundInput!): FundEntity!
+  addFundInvestors(addFundInvestorsInput: AddFundInvestorsInput!): FundEntity!
   removeFund(id: Int!): FundEntity!
 }
 
@@ -142,6 +190,7 @@ input UpdateUserInput {
 input CreateInvestorInput {
   date_of_birth: DateTime
   account_status: InvestorAccountStatus
+  bank_accounts: [BankAccountWithoutInvestorInput!]
 
   """Investor first name"""
   first_name: String!
@@ -160,6 +209,25 @@ input CreateInvestorInput {
   avatar: String
   mobile_number: String
   address_id: Int
+}
+
+input BankAccountWithoutInvestorInput {
+  nickname: String
+  bank_name: String!
+  account_number: String!
+  account_holder_name: String!
+  type: BankAccountType
+  bank_country: String!
+  currency: String!
+  routing_number: String
+  swift_code: String
+  iban: String
+  sort_code: String
+  bsb_number: String
+  bank_code: String
+  branch_code: String
+  branch_address: String
+  is_primary: Boolean
 }
 
 input UpdateInvestorInput {
@@ -195,16 +263,17 @@ input CreateFundInput {
 }
 
 input CreateNestedInvestorFundWithoutFundInput {
-  """Percentage of the fund the investor has staked.. e.g. 0.5 for 50%"""
-  stake_percentage: Float!
   initial_investment: Float!
   investor_id: Int!
 }
 
 input UpdateFundInput {
   name: String
-
-  """Investor fund"""
-  investors: [CreateNestedInvestorFundWithoutFundInput!]
   id: Int!
+}
+
+input AddFundInvestorsInput {
+  id: Int!
+  investor_id: Int!
+  initial_investment: Float!
 }

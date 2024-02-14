@@ -20,6 +20,9 @@ export class InvestorFundEntity
   @Field(() => Float)
   stake_percentage!: number;
 
+  @Field(() => Float)
+  invested_amount!: number;
+
   @Field(() => Int)
   initial_investment!: number;
 

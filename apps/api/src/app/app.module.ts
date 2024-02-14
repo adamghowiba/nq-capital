@@ -47,7 +47,9 @@ if (isDevelopment)
     PrismaDecimalScalar,
     {
       provide: APP_PIPE,
-      useValue: new ValidationPipe({}),
+      useValue: new ValidationPipe({
+        transform: true,
+      }),
     },
     {
       provide: APP_INTERCEPTOR,
