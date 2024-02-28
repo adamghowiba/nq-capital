@@ -3,6 +3,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { theme } from '../lib/theme';
 import '../styles/global.css';
+import { Providers } from '../components/Providers/Providers';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,7 +13,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
       </Head>
       <main className="app">
         <ThemeProvider theme={theme}>
-          <Component {...pageProps} />
+          <Providers>
+            <Component {...pageProps} />
+          </Providers>
         </ThemeProvider>
       </main>
     </>
