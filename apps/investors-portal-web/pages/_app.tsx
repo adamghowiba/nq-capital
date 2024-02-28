@@ -1,15 +1,19 @@
+import { ThemeProvider } from '@mui/material';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import './styles.css';
+import { theme } from '../lib/theme';
+import '../styles/global.css';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>Welcome to investors-portal-web!</title>
+        <title>Investors Portal</title>
       </Head>
       <main className="app">
-        <Component {...pageProps} />
+        <ThemeProvider theme={theme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
       </main>
     </>
   );
