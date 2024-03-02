@@ -117,7 +117,7 @@ export default function Signin() {
             <Typography>Forgot password ?</Typography>
           </Link>
           <Typography sx={{ color: '#8D8D8D' }}>
-            {"Don't have an account?"}
+            {"Don't have an account? "}
             <Link href={'signup'}>
               <Typography component="span" sx={{ color: '#202020' }}>
                 Sign Up
