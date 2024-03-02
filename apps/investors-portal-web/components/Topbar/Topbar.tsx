@@ -3,7 +3,7 @@ import upDown from '@iconify/icons-fluent/chevron-up-down-24-filled';
 import person from '@iconify/icons-fluent/person-24-filled';
 import questionCircle from '@iconify/icons-fluent/question-circle-24-filled';
 import settings from '@iconify/icons-fluent/settings-24-filled';
-import { Icon } from '@iconify/react';
+import { Icon, IconifyIcon } from '@iconify/react';
 import { Avatar, Divider, IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -12,6 +12,29 @@ import OneIcon from '../OneIcon/OneIcon';
 import TopbarSearch from './TopbarSearch';
 
 function Topbar() {
+  const rightIcons: {
+    title: string;
+    icon: IconifyIcon;
+    onClick?: () => void;
+  }[] = [
+    {
+      icon: questionCircle,
+      title: 'Help',
+    },
+    {
+      icon: notification,
+      title: 'Notifications',
+    },
+    {
+      icon: settings,
+      title: 'Settings',
+    },
+    {
+      icon: person,
+      title: 'Profile',
+    },
+  ];
+
   return (
     <>
       <Box width="100%" bgcolor="#F9F9F9" height="56px">
@@ -94,10 +117,14 @@ function Topbar() {
                 columnGap: 2,
               }}
             >
-              <OneIcon title="Help" icon={questionCircle} />
-              <OneIcon title="Notifications" icon={notification} />
-              <OneIcon title="Settings" icon={settings} />
-              <OneIcon title="Profile" icon={person} />
+              {rightIcons.map(({ icon, title, onClick }, index) => (
+                <OneIcon
+                  key={index}
+                  title={title}
+                  icon={icon}
+                  onClick={onClick}
+                />
+              ))}
             </Box>
           </Box>
         </DContainer>
