@@ -166,8 +166,8 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           color: '#333333',
         },
         body2: {
-          fontSize: '0.875rem',
-          fontWeight: 400,
+          fontSize: '12px',
+          fontWeight: 500,
         },
         caption: {
           fontSize: '0.75rem',
