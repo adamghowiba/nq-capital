@@ -1,10 +1,10 @@
 import {
-    Box,
-    Button,
-    CircularProgress,
-    Paper,
-    TextField,
-    Typography,
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import Link from 'next/link';
@@ -50,9 +50,10 @@ export default function Signup() {
         bgcolor: '#FCFCFC',
         display: 'grid',
         justifyItems: 'center',
-        alignContent: 'center',
+        alignContent: 'start',
         height: '100svh',
         rowGap: 5,
+        paddingTop: '192px',
       }}
     >
       <Box sx={{ display: 'grid', justifyItems: 'center', rowGap: 2 }}>

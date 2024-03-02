@@ -44,9 +44,10 @@ export default function Signin() {
         bgcolor: '#FCFCFC',
         display: 'grid',
         justifyItems: 'center',
-        alignContent: 'center',
+        alignContent: 'start',
         height: '100svh',
         rowGap: 5,
+        paddingTop: '192px',
       }}
     >
       <Box sx={{ display: 'grid', justifyItems: 'center', rowGap: 2 }}>
