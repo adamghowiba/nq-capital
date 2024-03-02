@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { FC } from 'react';
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Test: FC<any> = ({users, ...props }) => {
   return (
     <>

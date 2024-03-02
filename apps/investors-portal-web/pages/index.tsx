@@ -4,7 +4,7 @@ import DashboardLayout from '../components/(dashboard)/layout';
 export function Index() {
   return (
     <DashboardLayout>
-      <Box>
+      <Box height={'100%'}>
         <Button variant="contained" color="primary">
           Testing
         </Button>
