@@ -234,6 +234,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             '& .MuiOutlinedInput-root': {
               border: 'none',
               borderRadius: '12px',
+              background: '#F1F1F1',
             },
             '& .MuiOutlinedInput-notchedOutline': {
               border: `1px solid ${theme.common.line}`,
