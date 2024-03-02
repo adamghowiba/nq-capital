@@ -1,7 +1,9 @@
-'use client';
+import searchIcon from '@iconify/icons-fluent/search-24-regular';
+import { Icon } from '@iconify/react';
 import { InputAdornment, TextField, Typography } from '@mui/material';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface TopbarSearchProps {}
 
 const TopbarSearch: FC<TopbarSearchProps> = ({ ...props }) => {
@@ -10,18 +12,24 @@ const TopbarSearch: FC<TopbarSearchProps> = ({ ...props }) => {
   return (
     <>
       <TextField
-        placeholder="Search order..."
+        placeholder="Search tickets..."
         size="small"
-        fullWidth
         sx={{
           bgcolor: 'white',
+          '&.MuiFormControl-root': {
+            backgroundColor: 'transparent',
+          },
         }}
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              {/* <SearchRounded /> */}
+              <Icon
+                icon={searchIcon}
+                fontSize={20}
+                style={{ color: 'var(--neutral-400)' }}
+              />
             </InputAdornment>
           ),
           endAdornment: (
