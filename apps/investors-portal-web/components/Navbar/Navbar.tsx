@@ -23,20 +23,20 @@ const Navbar: FC<NavbarProps> = ({ ...props }) => {
       href: '/',
     },
     {
-      name: 'Orders',
-      href: '/orders',
+      name: 'Fund',
+      href: '/fund',
     },
     {
-      name: 'Consumptions',
-      href: '/consumptions',
+      name: 'Tickets',
+      href: '/tickets',
     },
     {
-      name: 'Analytics',
-      href: '/analytics',
+      name: 'Transactions',
+      href: '/transactions',
     },
     {
-      name: 'Flights',
-      href: '/flights',
+      name: 'Accounts',
+      href: '/accounts',
     },
   ];
 
@@ -50,7 +50,12 @@ const Navbar: FC<NavbarProps> = ({ ...props }) => {
 
   return (
     <>
-      <Stack direction="row" bgcolor="white" height="48px" borderBottom="1px solid #EBEBEB">
+      <Stack
+        direction="row"
+        bgcolor="white"
+        height="48px"
+        borderBottom="1px solid #EBEBEB"
+      >
         <DContainer>
           <Stack direction="row" height="100%">
             {NAVBAR_ITEMS.map((item) => (
