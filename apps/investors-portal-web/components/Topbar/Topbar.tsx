@@ -105,6 +105,7 @@ function Topbar() {
                   title={title}
                   icon={icon}
                   onClick={onClick}
+                  fontSize={20}
                 />
               ))}
             </Box>
