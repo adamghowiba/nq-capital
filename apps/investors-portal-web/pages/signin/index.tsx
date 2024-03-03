@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import Logo from '../../components/Logo/logo';
+import AuthHeader from '../../components/auth/AuthHeader';
 
 export default function Signin() {
   const initialValues: { email: string; password: string } = {
@@ -50,13 +50,7 @@ export default function Signin() {
         paddingTop: '192px',
       }}
     >
-      <Box sx={{ display: 'grid', justifyItems: 'center', rowGap: 2 }}>
-        <Logo />
-        <Typography variant="h2" color="#8D8D8D">
-          Welcome back to NQ
-        </Typography>
-      </Box>
-
+      <AuthHeader title="Welcom back to NQ" />
       <Paper
         component="form"
         onSubmit={formik.handleSubmit}

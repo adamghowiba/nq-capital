@@ -10,13 +10,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { theme } from '../../lib/theme';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import Logo from '../../components/Logo/logo';
 import OneIcon from '../../components/OneIcon/OneIcon';
+import AuthHeader from '../../components/auth/AuthHeader';
+import { theme } from '../../lib/theme';
 
 export default function ForgotPassword() {
   const initialValues: {
@@ -89,13 +89,7 @@ export default function ForgotPassword() {
           paddingTop: '192px',
         }}
       >
-        <Box sx={{ display: 'grid', justifyItems: 'center', rowGap: 2 }}>
-          <Logo />
-          <Typography variant="h2" color="#8D8D8D">
-            Reset your password
-          </Typography>
-        </Box>
-
+        <AuthHeader title="Reset your password" />
         <Paper
           component="form"
           onSubmit={formik.handleSubmit}
