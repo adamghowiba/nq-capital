@@ -3,7 +3,7 @@ import dismiss from '@iconify/icons-fluent/dismiss-24-regular';
 import { Icon } from '@iconify/react';
 import { Box, Snackbar, Typography } from '@mui/material';
 import { theme } from '../../lib/theme';
-import OneIcon from '../OneIcon/OneIcon';
+import OneIcon from './OneIcon';
 
 export interface OneSnackbarProps {
   isOpen: boolean;
@@ -13,7 +13,7 @@ export interface OneSnackbarProps {
 export default function OneSnackbar({
   close,
   isOpen,
-  message = 'Password reset link as been sent',
+  message = 'Password reset link has been sent',
 }: OneSnackbarProps) {
   return (
     <Snackbar
