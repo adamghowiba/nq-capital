@@ -1,15 +1,15 @@
 import {
-    Box,
-    Button,
-    CircularProgress,
-    Paper,
-    TextField,
-    Typography,
+  Box,
+  Button,
+  CircularProgress,
+  Paper,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import AuthHeader from '../../components/auth/AuthHeader';
+import AuthHeader from '../../../components/auth/AuthHeader';
 
 export default function ResetPassword() {
   const initialValues: {
@@ -19,6 +19,9 @@ export default function ResetPassword() {
     password: '',
     confirm_password: '',
   };
+
+
+
   const validationSchema = Yup.object().shape({
     password: Yup.string().required(),
     confirm_password: Yup.string()
