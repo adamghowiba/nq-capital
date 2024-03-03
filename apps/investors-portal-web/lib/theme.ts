@@ -191,7 +191,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       MuiButton: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: '8px',
+            borderRadius: '12px',
             textTransform: 'none',
             fontWeight: 'var(--semiBold)',
             lineHeight: '14px',
