@@ -1,22 +1,17 @@
-import checkCircle from '@iconify/icons-fluent/checkmark-circle-24-filled';
-import dismiss from '@iconify/icons-fluent/dismiss-24-regular';
-import { Icon } from '@iconify/react';
 import {
   Box,
   Button,
   CircularProgress,
   Paper,
-  Snackbar,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
 import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import OneIcon from '../../components/OneIcon/OneIcon';
 import AuthHeader from '../../components/auth/AuthHeader';
-import { theme } from '../../lib/theme';
+import OneSnackbar from '../../components/utils/OneSnackbar';
 
 export default function ForgotPassword() {
   const initialValues: {
@@ -46,38 +41,7 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <Snackbar
-        color="primary"
-        open={openToast}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        autoHideDuration={3000}
-        onClose={() => setOpenToast(false)}
-      >
-        <Box
-          sx={{
-            display: 'grid',
-            gridAutoFlow: 'column',
-            alignItems: 'center',
-            columnGap: 0.5,
-            backgroundColor: theme.palette.primary.main,
-            color: 'white',
-            padding: '16px 12px',
-            borderRadius: '12px',
-          }}
-        >
-          <Icon icon={checkCircle} color="#65BA75" fontSize={16} />
-          <Typography variant="body2">
-            Password reset link as been sent
-          </Typography>
-          <OneIcon
-            icon={dismiss}
-            title="Dismiss"
-            fontSize={16}
-            iconColor="#808080"
-            onClick={() => setOpenToast(false)}
-          />
-        </Box>
-      </Snackbar>
+      <OneSnackbar close={() => setOpenToast(false)} isOpen={openToast} />
       <Box
         sx={{
           bgcolor: '#FCFCFC',
