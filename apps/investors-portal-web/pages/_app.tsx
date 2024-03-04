@@ -1,9 +1,11 @@
 import { ThemeProvider } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { Providers } from '../components/Providers/Providers';
 import { theme } from '../lib/theme';
 import '../styles/global.css';
-import { Providers } from '../components/Providers/Providers';
 
 function CustomApp({ Component, pageProps }: AppProps) {
   return (
@@ -14,7 +16,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <main className="app">
         <ThemeProvider theme={theme}>
           <Providers>
-            <Component {...pageProps} />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Component {...pageProps} />
+            </LocalizationProvider>
           </Providers>
         </ThemeProvider>
       </main>
