@@ -56,12 +56,12 @@ export default function PersonalInformation({
         title="Enter your personal information"
         subtitle="Let's start by getting to know you. Provide your basic detaisl and contact information"
       />
-      <Box sx={{ display: 'grid', rowGap: 8 }}>
-        <Box
-          component="form"
-          onSubmit={formik.handleSubmit}
-          sx={{ display: 'grid', rowGap: 3 }}
-        >
+      <Box
+        component="form"
+        onSubmit={formik.handleSubmit}
+        sx={{ display: 'grid', rowGap: 8 }}
+      >
+        <Box sx={{ display: 'grid', rowGap: 3 }}>
           <OneTextField
             OneLabel="First name"
             placeholder="Enter your first name"
