@@ -1,31 +1,7 @@
-import {
-    Box,
-    Button,
-    TextField,
-    TextFieldProps,
-    Typography,
-} from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
-interface OneTextFieldProps {
-  OneLabel: string;
-}
-
-export type TextFieldPropsExtended = TextFieldProps & OneTextFieldProps;
-
-export function OneTextField({
-  OneLabel,
-  error,
-  ...props
-}: TextFieldPropsExtended) {
-  return (
-    <Box sx={{ display: 'grid', rowGap: 1 }}>
-      <Typography>{OneLabel}</Typography>
-      <TextField {...props} />
-    </Box>
-  );
-}
+import { OneTextField } from '../utils/OneTextField';
 
 export interface PersonalInformationData {
   first_name: string;
