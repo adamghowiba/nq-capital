@@ -8,8 +8,9 @@ import { Avatar, Divider, IconButton, Tooltip } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import DContainer from '../DContainer/DContainer';
-import OneIcon from '../OneIcon/OneIcon';
+import OneIcon from '../utils/OneIcon';
 import TopbarSearch from './TopbarSearch';
+import Logo from '../Logo/logo';
 
 function Topbar() {
   const rightIcons: {
@@ -60,26 +61,7 @@ function Topbar() {
                 justifyItems: 'center',
               }}
             >
-              <Box
-                bgcolor="black"
-                borderRadius="8px"
-                width="36px"
-                height="32px"
-                sx={{
-                  display: 'grid',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Typography
-                  color="white"
-                  fontSize="14px"
-                  fontWeight="500"
-                  lineHeight="1"
-                >
-                  NQ
-                </Typography>
-              </Box>
+              <Logo />
               <Divider orientation="vertical" sx={{ height: '60%' }} />
               <Box
                 sx={{
@@ -123,6 +105,7 @@ function Topbar() {
                   title={title}
                   icon={icon}
                   onClick={onClick}
+                  fontSize={20}
                 />
               ))}
             </Box>

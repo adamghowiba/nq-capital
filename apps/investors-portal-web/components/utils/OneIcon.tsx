@@ -7,6 +7,7 @@ export interface OneIconProps {
   size?: 'small' | 'large' | 'medium';
   fontSize?: number;
   onClick?: () => void;
+  iconColor?: string;
 }
 
 export default function OneIcon({
@@ -15,15 +16,12 @@ export default function OneIcon({
   size = 'small',
   fontSize = 24,
   onClick,
+  iconColor = 'var(--neutral-400)',
 }: OneIconProps) {
   return (
     <Tooltip arrow title={title}>
       <IconButton size={size} onClick={onClick}>
-        <Icon
-          icon={icon}
-          fontSize={fontSize}
-          style={{ color: 'var(--neutral-400)' }}
-        />
+        <Icon icon={icon} fontSize={fontSize} style={{ color: iconColor }} />
       </IconButton>
     </Tooltip>
   );

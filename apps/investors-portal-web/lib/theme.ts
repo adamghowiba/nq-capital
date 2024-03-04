@@ -166,8 +166,8 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           color: '#333333',
         },
         body2: {
-          fontSize: '0.875rem',
-          fontWeight: 400,
+          fontSize: '12px',
+          fontWeight: 500,
         },
         caption: {
           fontSize: '0.75rem',
@@ -191,7 +191,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       MuiButton: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: '8px',
+            borderRadius: '12px',
             textTransform: 'none',
             fontWeight: 'var(--semiBold)',
             lineHeight: '14px',
@@ -234,6 +234,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             '& .MuiOutlinedInput-root': {
               border: 'none',
               borderRadius: '12px',
+              background: '#F1F1F1',
             },
             '& .MuiOutlinedInput-notchedOutline': {
               border: `1px solid ${theme.common.line}`,

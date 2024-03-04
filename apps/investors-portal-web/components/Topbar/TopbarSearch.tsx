@@ -15,7 +15,9 @@ const TopbarSearch: FC<TopbarSearchProps> = ({ ...props }) => {
         placeholder="Search tickets..."
         size="small"
         sx={{
-          bgcolor: 'white',
+          '& .MuiOutlinedInput-root': {
+            bgcolor: 'white',
+          },
           '&.MuiFormControl-root': {
             backgroundColor: 'transparent',
           },
