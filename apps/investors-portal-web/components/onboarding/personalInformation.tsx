@@ -1,7 +1,8 @@
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { OneTextField } from '../utils/OneTextField';
+import StepHeader from './stepHeader';
 
 export interface PersonalInformationData {
   first_name: string;
@@ -51,16 +52,10 @@ export default function PersonalInformation({
 
   return (
     <Box width={500} sx={{ display: 'grid', rowGap: 5 }}>
-      <Box sx={{ display: 'grid', rowGap: 2 }}>
-        <Typography variant="h2" color="#202020" fontWeight={500}>
-          Enter your personal information
-        </Typography>
-        <Typography variant="h5" color="#8D8D8D">
-          {
-            "Let's start by getting to know you. Provide your basic detaisl and contact information"
-          }
-        </Typography>
-      </Box>
+      <StepHeader
+        title="Enter your personal information"
+        subtitle="Let's start by getting to know you. Provide your basic detaisl and contact information"
+      />
       <Box sx={{ display: 'grid', rowGap: 8 }}>
         <Box
           component="form"
