@@ -8,7 +8,6 @@ export type TextFieldPropsExtended = TextFieldProps & OneTextFieldProps;
 
 export function OneTextField({
   OneLabel,
-  error,
   ...props
 }: TextFieldPropsExtended) {
   return (
