@@ -188,6 +188,13 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
     },
     components: {
+      MuiBackdrop: {
+        styleOverrides: {
+          root: () => ({
+            background: '#00000044',
+          }),
+        },
+      },
       MuiButton: {
         defaultProps: {
           disableElevation: true,
