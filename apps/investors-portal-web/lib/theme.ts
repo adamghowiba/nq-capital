@@ -189,6 +189,9 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
     },
     components: {
       MuiButton: {
+        defaultProps: {
+          disableElevation: true,
+        },
         styleOverrides: {
           root: ({ theme }) => ({
             borderRadius: '12px',
