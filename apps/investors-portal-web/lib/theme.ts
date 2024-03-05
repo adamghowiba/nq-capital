@@ -228,8 +228,8 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         },
       },
       MuiTextField: {
-        defaultProps:{
-          size:'small'
+        defaultProps: {
+          size: 'small',
         },
         styleOverrides: {
           root: ({ theme }) => ({
