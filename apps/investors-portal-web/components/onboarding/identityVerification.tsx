@@ -41,7 +41,10 @@ export default function IdentityVerification({
     passport_number: Yup.string().required(),
     national_id_number: Yup.string(),
     nationality: Yup.string()
-      .oneOf(nationalities.map(({ nationality }) => nationality), 'Select in dropdown')
+      .oneOf(
+        nationalities.map(({ nationality }) => nationality),
+        'Select in dropdown'
+      )
       .required(),
     passport_issue_date: Yup.date()
       .max(new Date(), 'Cannot be greater than today')
@@ -71,15 +74,6 @@ export default function IdentityVerification({
         Yup.ref('national_id_number_issue_date'),
         'Expiry date must be greater than issue date!'
       ),
-
-    first_name: Yup.string().required(),
-    last_name: Yup.string().required(),
-    email: Yup.string().email().required(),
-    mobile_number: Yup.string().required(),
-    password: Yup.string().required(),
-    confirm_password: Yup.string()
-      .required()
-      .oneOf([Yup.ref('password')], "Passwords don't match"),
   });
 
   const formik = useFormik({
@@ -97,6 +91,7 @@ export default function IdentityVerification({
         subtitle="Help us ensure the security of your account. Verify your identity with essential documents."
         title="Identity Verification"
       />
+      <Typography>{Object.keys(formik.errors).join(', ')}</Typography>
       <Box
         component="form"
         onSubmit={formik.handleSubmit}
