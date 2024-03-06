@@ -62,17 +62,21 @@ export default function NewBankDialog({
     initialValues,
     validationSchema,
     enableReinitialize: true,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       handleAddBank(values);
-      closeDialog();
-      resetForm();
+      close();
     },
   });
+
+  function close() {
+    closeDialog();
+    formik.resetForm();
+  }
 
   return (
     <Dialog
       open={isDialogOpen}
-      onClose={closeDialog}
+      onClose={close}
       sx={{
         '& .MuiPaper-root': {
           borderRadius: 2,
