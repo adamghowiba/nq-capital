@@ -14,7 +14,7 @@ export interface PersonalInformationData {
 }
 
 export interface PersonalInformationProps {
-  data: PersonalInformationData;
+  data?: PersonalInformationData;
   onNext: (data: PersonalInformationData) => void;
 }
 
