@@ -287,7 +287,11 @@ export default function IdentityVerification({
             alignItems: 'center',
           }}
         >
-          <Button color="secondary" variant="contained">
+          <Button
+            color="secondary"
+            variant="contained"
+            onClick={() => onBack(formik.values)}
+          >
             Back
           </Button>
           <Button type="submit" color="primary" variant="contained">
