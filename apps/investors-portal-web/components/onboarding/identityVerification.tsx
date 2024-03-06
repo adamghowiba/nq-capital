@@ -179,6 +179,14 @@ export default function IdentityVerification({
                 selectedNationality ? selectedNationality.nationality : ''
               )
             }
+            value={
+              formik.values.nationality
+                ? nationalities.find(
+                    ({ nationality }) =>
+                      nationality === formik.values.nationality
+                  )
+                : null
+            }
             renderOption={(props, option) => (
               <Box component="li" {...props}>
                 {option.nationality} ({option.code})
