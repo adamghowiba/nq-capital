@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import FinancialInformation from '../../components/onboarding/financialInformation';
 import IdentityVerification, {
@@ -11,6 +12,7 @@ import PersonalInformation, {
 import OnboardingTopbar from '../../components/onboarding/topbar';
 
 export default function Onboarding() {
+  const { push } = useRouter();
   const totalSteps = 3;
   const [currentStep, setCurrentStep] = useState<number>(1);
 
@@ -38,6 +40,8 @@ export default function Onboarding() {
     setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
+      //TODO: move to onbaording route, indicating we're from onboarding to toast.
+      push('/?fromOnboarding=true');
       //TODO: in case of failure, set financialData for usage during retry
       setFinancialData(data);
     }, 3000);
