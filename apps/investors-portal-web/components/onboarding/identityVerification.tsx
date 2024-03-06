@@ -41,7 +41,7 @@ export default function IdentityVerification({
     passport_number: Yup.string().required(),
     national_id_number: Yup.string(),
     nationality: Yup.string()
-      .oneOf(nationalities.map(({ nationality }) => nationality))
+      .oneOf(nationalities.map(({ nationality }) => nationality), 'Select in dropdown')
       .required(),
     passport_issue_date: Yup.date()
       .max(new Date(), 'Cannot be greater than today')
