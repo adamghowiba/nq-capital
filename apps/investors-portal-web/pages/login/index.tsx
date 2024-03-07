@@ -12,19 +12,21 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import AuthHeader from '../../components/auth/AuthHeader';
 
-export default function Signin() {
+export default function Login() {
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // TODO: this state may not be required as we'll read from request result.
+  const [loginError, setLoginError] = useState<boolean>(false);
+
   const initialValues: { email: string; password: string } = {
     email: '',
     password: '',
   };
+
   const validationSchema = Yup.object().shape({
     email: Yup.string().email().required(),
     password: Yup.string().required(),
   });
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  // TODO: this state may not be required as we'll read from request result.
-  const [signinError, setSigninError] = useState<boolean>(false);
   const formik = useFormik({
     initialValues,
     validationSchema,
@@ -33,7 +35,7 @@ export default function Signin() {
       // TODO: CALL API HERE TO SIGNIN
       setTimeout(() => {
         setIsSubmitting(false);
-        setSigninError(true);
+        setLoginError(true);
       }, 3000);
     },
   });
@@ -89,7 +91,7 @@ export default function Signin() {
             disabled={isSubmitting}
           />
         </Box>
-        {signinError && (
+        {loginError && (
           <Typography color="error">
             Invalid email or password. Please try again.
           </Typography>
