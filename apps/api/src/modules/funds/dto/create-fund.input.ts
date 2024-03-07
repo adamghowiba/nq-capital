@@ -1,7 +1,7 @@
 import { Field, InputType, Int, OmitType } from '@nestjs/graphql';
 import { Prisma } from '@prisma/client';
-import { IsDecimal, IsNumber, IsOptional, IsString } from 'class-validator';
-import { CreateInvestorFundInput } from '../../investors/dto/create-investor-fund.input';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { CreateInvestorFundInput } from '../../investor-funds/dto/create-investor-fund.input';
 
 @InputType()
 export class CreateNestedInvestorFundWithoutFundInput extends OmitType(

@@ -1,5 +1,6 @@
 import { Field, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Investor, InvestorAccountStatus } from '@prisma/client';
+import { BankAccountEntity } from './bank-account.entity';
 
 registerEnumType(InvestorAccountStatus, { name: 'InvestorAccountStatus' });
 

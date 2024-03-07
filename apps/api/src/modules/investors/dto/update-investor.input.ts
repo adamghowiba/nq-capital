@@ -1,8 +1,16 @@
+import {
+  Field,
+  InputType,
+  Int,
+  OmitType,
+  PartialType
+} from '@nestjs/graphql';
 import { CreateInvestorInput } from './create-investor.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateInvestorInput extends PartialType(CreateInvestorInput) {
+export class UpdateInvestorInput extends PartialType(
+  OmitType(CreateInvestorInput, ['bankAccountsCreateMany', 'bank_accounts'])
+) {
   @Field(() => Int)
   id!: number;
 }
