@@ -255,6 +255,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       MuiFormLabel: {
         styleOverrides: {
           root: ({ theme }) => ({
+            marginBottom: '4px',
             // top: '-8px !important',
           }),
         },
