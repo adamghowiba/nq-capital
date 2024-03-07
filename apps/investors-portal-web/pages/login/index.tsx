@@ -3,6 +3,7 @@ import {
   Button,
   CircularProgress,
   Paper,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material';
@@ -41,16 +42,12 @@ export default function Login() {
   });
 
   return (
-    <Box
-      sx={{
-        bgcolor: '#FCFCFC',
-        display: 'grid',
-        justifyItems: 'center',
-        alignContent: 'start',
-        height: '100svh',
-        rowGap: 5,
-        paddingTop: '192px',
-      }}
+    <Stack
+      justifyContent="center"
+      alignItems="center"
+      spacing={2}
+      bgcolor="#FCFCFC"
+      height="100vh"
     >
       <AuthHeader title="Welcom back to NQ" />
       <Paper
@@ -123,6 +120,6 @@ export default function Login() {
           </Typography>
         </Box>
       </Paper>
-    </Box>
+    </Stack>
   );
 }
