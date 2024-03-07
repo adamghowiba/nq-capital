@@ -39,7 +39,10 @@ export default function FinancialInformation({
   }
 
   function handleEditBank(bank: NewBankData) {
-    return '';
+    setBankAccounts((prev) => {
+      const otherBanks = prev.filter(({ temp_id }) => temp_id !== bank.temp_id);
+      return [...otherBanks, bank];
+    });
   }
 
   function handleChangeDefault(newDefaultBank: NewBankData) {
