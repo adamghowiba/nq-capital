@@ -294,7 +294,6 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             '& .MuiPaper-root': {
               borderRadius: 0,
               backgroundColor: theme.common.background,
-              maxWidth: '55vw',
             },
           }),
         },
