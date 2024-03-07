@@ -1,13 +1,13 @@
 import { Autocomplete, Box, Button, Dialog, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { bankAccountTypes } from '../../lib/bank_account_types';
 import { nationalities } from '../../lib/nationalities';
 import { OneTextField } from '../utils/OneTextField';
+import { BANK_ACCOUNT_TYPES } from '../../lib/bank.constants';
 
 export interface NewBankDialogProps {
-  closeDialog: () => void;
   isDialogOpen: boolean;
+  closeDialog: () => void;
   handleAddBank: (newBank: NewBankData) => void;
   handleEditBank: (bank: NewBankData) => void;
   data?: NewBankData;
@@ -62,7 +62,7 @@ export default function NewBankDialog({
       )
       .required(),
     account_type: Yup.string()
-      .oneOf(bankAccountTypes, 'Select a type from dropdown')
+      .oneOf(BANK_ACCOUNT_TYPES, 'Select a type from dropdown')
       .required(),
   });
 
@@ -212,11 +212,11 @@ export default function NewBankDialog({
           </Box>
 
           <Autocomplete
-            options={bankAccountTypes.sort((a, b) => (a > b ? 1 : -1))}
+            options={BANK_ACCOUNT_TYPES.sort((a, b) => (a > b ? 1 : -1))}
             autoHighlight
             value={
               formik.values.account_type
-                ? bankAccountTypes.find(
+                ? BANK_ACCOUNT_TYPES.find(
                     (accountType) => accountType === formik.values.account_type
                   )
                 : null

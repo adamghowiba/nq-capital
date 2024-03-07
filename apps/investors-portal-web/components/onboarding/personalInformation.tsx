@@ -2,7 +2,7 @@ import { Box, Button } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { OneTextField } from '../utils/OneTextField';
-import StepHeader from './stepHeader';
+import StepHeader from './StepHeader';
 
 export interface PersonalInformationData {
   first_name: string;

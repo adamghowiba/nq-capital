@@ -6,8 +6,8 @@ import { Avatar, Box, Typography } from '@mui/material';
 import { useState } from 'react';
 import { theme } from '../../lib/theme';
 import OneIcon from '../utils/OneIcon';
-import BankCardMenu from './bankCardMenu';
-import { NewBankData } from './newBankDialog';
+import BankCardMenu from './BankCardMenu';
+import { NewBankData } from './BankMutationDialog';
 
 export interface BankCardProps {
   bank: NewBankData;

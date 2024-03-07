@@ -2,9 +2,9 @@ import add from '@iconify/icons-fluent/add-24-filled';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useState } from 'react';
 import OneIcon from '../utils/OneIcon';
-import BankCard from './bankCard';
-import NewBankDialog, { NewBankData } from './newBankDialog';
-import StepHeader from './stepHeader';
+import BankCard from './BankCard';
+import NewBankDialog, { NewBankData } from './BankMutationDialog';
+import StepHeader from './StepHeader';
 
 export interface FinancialInformationProps {
   data: NewBankData[];

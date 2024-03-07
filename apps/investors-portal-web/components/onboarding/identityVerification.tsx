@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { nationalities } from '../../lib/nationalities';
 import { OneTextField } from '../utils/OneTextField';
-import StepHeader from './stepHeader';
+import StepHeader from './StepHeader';
 
 export interface IdentityVerificationData {
   passport_number: string;
