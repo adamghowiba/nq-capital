@@ -1,15 +1,15 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import FinancialInformation from '../../components/onboarding/financialInformation';
+import { NewBankData } from '../../lib/modules/onboarding/components/BankMutationDialog';
+import FinancialInformation from '../../lib/modules/onboarding/components/FinancialInformation';
 import IdentityVerification, {
   IdentityVerificationData,
-} from '../../components/onboarding/identityVerification';
-import { NewBankData } from '../../components/onboarding/newBankDialog';
+} from '../../lib/modules/onboarding/components/IdentityVerification';
 import PersonalInformation, {
   PersonalInformationData,
-} from '../../components/onboarding/personalInformation';
-import OnboardingTopbar from '../../components/onboarding/topbar';
+} from '../../lib/modules/onboarding/components/PersonalInformation';
+import OnboardingTopbar from '../../lib/modules/onboarding/components/Topbar';
 
 export default function Onboarding() {
   const { push } = useRouter();
