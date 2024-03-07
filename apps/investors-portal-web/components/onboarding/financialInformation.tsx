@@ -22,6 +22,7 @@ export default function FinancialInformation({
     useState<boolean>(false);
 
   const [bankAccounts, setBankAccounts] = useState<NewBankData[]>(data);
+  const [editableBank, setEditableBank] = useState<NewBankData>();
 
   function handleAddBank(newBankAccount: NewBankData) {
     setBankAccounts((prev) => {
@@ -33,13 +34,29 @@ export default function FinancialInformation({
     });
   }
 
+  function handleDeleteBank(bank: NewBankData) {
+    return '';
+  }
+
+  function handleEditBank(bank: NewBankData) {
+    return '';
+  }
+
+  function handleChangeDefault(newDefaultBank: NewBankData) {
+    return '';
+  }
+
   return (
     <>
       <NewBankDialog
-        data={undefined}
-        isDialogOpen={isNewBankDialogOpen}
-        closeDialog={() => setIsNewBankDialogOpen(false)}
+        data={editableBank}
+        isDialogOpen={isNewBankDialogOpen || !!editableBank}
+        closeDialog={() => {
+          setEditableBank(undefined);
+          setIsNewBankDialogOpen(false);
+        }}
         handleAddBank={handleAddBank}
+        handleEditBank={handleEditBank}
       />
       <Box width={500} sx={{ display: 'grid', rowGap: 5 }}>
         <StepHeader
@@ -86,7 +103,14 @@ export default function FinancialInformation({
               </Box>
             ) : (
               bankAccounts.map((bank, index) => (
-                <BankCard key={index} bank={bank} disabled={isSubmitting} />
+                <BankCard
+                  key={index}
+                  bank={bank}
+                  disabled={isSubmitting}
+                  onDelete={() => handleDeleteBank(bank)}
+                  onEdit={() => setEditableBank(bank)}
+                  onMakeDefault={() => handleChangeDefault(bank)}
+                />
               ))
             )}
           </Box>
