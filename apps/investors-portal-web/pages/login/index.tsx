@@ -2,6 +2,8 @@ import {
   Box,
   Button,
   CircularProgress,
+  FormControl,
+  FormLabel,
   Paper,
   Stack,
   TextField,
@@ -61,8 +63,8 @@ export default function Login() {
           rowGap: 3,
         }}
       >
-        <Box sx={{ display: 'grid', rowGap: 1 }}>
-          <Typography>Email</Typography>
+        <FormControl required>
+          <FormLabel>Email</FormLabel>
           <TextField
             size="small"
             placeholder="Enter your email"
@@ -74,9 +76,10 @@ export default function Login() {
             {...formik.getFieldProps('email')}
             disabled={isSubmitting}
           />
-        </Box>
-        <Box sx={{ display: 'grid', rowGap: 1 }}>
-          <Typography>Password</Typography>
+        </FormControl>
+
+        <FormControl required>
+          <FormLabel>Password</FormLabel>
           <TextField
             size="small"
             placeholder="Enter password"
@@ -87,7 +90,7 @@ export default function Login() {
             {...formik.getFieldProps('password')}
             disabled={isSubmitting}
           />
-        </Box>
+        </FormControl>
         {loginError && (
           <Typography color="error">
             Invalid email or password. Please try again.
