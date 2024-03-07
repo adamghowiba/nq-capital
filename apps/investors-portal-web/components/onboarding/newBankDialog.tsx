@@ -12,6 +12,7 @@ export interface NewBankDialogProps {
 }
 
 export interface NewBankData {
+  temp_id: string;
   bank_name: string;
   account_type: string;
   bank_account_number: string;
@@ -21,6 +22,7 @@ export interface NewBankData {
   bank_country: string;
   bank_address: string;
   account_holder_name: string;
+  is_default: boolean;
 }
 
 export default function NewBankDialog({
@@ -29,6 +31,7 @@ export default function NewBankDialog({
   handleAddBank,
 }: NewBankDialogProps) {
   const initialValues: NewBankData = {
+    temp_id: '',
     account_holder_name: '',
     account_type: '',
     bank_account_number: '',
@@ -38,6 +41,7 @@ export default function NewBankDialog({
     bank_routing_number: '',
     IBAN: '',
     swift_code: '',
+    is_default: false,
   };
   const validationSchema = Yup.object().shape({
     account_holder_name: Yup.string().required(),
