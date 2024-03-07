@@ -91,7 +91,6 @@ export default function IdentityVerification({
         subtitle="Help us ensure the security of your account. Verify your identity with essential documents."
         title="Identity Verification"
       />
-      <Typography>{Object.keys(formik.errors).join(', ')}</Typography>
       <Box
         component="form"
         onSubmit={formik.handleSubmit}
