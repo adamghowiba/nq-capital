@@ -1,26 +1,53 @@
 import { Injectable } from '@nestjs/common';
-import { CreateInvestorFundInput } from './dto/create-investor-fund.input';
-import { UpdateInvestorFundInput } from './dto/update-investor-fund.input';
+import { PrismaService } from '@nq-capital/service-database';
+import { InvestorFundEntity } from './entities/investor-fund.entity';
+import { Decimal } from '@prisma/client/runtime/library';
+import { ListInvestorFundArgs } from './dto/get-investor-fund.args';
 
 @Injectable()
 export class InvestorFundsService {
-  create(createInvestorFundInput: CreateInvestorFundInput) {
-    return 'This action adds a new investorFund';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async listInvestorFunds(
+    params: ListInvestorFundArgs
+  ): Promise<InvestorFundEntity[]> {
+    const investorFunds = await this.prisma.investorFund.findMany({
+      where: { investor_id: params?.investorId, fund_id: params?.fundId },
+      include: { investor: true, fund: true },
+      ...params.offset,
+    });
+
+    const transformedInvestorFunds = investorFunds.map((investorFund) => {
+      const fundBalance = new Decimal(investorFund.fund.balance);
+      const stakePercentage = investorFund.stake_percentage;
+      const investorBalanceInFund = fundBalance.times(stakePercentage);
+
+      return {
+        investor_balance_in_fund: investorBalanceInFund.toNumber(),
+        ...investorFund,
+        stake_percentage: investorFund.stake_percentage.toNumber(),
+      };
+    });
+
+    return transformedInvestorFunds;
   }
 
-  findAll() {
-    return `This action returns all investorFunds`;
-  }
+  async retrieveInvestorFund(params: {
+    investorFundId: number;
+  }): Promise<InvestorFundEntity> {
+    const investorFund = await this.prisma.investorFund.findUniqueOrThrow({
+      where: { id: params.investorFundId },
+      include: { investor: true, fund: true },
+    });
 
-  findOne(id: number) {
-    return `This action returns a #${id} investorFund`;
-  }
+    const fundBalance = new Decimal(investorFund.fund.balance);
+    const stakePercentage = investorFund.stake_percentage;
+    const investorBalanceInFund = fundBalance.times(stakePercentage);
 
-  update(id: number, updateInvestorFundInput: UpdateInvestorFundInput) {
-    return `This action updates a #${id} investorFund`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} investorFund`;
+    return {
+      investor_balance_in_fund: investorBalanceInFund.toNumber(),
+      ...investorFund,
+      stake_percentage: investorFund.stake_percentage.toNumber(),
+    };
   }
 }

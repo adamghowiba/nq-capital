@@ -12,7 +12,7 @@ import { CreateFundInput } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
 import { FundsService } from './funds.service';
-import { AddFundInvestorsInput } from './dto/update-fund-investors.input';
+import { AddFundInvestorsInput } from '../investor-funds/dto/update-fund-investors.input';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {
@@ -42,7 +42,7 @@ export class FundsResolver {
   addFundInvestors(
     @Args('addFundInvestorsInput') addFundInvestorsInput: AddFundInvestorsInput
   ) {
-    return this.fundsService.addFundInvestor(addFundInvestorsInput);
+    return this.fundsService.addInvestor(addFundInvestorsInput);
   }
 
   @Mutation(() => FundEntity)

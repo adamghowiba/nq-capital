@@ -17,8 +17,15 @@ import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { InvestorsModule } from '../modules/investors/investors.module';
 import { FundsModule } from '../modules/funds/funds.module';
 import { PrismaDecimalScalar } from '../common/scalars/prisma-decimal.scalar';
+import { InvestorFundsModule } from '../modules/investor-funds/investor-funds.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
-const APP_MODULES = [UsersModule, InvestorsModule, FundsModule];
+const APP_MODULES = [
+  UsersModule,
+  InvestorsModule,
+  FundsModule,
+  InvestorFundsModule,
+];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
 
@@ -39,6 +46,14 @@ if (isDevelopment)
       },
       plugins: [...APOLLO_PLUGINS],
     }),
+    EventEmitterModule.forRoot({
+      delimiter: '.',
+      newListener: true,
+      removeListener: true,
+      wildcard: true,
+      global: true,
+      verboseMemoryLeak: true,
+    })
   ],
   controllers: [AppController],
   providers: [

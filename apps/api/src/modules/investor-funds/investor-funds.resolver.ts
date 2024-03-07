@@ -1,44 +1,22 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Args, Int, Query, Resolver } from '@nestjs/graphql';
+import { InvestorFundEntity, PaginatedInvestorFundEntity } from './entities/investor-fund.entity';
 import { InvestorFundsService } from './investor-funds.service';
-import { InvestorFund } from './entities/investor-fund.entity';
-import { CreateInvestorFundInput } from './dto/create-investor-fund.input';
-import { UpdateInvestorFundInput } from './dto/update-investor-fund.input';
+import { ListInvestorFundArgs } from './dto/get-investor-fund.args';
+import { UseInterceptors } from '@nestjs/common';
+import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
 
-@Resolver(() => InvestorFund)
+@Resolver(() => InvestorFundEntity)
 export class InvestorFundsResolver {
   constructor(private readonly investorFundsService: InvestorFundsService) {}
 
-  @Mutation(() => InvestorFund)
-  createInvestorFund(
-    @Args('createInvestorFundInput')
-    createInvestorFundInput: CreateInvestorFundInput
-  ) {
-    return this.investorFundsService.create(createInvestorFundInput);
+  @UseInterceptors(PaginationInterceptor)
+  @Query(() => PaginatedInvestorFundEntity, { name: 'investorFunds' })
+  listInvestorFunds(@Args() listInvestorFundArgs: ListInvestorFundArgs) {
+    return this.investorFundsService.listInvestorFunds(listInvestorFundArgs);
   }
 
-  @Query(() => [InvestorFund], { name: 'investorFunds' })
-  findAll() {
-    return this.investorFundsService.findAll();
-  }
-
-  @Query(() => InvestorFund, { name: 'investorFund' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.investorFundsService.findOne(id);
-  }
-
-  @Mutation(() => InvestorFund)
-  updateInvestorFund(
-    @Args('updateInvestorFundInput')
-    updateInvestorFundInput: UpdateInvestorFundInput
-  ) {
-    return this.investorFundsService.update(
-      updateInvestorFundInput.id,
-      updateInvestorFundInput
-    );
-  }
-
-  @Mutation(() => InvestorFund)
-  removeInvestorFund(@Args('id', { type: () => Int }) id: number) {
-    return this.investorFundsService.remove(id);
+  @Query(() => [InvestorFundEntity], { name: 'investorFund' })
+  retrieve(@Args('id', { type: () => Int }) investorFundId: number) {
+    return this.investorFundsService.retrieveInvestorFund({ investorFundId });
   }
 }

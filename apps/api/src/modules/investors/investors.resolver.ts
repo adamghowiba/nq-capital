@@ -13,7 +13,7 @@ import { UpdateInvestorInput } from './dto/update-investor.input';
 import {
   InvestorFundEntity,
   InvestorFundWithoutInvestor as InvestorFundWithoutInvestorEntity,
-} from './entities/investor-fund.entity';
+} from '../investor-funds/entities/investor-fund.entity';
 import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
@@ -43,13 +43,6 @@ export class InvestorsResolver {
   @Query(() => InvestorEntity, { name: 'investor' })
   retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.investorsService.retrieve(id);
-  }
-
-  @Query(() => [InvestorFundEntity], { name: 'investorFunds' })
-  listInvestorFunds(
-    @Args('investorId', { type: () => Int }) investorId: number
-  ) {
-    return this.investorsService.listInvestorFunds({ investorId });
   }
 
   @Mutation(() => InvestorEntity)

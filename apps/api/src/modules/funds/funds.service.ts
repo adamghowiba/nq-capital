@@ -6,7 +6,7 @@ import {
 } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
-import { AddFundInvestorsInput } from './dto/update-fund-investors.input';
+import { AddFundInvestorsInput } from '../investor-funds/dto/update-fund-investors.input';
 
 @Injectable()
 export class FundsService {
@@ -73,7 +73,7 @@ export class FundsService {
     return { investors: investors, totalInvestment };
   }
 
-  async addFundInvestor(addFundInvestorInput: AddFundInvestorsInput) {
+  async addInvestor(addFundInvestorInput: AddFundInvestorsInput) {
     // TODO: Needs to be transaction
     const fund = await this.prisma.fund.update({
       where: { id: addFundInvestorInput.id },

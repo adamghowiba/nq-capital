@@ -73,20 +73,6 @@ enum InvestorAccountStatus {
   DISABLED
 }
 
-type InvestorFundEntity {
-  id: Int!
-  stake_percentage: Float!
-  invested_amount: Float!
-  initial_investment: Int!
-  investor_id: Int!
-  fund_id: Int!
-  investor: InvestorEntity!
-  investor_balance_in_fund: Float!
-  fund: FundEntity!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
 type AddressEntity {
   id: Int!
   street: String!
@@ -131,13 +117,35 @@ enum BankAccountType {
   SAVINGS
 }
 
+type InvestorFundEntity {
+  id: Int!
+  stake_percentage: Float!
+  invested_amount: Float!
+  initial_investment: Int!
+  investor_id: Int!
+  fund_id: Int!
+  investor: InvestorEntity!
+  investor_balance_in_fund: Float!
+  fund: FundEntity!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type PaginatedInvestorFundEntity {
+  data: [InvestorFundEntity!]
+  limit: Int!
+  page: Int!
+  count: Int!
+  hasNextPage: Boolean!
+}
+
 """Prisma Decimal Scalar"""
 scalar Decimal
 
 type Query {
   users(
     """The page number to retrieve starting from zero"""
-    page: Int! = 100
+    page: Int! = 0
 
     """The number of items to retrieve for a given page"""
     limit: Int! = 100
@@ -148,9 +156,22 @@ type Query {
   user(id: Int!): UserEntity!
   investors: [InvestorEntity!]!
   investor(id: Int!): InvestorEntity!
-  investorFunds(investorId: Int!): [InvestorFundEntity!]!
   funds: [FundEntity!]!
   fund(id: Int!): FundEntity!
+  investorFunds(
+    """The page number to retrieve starting from zero"""
+    page: Int! = 0
+
+    """The number of items to retrieve for a given page"""
+    limit: Int! = 100
+
+    """FIlter by an investor's ID"""
+    investorId: Int
+
+    """FIlter by a fund ID"""
+    fundId: Int
+  ): PaginatedInvestorFundEntity!
+  investorFund(id: Int!): [InvestorFundEntity!]!
 }
 
 type Mutation {
