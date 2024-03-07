@@ -3,6 +3,7 @@ import dot from '@iconify/icons-fluent/circle-12-filled';
 import more from '@iconify/icons-fluent/more-horizontal-24-regular';
 import { Icon } from '@iconify/react';
 import { Avatar, Box, Typography } from '@mui/material';
+import { theme } from '../../lib/theme';
 import OneIcon from '../utils/OneIcon';
 import { NewBankData } from './newBankDialog';
 
@@ -12,16 +13,19 @@ export interface BankCardProps {
 }
 
 export default function BankCard({
-  bank: { bank_name, bank_account_number },
+  bank: { bank_name, bank_account_number, is_default },
   disabled = false,
 }: BankCardProps) {
   return (
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'auto 1fr auto',
+        gridTemplateColumns: is_default
+          ? 'auto 1fr auto auto'
+          : 'auto 1fr auto',
         columnGap: 3,
         alignItems: 'center',
+        padding: '16px 0',
       }}
     >
       <Avatar sx={{ backgroundColor: '#E4E4E4' }}>
@@ -55,6 +59,19 @@ export default function BankCard({
           </Typography>
         </Box>
       </Box>
+      {is_default && (
+        <Box
+          sx={{
+            padding: '0 6px',
+            backgroundColor: 'rgba(1, 160, 1, 0.13)',
+            borderRadius: '5px',
+          }}
+        >
+          <Typography sx={{ color: theme.palette.success.main }}>
+            Default
+          </Typography>
+        </Box>
+      )}
       <OneIcon
         icon={more}
         title="More"
