@@ -188,6 +188,39 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
     },
     components: {
+      MuiPopover: {
+        styleOverrides: {
+          root: () => ({
+            '& .MuiPopover-paper': {
+              backgroundColor: '#202020',
+              padding: '4px',
+            },
+            '& .MuiPaper-root': {
+              borderRadius: '12px !important',
+            },
+            '& .MuiBackdrop-root': {
+              background: 'transparent !important',
+            },
+          }),
+        },
+      },
+      MuiMenuItem: {
+        styleOverrides: {
+          root: () => ({
+            color: '#F1F1F1',
+            borderRadius: '8px',
+            fontSize: '13px',
+            lineHeight: '16px',
+            padding: '8px',
+            minWidth: '140px',
+            boxShadow:
+              '0px 16px 32px -12px #20202040, 0px 1px 2px 0px #2020200A, 0px 0px 0px 1px #20202014',
+            '&:hover': {
+              backgroundColor: '#FFFFFF1B',
+            },
+          }),
+        },
+      },
       MuiBackdrop: {
         styleOverrides: {
           root: () => ({
