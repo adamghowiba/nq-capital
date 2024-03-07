@@ -36,6 +36,7 @@ export default function FinancialInformation({
   return (
     <>
       <NewBankDialog
+        data={undefined}
         isDialogOpen={isNewBankDialogOpen}
         closeDialog={() => setIsNewBankDialogOpen(false)}
         handleAddBank={handleAddBank}

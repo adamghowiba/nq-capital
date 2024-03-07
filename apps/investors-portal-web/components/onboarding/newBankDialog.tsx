@@ -9,6 +9,7 @@ export interface NewBankDialogProps {
   closeDialog: () => void;
   isDialogOpen: boolean;
   handleAddBank: (newBank: NewBankData) => void;
+  data?: NewBankData;
 }
 
 export interface NewBankData {
@@ -29,8 +30,9 @@ export default function NewBankDialog({
   isDialogOpen,
   closeDialog,
   handleAddBank,
+  data,
 }: NewBankDialogProps) {
-  const initialValues: NewBankData = {
+  const initialValues: NewBankData = data ?? {
     temp_id: '',
     account_holder_name: '',
     account_type: '',
