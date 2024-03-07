@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import Logo from '../Logo/logo';
+import Logo from '../../../../components/Logo/logo';
 
 export interface AuthHeaderProps {
   title: string;
