@@ -35,7 +35,15 @@ export default function FinancialInformation({
   }
 
   function handleDeleteBank(bank: NewBankData) {
-    return '';
+    setBankAccounts((prev) => {
+      const newBanks = prev.filter(({ temp_id }) => temp_id !== bank.temp_id);
+      const defaultBank = newBanks.find(({ is_default }) => is_default);
+      if (defaultBank) return newBanks;
+      return newBanks.map((nb, index) => {
+        if (index === 0) return { ...nb, is_default: true };
+        return nb;
+      });
+    });
   }
 
   function handleEditBank(bank: NewBankData) {
