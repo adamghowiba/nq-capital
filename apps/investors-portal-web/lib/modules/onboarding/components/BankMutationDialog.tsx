@@ -1,9 +1,9 @@
 import { Autocomplete, Box, Button, Dialog, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { nationalities } from '../../../nationalities';
+import { NATIONALITIES } from '../../../constants/nationalities.constants';
 import { OneTextField } from '../../../../components/utils/OneTextField';
-import { BANK_ACCOUNT_TYPES } from '../../../bank.constants';
+import { BANK_ACCOUNT_TYPES } from '../../../constants/bank.constants';
 
 export interface NewBankDialogProps {
   isDialogOpen: boolean;
@@ -57,7 +57,7 @@ export default function NewBankDialog({
     swift_code: Yup.string().required(),
     bank_country: Yup.string()
       .oneOf(
-        nationalities.map(({ country }) => country),
+        NATIONALITIES.map(({ country }) => country),
         'Select a country from dropdown'
       )
       .required(),
@@ -122,7 +122,7 @@ export default function NewBankDialog({
             }}
           >
             <Autocomplete
-              options={nationalities}
+              options={NATIONALITIES}
               autoHighlight
               getOptionLabel={(option) => option.country}
               onChange={(_, selectedCountry) =>
@@ -133,7 +133,7 @@ export default function NewBankDialog({
               }
               value={
                 formik.values.bank_country
-                  ? nationalities.find(
+                  ? NATIONALITIES.find(
                       ({ country }) => country === formik.values.bank_country
                     )
                   : null

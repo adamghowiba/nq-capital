@@ -4,7 +4,7 @@ export interface Nationality {
   nationality: string;
 }
 
-export const nationalities: Nationality[] = [
+export const NATIONALITIES: Nationality[] = [
   {
     code: 'AF',
     country: ' Afghanistan',

@@ -3,7 +3,7 @@ import { MobileDatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { nationalities } from '../../../nationalities';
+import { NATIONALITIES } from '../../../constants/nationalities.constants';
 import { OneTextField } from '../../../../components/utils/OneTextField';
 import StepHeader from './StepHeader';
 
@@ -42,7 +42,7 @@ export default function IdentityVerification({
     national_id_number: Yup.string(),
     nationality: Yup.string()
       .oneOf(
-        nationalities.map(({ nationality }) => nationality),
+        NATIONALITIES.map(({ nationality }) => nationality),
         'Select in dropdown'
       )
       .required(),
@@ -169,7 +169,7 @@ export default function IdentityVerification({
           </Box>
 
           <Autocomplete
-            options={nationalities}
+            options={NATIONALITIES}
             autoHighlight
             getOptionLabel={(option) => option.nationality}
             onChange={(_, selectedNationality) =>
@@ -180,7 +180,7 @@ export default function IdentityVerification({
             }
             value={
               formik.values.nationality
-                ? nationalities.find(
+                ? NATIONALITIES.find(
                     ({ nationality }) =>
                       nationality === formik.values.nationality
                   )
