@@ -12,7 +12,10 @@ import OneIcon from '../utils/OneIcon';
 import TopbarSearch from './TopbarSearch';
 import Logo from '../Logo/logo';
 
-function Topbar() {
+export interface TopbarProps {
+  openSettings: () => void;
+}
+function Topbar({ openSettings }: TopbarProps) {
   const rightIcons: {
     title: string;
     icon: IconifyIcon;
@@ -29,6 +32,7 @@ function Topbar() {
     {
       icon: settings,
       title: 'Settings',
+      onClick: openSettings,
     },
     {
       icon: person,
