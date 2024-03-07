@@ -9,6 +9,7 @@ export interface NewBankDialogProps {
   closeDialog: () => void;
   isDialogOpen: boolean;
   handleAddBank: (newBank: NewBankData) => void;
+  handleEditBank: (bank: NewBankData) => void;
   data?: NewBankData;
 }
 
@@ -30,6 +31,7 @@ export default function NewBankDialog({
   isDialogOpen,
   closeDialog,
   handleAddBank,
+  handleEditBank,
   data,
 }: NewBankDialogProps) {
   const initialValues: NewBankData = data ?? {
@@ -69,7 +71,9 @@ export default function NewBankDialog({
     validationSchema,
     enableReinitialize: true,
     onSubmit: (values) => {
-      handleAddBank(values);
+      if (data) {
+        handleEditBank(values);
+      } else handleAddBank(values);
       close();
     },
   });
@@ -95,7 +99,7 @@ export default function NewBankDialog({
         p={2}
         borderBottom={'1px solid #EBEBEB'}
       >
-        Add Bank Details
+        {`${data ? 'Edit' : 'Add'} Bank Details`}
       </Typography>
       <Box component="form" onSubmit={formik.handleSubmit}>
         <Box sx={{ my: 3, px: 2, display: 'grid', rowGap: 3 }}>
@@ -285,8 +289,25 @@ export default function NewBankDialog({
           />
         </Box>
         <Box p={2} borderTop="1px solid #EBEBEB">
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            Add Bank
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            disabled={
+              data &&
+              data.IBAN === formik.values.IBAN &&
+              data.account_holder_name === formik.values.account_holder_name &&
+              data.account_type === formik.values.account_type &&
+              data.bank_account_number === formik.values.bank_account_number &&
+              data.bank_address === formik.values.bank_address &&
+              data.bank_country === formik.values.bank_country &&
+              data.bank_name === formik.values.bank_name &&
+              data.bank_routing_number === formik.values.bank_routing_number &&
+              data.swift_code === formik.values.swift_code
+            }
+          >
+            {data ? 'Save Changes' : 'Add Bank'}
           </Button>
         </Box>
       </Box>
