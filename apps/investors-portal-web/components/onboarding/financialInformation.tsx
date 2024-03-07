@@ -46,7 +46,13 @@ export default function FinancialInformation({
   }
 
   function handleChangeDefault(newDefaultBank: NewBankData) {
-    return '';
+    setBankAccounts((prev) => {
+      return prev.map((bank) => {
+        if (bank.temp_id === newDefaultBank.temp_id)
+          return { ...newDefaultBank, is_default: true };
+        return { ...bank, is_default: false };
+      });
+    });
   }
 
   return (
