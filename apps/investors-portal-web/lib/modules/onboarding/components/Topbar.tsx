@@ -1,15 +1,19 @@
 import left from '@iconify/icons-fluent/chevron-left-16-regular';
 import right from '@iconify/icons-fluent/chevron-right-16-regular';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Divider, Stack, Typography } from '@mui/material';
 import DContainer from '../../../../components/DContainer/DContainer';
 import Logo from '../../../../components/Logo/logo';
 import OneIcon from '../../../../components/utils/OneIcon';
+import { HStack } from '../../../../components/Stack/Stack';
 
 export interface OnboardingTopbarProps {
-  onBack: () => void;
-  onNext: () => void;
+  /**
+   * 0 based step
+   */
   currentStep: number;
   totalSteps: number;
+  onBack: () => void;
+  onNext: () => void;
 }
 export default function OnboardingTopbar({
   onBack,
@@ -22,49 +26,49 @@ export default function OnboardingTopbar({
       sx={{
         borderBottom: '1px solid #EBEBEB',
         height: '48px',
-        display: 'grid',
-        alignContent: 'center',
       }}
     >
       <DContainer
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'auto auto auto 1fr',
-          justifyItems: 'end',
-          columnGap: 2,
+          display: 'flex',
           alignItems: 'center',
+          height: '100%',
         }}
       >
-        <Logo />
-        <Divider orientation="vertical" sx={{ height: '60%' }} />
-        <Box
-          sx={{
-            display: 'grid',
-            gridAutoFlow: 'column',
-            columnGap: 1,
-            alignItems: 'center',
-          }}
-        >
-          <OneIcon
-            icon={left}
-            title="Previous step"
-            fontSize={20}
-            iconColor="#BBBBBB"
-            size="small"
-            onClick={onBack}
+        <HStack height="100%" alignItems="center" gap={2}>
+          <Logo />
+
+          <Divider
+            orientation="vertical"
+            sx={{ height: '60%', flexGrow: '1' }}
           />
-          <OneIcon
-            icon={right}
-            title="Next step"
-            fontSize={20}
-            iconColor="#BBBBBB"
-            size="small"
-            onClick={onNext}
-          />
-        </Box>
-        <Typography
-          sx={{ color: '#8D8D8D' }}
-        >{`${currentStep} / ${totalSteps}`}</Typography>
+
+          <HStack>
+            <OneIcon
+              icon={left}
+              title="Previous step"
+              fontSize={20}
+              iconColor="#BBBBBB"
+              size="small"
+              onClick={onBack}
+              disabled={currentStep === 0}
+            />
+
+            <OneIcon
+              icon={right}
+              title="Next step"
+              fontSize={20}
+              iconColor="#BBBBBB"
+              size="small"
+              onClick={onNext}
+              disabled={currentStep + 1 >= totalSteps}
+            />
+          </HStack>
+        </HStack>
+
+        <Typography sx={{ color: '#8D8D8D', ml: 'auto' }}>{`${
+          currentStep + 1
+        } / ${totalSteps}`}</Typography>
       </DContainer>
     </Box>
   );

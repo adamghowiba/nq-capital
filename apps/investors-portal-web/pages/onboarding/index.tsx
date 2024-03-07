@@ -10,32 +10,38 @@ import PersonalInformation, {
   PersonalInformationData,
 } from '../../lib/modules/onboarding/components/PersonalInformation';
 import OnboardingTopbar from '../../lib/modules/onboarding/components/Topbar';
+import { NextPageWithLayout } from '../_app';
 
-export default function Onboarding() {
-  const { push } = useRouter();
-  const totalSteps = 3;
-  const [currentStep, setCurrentStep] = useState<number>(1);
+const FORM_STEPS = ['personal', 'identity', 'financial'] as const;
+const TOTAL_STEPS = FORM_STEPS.length;
+type FormStep = (typeof FORM_STEPS)[number];
 
-  function handleNext() {
-    setCurrentStep((activeStep) => {
-      if (activeStep < totalSteps) return activeStep + 1;
-      return activeStep;
-    });
-  }
-
-  function handleBack() {
-    setCurrentStep((activeStep) => {
-      if (activeStep > 1) return activeStep - 1;
-      return activeStep;
-    });
-  }
-
-  const [personalData, setPersonnalData] = useState<PersonalInformationData>();
+const Onboarding: NextPageWithLayout = () => {
+  const [currentStep, setCurrentStep] = useState<FormStep>('personal');
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [personalData, setPersonalData] = useState<PersonalInformationData>();
   const [identityData, setIdentityData] = useState<IdentityVerificationData>();
   const [financialData, setFinancialData] = useState<NewBankData[]>([]);
 
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  function submitOnboarding(data: NewBankData[]) {
+  const currentStepIndex = FORM_STEPS.indexOf(currentStep);
+
+  const { push } = useRouter();
+
+  const handleNext = () => {
+    const nextStepIndex = currentStepIndex + 1;
+    if (nextStepIndex > TOTAL_STEPS) return;
+
+    setCurrentStep(FORM_STEPS[nextStepIndex]);
+  };
+
+  function handleBack() {
+    const previousStepIndex = currentStepIndex - 1;
+    if (previousStepIndex < 0) return;
+
+    setCurrentStep(FORM_STEPS[previousStepIndex]);
+  }
+
+  const submitOnboarding = (data: NewBankData[]) => {
     //TODO: call api here to submit onboarding data
     setIsSubmitting(true);
     setTimeout(() => {
@@ -45,83 +51,91 @@ export default function Onboarding() {
       //TODO: in case of failure, set financialData for usage during retry
       setFinancialData(data);
     }, 3000);
-  }
+  };
 
-  function getStepComponent(activeStep: number) {
-    switch (activeStep) {
-      case 1:
-        return (
-          <PersonalInformation
-            data={personalData}
-            onNext={(data) => {
-              setPersonnalData(data);
-              handleNext();
-            }}
-          />
-        );
-      case 2:
-        return (
-          <IdentityVerification
-            onBack={(data) => {
-              setIdentityData(data);
-              handleBack();
-            }}
-            onNext={(data) => {
-              setIdentityData(data);
-              handleNext();
-            }}
-            data={identityData}
-          />
-        );
-      case 3:
-        return (
-          <FinancialInformation
-            data={financialData}
-            isSubmitting={isSubmitting}
-            onBack={(data) => {
-              setFinancialData(data);
-              handleBack();
-            }}
-            onNext={(data) => submitOnboarding(data)}
-          />
-        );
-      default:
-        return (
-          <PersonalInformation
-            data={personalData}
-            onNext={(data) => {
-              setPersonnalData(data);
-              handleNext();
-            }}
-          />
-        );
+  const getStepComponent = (step: FormStep) => {
+    if (step === 'personal')
+      return (
+        <PersonalInformation
+          data={personalData}
+          onNext={(data) => {
+            setPersonalData(data);
+            handleNext();
+          }}
+        />
+      );
+
+    if (step === 'identity')
+      return (
+        <IdentityVerification
+          onBack={(data) => {
+            setIdentityData(data);
+            handleBack();
+          }}
+          onNext={(data) => {
+            setIdentityData(data);
+            handleNext();
+          }}
+          data={identityData}
+        />
+      );
+
+    if (step === 'financial') {
+      return (
+        <FinancialInformation
+          data={financialData}
+          isSubmitting={isSubmitting}
+          onBack={(data) => {
+            setFinancialData(data);
+            handleBack();
+          }}
+          onNext={(data) => submitOnboarding(data)}
+        />
+      );
     }
-  }
+
+    return (
+      <PersonalInformation
+        data={personalData}
+        onNext={(data) => {
+          setPersonalData(data);
+          handleNext();
+        }}
+      />
+    );
+  };
 
   return (
     <Box
       sx={{
-        height: '100svh',
-        display: 'grid',
-        alignContent: 'start',
-        rowGap: '100px',
+        height: '100vh',
+        flexDirection: 'column',
+        display: 'flex',
       }}
     >
       <OnboardingTopbar
-        currentStep={currentStep}
+        currentStep={currentStepIndex}
+        totalSteps={TOTAL_STEPS}
         onBack={handleBack}
         onNext={handleNext}
-        totalSteps={totalSteps}
       />
+
       <Box
         sx={{
-          display: 'grid',
-          justifyContent: 'center',
-          alignContent: 'start',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          overflow: 'auto',
+          py: 5,
         }}
       >
         {getStepComponent(currentStep)}
       </Box>
     </Box>
   );
-}
+};
+
+Onboarding.getLayout = (page) => page;
+
+export default Onboarding;

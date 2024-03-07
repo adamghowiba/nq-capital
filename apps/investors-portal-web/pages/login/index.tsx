@@ -13,9 +13,10 @@ import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import AuthHeader from '../../components/auth/AuthHeader';
+import AuthHeader from '../../lib/modules/auth/components/AuthHeader';
+import { NextPageWithLayout } from '../_app';
 
-export default function Login() {
+const Login: NextPageWithLayout = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   // TODO: this state may not be required as we'll read from request result.
   const [loginError, setLoginError] = useState<boolean>(false);
@@ -109,6 +110,7 @@ export default function Login() {
         >
           Log In
         </Button>
+
         <Box sx={{ display: 'grid', rowGap: 1 }}>
           <Link href="forgot-password">
             <Typography>Forgot password ?</Typography>
@@ -125,4 +127,8 @@ export default function Login() {
       </Paper>
     </Stack>
   );
-}
+};
+
+Login.getLayout = (page) => page
+
+export default Login;

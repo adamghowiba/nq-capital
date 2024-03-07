@@ -10,7 +10,7 @@ import { useFormik } from 'formik';
 import Link from 'next/link';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import AuthHeader from '../../components/auth/AuthHeader';
+import AuthHeader from '../../lib/modules/auth/components/AuthHeader';
 import OneSnackbar from '../../components/utils/OneSnackbar';
 
 export default function ForgotPassword() {
