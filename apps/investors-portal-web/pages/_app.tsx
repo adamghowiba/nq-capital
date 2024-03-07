@@ -1,10 +1,6 @@
-import { ThemeProvider } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { Providers } from '../components/Providers/Providers';
-import { theme } from '../lib/theme';
+import RootLayout from '../lib/layouts/RootLayout';
 import '../styles/global.css';
 
 function CustomApp({ Component, pageProps }: AppProps) {
@@ -13,14 +9,11 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Investors Portal</title>
       </Head>
+
       <main className="app">
-        <ThemeProvider theme={theme}>
-          <Providers>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Component {...pageProps} />
-            </LocalizationProvider>
-          </Providers>
-        </ThemeProvider>
+        <RootLayout>
+          <Component {...pageProps} />
+        </RootLayout>
       </main>
     </>
   );
