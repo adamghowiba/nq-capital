@@ -127,6 +127,13 @@ export default function NewBankDialog({
                   selectedCountry ? selectedCountry.country : ''
                 )
               }
+              value={
+                formik.values.bank_country
+                  ? nationalities.find(
+                      ({ country }) => country === formik.values.bank_country
+                    )
+                  : null
+              }
               renderOption={(props, option) => (
                 <Box component="li" {...props}>
                   {option.country} ({option.code})
@@ -203,7 +210,13 @@ export default function NewBankDialog({
           <Autocomplete
             options={bankAccountTypes.sort((a, b) => (a > b ? 1 : -1))}
             autoHighlight
-            //   getOptionLabel={(option) => option}
+            value={
+              formik.values.account_type
+                ? bankAccountTypes.find(
+                    (accountType) => accountType === formik.values.account_type
+                  )
+                : null
+            }
             onChange={(_, selectedAccountType) =>
               formik.setFieldValue('account_type', selectedAccountType ?? '')
             }
