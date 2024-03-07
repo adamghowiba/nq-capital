@@ -1,0 +1,62 @@
+{
+  "name": "investors-portal-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/investors-portal-web",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/next:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "root": "apps/investors-portal-web",
+        "outputPath": "dist/apps/investors-portal-web"
+      },
+      "configurations": {
+        "development": {
+          "outputPath": "apps/investors-portal-web"
+        },
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/next:server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "investors-portal-web:build",
+        "dev": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "investors-portal-web:build:development",
+          "dev": true
+        },
+        "production": {
+          "buildTarget": "investors-portal-web:build:production",
+          "dev": false
+        }
+      }
+    },
+    "export": {
+      "executor": "@nrwl/next:export",
+      "options": {
+        "buildTarget": "investors-portal-web:build:production"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/investors-portal-web/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/investors-portal-web/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
