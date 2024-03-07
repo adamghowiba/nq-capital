@@ -1,14 +1,14 @@
 import { Icon, IconifyIcon } from '@iconify/react';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, IconButtonProps, Tooltip } from '@mui/material';
 
 export interface OneIconProps {
   title: string;
   icon: IconifyIcon;
-  size?: 'small' | 'large' | 'medium';
   fontSize?: number;
-  onClick?: () => void;
   iconColor?: string;
 }
+
+export type IconButtonPropsExtended = OneIconProps & IconButtonProps;
 
 export default function OneIcon({
   title,
@@ -17,10 +17,11 @@ export default function OneIcon({
   fontSize = 24,
   onClick,
   iconColor = 'var(--neutral-400)',
-}: OneIconProps) {
+  ...props
+}: IconButtonPropsExtended) {
   return (
     <Tooltip arrow title={title}>
-      <IconButton size={size} onClick={onClick}>
+      <IconButton size={size} onClick={onClick} {...props}>
         <Icon icon={icon} fontSize={fontSize} style={{ color: iconColor }} />
       </IconButton>
     </Tooltip>
