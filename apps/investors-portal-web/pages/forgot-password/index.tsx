@@ -4,7 +4,7 @@ import {
   CircularProgress,
   Paper,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import Link from 'next/link';
@@ -12,8 +12,9 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import AuthHeader from '../../lib/modules/auth/components/AuthHeader';
 import OneSnackbar from '../../components/utils/OneSnackbar';
+import { NextPageWithLayout } from '../_app';
 
-export default function ForgotPassword() {
+const ForgotPassword: NextPageWithLayout = () => {
   const initialValues: {
     email: string;
   } = {
@@ -104,4 +105,8 @@ export default function ForgotPassword() {
       </Box>
     </>
   );
-}
+};
+
+ForgotPassword.getLayout = (page) => page;
+
+export default ForgotPassword;

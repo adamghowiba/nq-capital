@@ -12,8 +12,12 @@ import { useState } from 'react';
 import * as Yup from 'yup';
 import AuthHeader from '../../../lib/modules/auth/components/AuthHeader';
 import OneSnackbar from '../../../components/utils/OneSnackbar';
+import { NextPageWithLayout } from '../../_app';
 
-export default function ResetPassword() {
+const ResetPassword: NextPageWithLayout = () => {
+  const [isResending, setIsResending] = useState<boolean>(false);
+  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
+
   const initialValues: {
     password: string;
     confirm_password: string;
@@ -50,16 +54,14 @@ export default function ResetPassword() {
     },
   });
 
-  const [isResending, setIsResending] = useState<boolean>(false);
-  const [isToastOpen, setIsToastOpen] = useState<boolean>(false);
-  function resendLink() {
+  const resendLink = () => {
     // TODO: CALL API HERE TO RESEND RESET PASSWORD LINK
     setIsResending(true);
     setTimeout(() => {
       setIsResending(false);
       setIsToastOpen(true);
     }, 3000);
-  }
+  };
 
   return (
     <>
@@ -170,4 +172,8 @@ export default function ResetPassword() {
       </Box>
     </>
   );
-}
+};
+
+ResetPassword.getLayout = (page) => page;
+
+export default ResetPassword;
