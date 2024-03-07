@@ -23,14 +23,22 @@ export default function FinancialInformation({
 
   const [bankAccounts, setBankAccounts] = useState<NewBankData[]>(data);
 
+  function handleAddBank(newBankAccount: NewBankData) {
+    setBankAccounts((prev) => {
+      if (bankAccounts.length === 0)
+        return [
+          { ...newBankAccount, temp_id: crypto.randomUUID(), is_default: true },
+        ];
+      return [...prev, { ...newBankAccount, temp_id: crypto.randomUUID() }];
+    });
+  }
+
   return (
     <>
       <NewBankDialog
         isDialogOpen={isNewBankDialogOpen}
         closeDialog={() => setIsNewBankDialogOpen(false)}
-        handleAddBank={(newBankAccount) =>
-          setBankAccounts([...bankAccounts, newBankAccount])
-        }
+        handleAddBank={handleAddBank}
       />
       <Box width={500} sx={{ display: 'grid', rowGap: 5 }}>
         <StepHeader
