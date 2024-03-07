@@ -4,6 +4,9 @@
   "license": "MIT",
   "scripts": {},
   "private": true,
+  "prisma": {
+    "seed": "npx ts-node ./prisma/seed/seed.ts"
+  },
   "dependencies": {
     "@apollo/server": "^4.10.0",
     "@emotion/cache": "^11.11.0",
@@ -19,6 +22,7 @@
     "@nestjs/apollo": "^12.0.11",
     "@nestjs/common": "^10.0.2",
     "@nestjs/core": "^10.0.2",
+    "@nestjs/event-emitter": "^2.0.4",
     "@nestjs/graphql": "^12.0.11",
     "@nestjs/platform-express": "^10.0.2",
     "@parcel/watcher": "^2.4.0",
@@ -84,6 +88,7 @@
     "prisma": "^5.9.1",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
+    "type-fest": "^4.10.2",
     "typescript": "5.3.3"
   }
 }

@@ -129,6 +129,7 @@ model InvestorFund {
   id                 Int      @id @default(autoincrement())
   stake_percentage   Decimal
   initial_investment Float    @db.DoublePrecision()
+  invested_amount    Float    @db.DoublePrecision()
   investor           Investor @relation(fields: [investor_id], references: [id])
   investor_id        Int
   fund               Fund     @relation(fields: [fund_id], references: [id])
