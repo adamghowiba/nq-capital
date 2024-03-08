@@ -188,6 +188,11 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
     },
     components: {
+      MuiSkeleton: {
+        defaultProps: {
+          animation: 'wave',
+        },
+      },
       MuiTabs: {
         styleOverrides: {
           root: ({ theme }) => ({
