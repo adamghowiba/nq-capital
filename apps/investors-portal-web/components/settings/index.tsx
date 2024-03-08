@@ -20,17 +20,43 @@ export default function SettingsDialog({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoadingBanks(true);
-    //TODO: CALL API HERE TO LOAD BANKS
-    setTimeout(() => {
-      setIsLoadingBanks(false);
-      setBankAccounts([]);
-    }, 3000);
-  }, []);
+    if (isDialogOpen) {
+      setIsLoadingBanks(true);
+      //TODO: CALL API HERE TO LOAD BANKS
+      setTimeout(() => {
+        setIsLoadingBanks(false);
+        setBankAccounts([]);
+      }, 3000);
+    }
+  }, [isDialogOpen]);
 
-  function changeDefaultBank(bank: NewBankData) {
+  function changeDefaultBank(bankAccount: NewBankData) {
     setIsSubmitting(true);
-    //TODO: CALL API HER TO CHANGE DEFAULT BANK AND MUTATE AFTERWARDS.
+    //TODO: CALL API HERE TO CHANGE DEFAULT BANK AND MUTATE AFTERWARDS.
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 3000);
+  }
+
+  function createNewBankAccount(newBankAccount: NewBankData) {
+    //TODO: CALL API HERE TO CREATE NEW BANK and mutate bank data
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 3000);
+  }
+
+  function deleteBankAccount(bankAccount: NewBankData) {
+    //TODO: CALL API HERE TO DELETE PROVIDED BANK ACCOUNT and mutate bank data
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+    }, 3000);
+  }
+
+  function editBankAccount(bankAccount: NewBankData) {
+    //TODO: CALL API HERE TO EDIT PROVIDED BANK ACCOUNT WITH PROVIDED DATA and mutate bank data
+    setIsSubmitting(true);
     setTimeout(() => {
       setIsSubmitting(false);
     }, 3000);
@@ -53,7 +79,11 @@ export default function SettingsDialog({
           <ListBanks
             bankAccounts={bankAccounts}
             isSubmitting={isSubmitting}
+            areAccountsLoading={isLoadingBanks}
             handleChangeDefault={changeDefaultBank}
+            handleCreateNewAccount={createNewBankAccount}
+            handleDeleteAccount={deleteBankAccount}
+            handleEditAccount={editBankAccount}
           />
         </Box>
       </Box>
