@@ -152,7 +152,7 @@ export default function FinancialInformation({
             <Button
               color="primary"
               variant="contained"
-              disabled={isSubmitting}
+              disabled={isSubmitting || bankAccounts.length === 0}
               onClick={() => onNext(bankAccounts)}
               endIcon={
                 isSubmitting && (
