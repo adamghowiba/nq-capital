@@ -210,6 +210,11 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           }),
         },
       },
+      MuiTab: {
+        defaultProps: {
+          disableRipple: true,
+        },
+      },
       MuiPopover: {
         styleOverrides: {
           root: () => ({
