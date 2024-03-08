@@ -4,6 +4,7 @@ import { useState } from 'react';
 import OneIcon from '../utils/OneIcon';
 import BankCard from './bankCard';
 import NewBankDialog, { NewBankData } from './newBankDialog';
+import BankCardSkeleton from '../settings/bankCardSkeleton';
 
 interface ListBanksProps {
   bankAccounts: NewBankData[];
@@ -12,10 +13,12 @@ interface ListBanksProps {
   handleChangeDefault: (bank: NewBankData) => void;
   handleEditAccount: (bank: NewBankData) => void;
   handleCreateNewAccount: (bank: NewBankData) => void;
+  areAccountsLoading?: boolean;
 }
 export default function ListBanks({
-  bankAccounts=[],
+  bankAccounts = [],
   isSubmitting,
+  areAccountsLoading: areBanksLoading = false,
   handleChangeDefault,
   handleDeleteAccount,
   handleEditAccount,
@@ -57,7 +60,9 @@ export default function ListBanks({
             />
           )}
         </Box>
-        {bankAccounts.length === 0 ? (
+        {areBanksLoading ? (
+          [...new Array(3)].map((_, index) => <BankCardSkeleton key={index} />)
+        ) : bankAccounts.length === 0 ? (
           <Box
             component={Button}
             fullWidth
