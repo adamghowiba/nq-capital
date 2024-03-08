@@ -14,7 +14,7 @@ interface ListBanksProps {
   handleCreateNewAccount: (bank: NewBankData) => void;
 }
 export default function ListBanks({
-  bankAccounts,
+  bankAccounts=[],
   isSubmitting,
   handleChangeDefault,
   handleDeleteAccount,
