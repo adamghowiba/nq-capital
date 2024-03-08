@@ -1,9 +1,7 @@
-import add from '@iconify/icons-fluent/add-24-filled';
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import OneIcon from '../utils/OneIcon';
-import BankCard from './bankCard';
-import NewBankDialog, { NewBankData } from './newBankDialog';
+import ListBanks from './listBanks';
+import { NewBankData } from './newBankDialog';
 import StepHeader from './stepHeader';
 
 export interface FinancialInformationProps {
@@ -18,11 +16,7 @@ export default function FinancialInformation({
   onBack,
   isSubmitting,
 }: FinancialInformationProps) {
-  const [isNewBankDialogOpen, setIsNewBankDialogOpen] =
-    useState<boolean>(false);
-
   const [bankAccounts, setBankAccounts] = useState<NewBankData[]>(data);
-  const [editableBank, setEditableBank] = useState<NewBankData>();
 
   function handleAddBank(newBankAccount: NewBankData) {
     setBankAccounts((prev) => {
@@ -66,105 +60,51 @@ export default function FinancialInformation({
   }
 
   return (
-    <>
-      <NewBankDialog
-        data={editableBank}
-        isDialogOpen={isNewBankDialogOpen || !!editableBank}
-        closeDialog={() => {
-          setEditableBank(undefined);
-          setIsNewBankDialogOpen(false);
-        }}
-        handleAddBank={handleAddBank}
-        handleEditBank={handleEditBank}
+    <Box width={500} sx={{ display: 'grid', rowGap: 5 }}>
+      <StepHeader
+        subtitle="Share details about your invested funds and preferred bank accounts."
+        title="Financial Information"
       />
-      <Box width={500} sx={{ display: 'grid', rowGap: 5 }}>
-        <StepHeader
-          subtitle="Share details about your invested funds and preferred bank accounts."
-          title="Financial Information"
+      <Box sx={{ display: 'grid', rowGap: 8 }}>
+        <ListBanks
+          bankAccounts={bankAccounts}
+          handleChangeDefault={handleChangeDefault}
+          handleCreateNewAccount={handleAddBank}
+          handleDeleteAccount={handleDeleteBank}
+          handleEditAccount={handleEditBank}
+          isSubmitting={isSubmitting}
         />
-        <Box sx={{ display: 'grid', rowGap: 8 }}>
-          <Box sx={{ display: 'grid', rowGap: 2 }}>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr auto',
-                alignItems: 'center',
-              }}
-            >
-              <Typography>Bank Details</Typography>
-              {bankAccounts.length > 0 && (
-                <OneIcon
-                  icon={add}
-                  title="Add new bank"
-                  fontSize={16}
-                  iconColor="#808080"
-                  onClick={() => setIsNewBankDialogOpen(true)}
-                  disabled={isSubmitting}
-                />
-              )}
-            </Box>
-            {bankAccounts.length === 0 ? (
-              <Box
-                component={Button}
-                fullWidth
-                size="large"
-                onClick={() => setIsNewBankDialogOpen(true)}
-                sx={{
-                  border: '2px dotted #E4E4E4',
-                  color: '#BBBBBB',
-                  '&.MuiButtonBase-root': {
-                    paddingTop: '22px',
-                    paddingBottom: '22px',
-                  },
-                }}
-              >
-                Add Bank Detail
-              </Box>
-            ) : (
-              bankAccounts.map((bank, index) => (
-                <BankCard
-                  key={index}
-                  bank={bank}
-                  disabled={isSubmitting}
-                  onDelete={() => handleDeleteBank(bank)}
-                  onEdit={() => setEditableBank(bank)}
-                  onMakeDefault={() => handleChangeDefault(bank)}
-                />
-              ))
-            )}
-          </Box>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'auto 1fr',
-              columnGap: 1,
-              alignItems: 'center',
-            }}
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            columnGap: 1,
+            alignItems: 'center',
+          }}
+        >
+          <Button
+            color="secondary"
+            variant="contained"
+            disabled={isSubmitting}
+            onClick={() => onBack(bankAccounts)}
           >
-            <Button
-              color="secondary"
-              variant="contained"
-              disabled={isSubmitting}
-              onClick={() => onBack(bankAccounts)}
-            >
-              Back
-            </Button>
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={isSubmitting || bankAccounts.length === 0}
-              onClick={() => onNext(bankAccounts)}
-              endIcon={
-                isSubmitting && (
-                  <CircularProgress color="primary" thickness={5} size={14} />
-                )
-              }
-            >
-              {isSubmitting ? 'Submitting' : 'Next'}
-            </Button>
-          </Box>
+            Back
+          </Button>
+          <Button
+            color="primary"
+            variant="contained"
+            disabled={isSubmitting || bankAccounts.length === 0}
+            onClick={() => onNext(bankAccounts)}
+            endIcon={
+              isSubmitting && (
+                <CircularProgress color="primary" thickness={5} size={14} />
+              )
+            }
+          >
+            {isSubmitting ? 'Submitting' : 'Next'}
+          </Button>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }
