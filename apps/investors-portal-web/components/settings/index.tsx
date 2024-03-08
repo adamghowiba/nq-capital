@@ -10,14 +10,21 @@ export interface SettingsDialogProps {
   isDialogOpen: boolean;
   closeDialog: () => void;
 }
+
+export type SettingsActiveTab = 1 | 2 | 3 | 4;
 export default function SettingsDialog({
   closeDialog,
   isDialogOpen,
 }: SettingsDialogProps) {
-  const [activeTab, setActiveTab] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<SettingsActiveTab>(1);
   const [isLoadingBanks, setIsLoadingBanks] = useState<boolean>(false);
   const [bankAccounts, setBankAccounts] = useState<NewBankData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  function close() {
+    closeDialog();
+    setActiveTab(1);
+  }
 
   useEffect(() => {
     if (isDialogOpen) {
@@ -62,30 +69,37 @@ export default function SettingsDialog({
     }, 3000);
   }
 
+  const tabComponent = {
+    1: null,
+    2: null,
+    3: null,
+    4: (
+      <ListBanks
+        bankAccounts={bankAccounts}
+        isSubmitting={isSubmitting}
+        areAccountsLoading={isLoadingBanks}
+        handleChangeDefault={changeDefaultBank}
+        handleCreateNewAccount={createNewBankAccount}
+        handleDeleteAccount={deleteBankAccount}
+        handleEditAccount={editBankAccount}
+      />
+    ),
+  };
+
   return (
     <Dialog
       fullScreen
       open={isDialogOpen}
-      onClose={closeDialog}
+      onClose={close}
       TransitionComponent={DialogTransition}
     >
-      <SettingsTopbar handleBack={closeDialog} />
+      <SettingsTopbar handleBack={close} />
       <SettingsHeader
         activeTab={activeTab}
         handleTabChange={(tabNumber) => setActiveTab(tabNumber)}
       />
       <Box sx={{ paddingTop: 5, display: 'grid', justifyItems: 'center' }}>
-        <Box sx={{ width: '604px' }}>
-          <ListBanks
-            bankAccounts={bankAccounts}
-            isSubmitting={isSubmitting}
-            areAccountsLoading={isLoadingBanks}
-            handleChangeDefault={changeDefaultBank}
-            handleCreateNewAccount={createNewBankAccount}
-            handleDeleteAccount={deleteBankAccount}
-            handleEditAccount={editBankAccount}
-          />
-        </Box>
+        <Box sx={{ width: '604px' }}>{tabComponent[activeTab]}</Box>
       </Box>
     </Dialog>
   );

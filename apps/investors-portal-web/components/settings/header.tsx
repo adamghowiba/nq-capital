@@ -1,7 +1,8 @@
 import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { SettingsActiveTab } from '.';
 
 interface SettingsHeaderProps {
-  handleTabChange: (tabNumber: number) => void;
+  handleTabChange: (tabNumber: SettingsActiveTab) => void;
   activeTab: number;
 }
 export default function SettingsHeader({
