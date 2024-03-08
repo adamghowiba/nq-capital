@@ -188,6 +188,28 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
     },
     components: {
+      MuiTabs: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '& .MuiTab-root': {
+              paddingLeft: 0,
+              paddingRight: 0,
+              minWidth: 'fit-content',
+              width: 'fit-content',
+              textTransform: 'none',
+              fontSize: '14px',
+              fontWeight: '500',
+              color: '#BBBBBB',
+            },
+            '& .MuiTabs-flexContainer': {
+              gap: 16,
+            },
+            '& .Mui-selected': {
+              color: theme.palette.primary.main,
+            },
+          }),
+        },
+      },
       MuiPopover: {
         styleOverrides: {
           root: () => ({
