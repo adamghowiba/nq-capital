@@ -1,11 +1,18 @@
-import { Avatar, Box, Button, Divider, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Divider,
+  Typography,
+} from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import * as Yup from 'yup';
+import { theme } from '../../lib/theme';
 import { ConfirmDialog } from '../utils/ConfirmDialog';
 import { OneTextField } from '../utils/OneTextField';
-import { theme } from '../../lib/theme';
 
 interface IUserData {
   email: string;
@@ -23,11 +30,18 @@ export default function General() {
     last_name: '',
   });
 
+  const [newProfileImage, setNewProfileImage] = useState<{
+    display: string;
+    upload: File;
+  }>();
+
   useEffect(() => {
     //TODO: CALL API HERE TO LOAD USER DATA
     setIsLoadingUserData(true);
     setTimeout(() => {
       setIsLoadingUserData(false);
+      // ensures that there's no new image in state after data loading
+      setNewProfileImage(undefined);
       setUserData({
         email: 'johndoe@mail.com',
         first_name: 'John',
@@ -86,6 +100,29 @@ export default function General() {
     }, 3000);
   }
 
+  function handleFileInput(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && !!e.target.files[0]) {
+      const upload: File = e.target.files[0] as File;
+      const display = URL.createObjectURL(upload);
+
+      setNewProfileImage({ upload, display });
+    }
+  }
+
+  const [isChangingProfileImage, setIsChangingProfileImage] =
+    useState<boolean>(false);
+  function changeProfileImage() {
+    /* TODO: CALL API HERE TO CHANGE PROFILE IMAGE with data newProfileImage.upload
+        mutate useData afterwards
+    */
+    setIsChangingProfileImage(true);
+    setTimeout(() => {
+      setIsChangingProfileImage(false);
+      setUserData({ ...userData, profile_image_ref: newProfileImage?.display });
+      setNewProfileImage(undefined);
+    }, 3000);
+  }
+
   return (
     <>
       <ConfirmDialog
@@ -114,16 +151,65 @@ export default function General() {
               backgroundColor: theme.palette.secondary.main,
               color: '#8D8D8D',
             }}
-            src={userData.profile_image_ref}
+            src={
+              newProfileImage
+                ? newProfileImage.display
+                : userData.profile_image_ref
+            }
             alt="profile"
           >
             {userData.first_name ? userData.first_name[0] : 'U'}
           </Avatar>
           <Box sx={{ display: 'grid', rowGap: 1, justifyItems: 'start' }}>
             <Typography>Profile Picture</Typography>
-            <Button variant="contained" color="secondary">
-              Upload
-            </Button>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'auto 1fr',
+                columnGap: 2,
+              }}
+            >
+              {!isChangingProfileImage && (
+                <Box>
+                  <input
+                    accept="image/*,video/*"
+                    hidden
+                    id="raised-button-file"
+                    type="file"
+                    onChange={handleFileInput}
+                  />
+                  <label htmlFor="raised-button-file">
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      component="span"
+                      disabled={isLoadingUserData}
+                    >
+                      {newProfileImage ? 'Change' : 'Upload'}
+                    </Button>
+                  </label>
+                </Box>
+              )}
+              {newProfileImage && (
+                <Button
+                  color="primary"
+                  variant="contained"
+                  disabled={isChangingProfileImage}
+                  onClick={changeProfileImage}
+                  endIcon={
+                    isChangingProfileImage && (
+                      <CircularProgress
+                        color="primary"
+                        thickness={5}
+                        size={14}
+                      />
+                    )
+                  }
+                >
+                  Save Changes
+                </Button>
+              )}
+            </Box>
           </Box>
         </Box>
         <Box
@@ -176,6 +262,11 @@ export default function General() {
             sx={{
               justifySelf: 'start',
             }}
+            endIcon={
+              isSubmitting && (
+                <CircularProgress color="primary" thickness={5} size={14} />
+              )
+            }
             disabled={
               isSubmitting ||
               (formik.values.email === userData.email &&
