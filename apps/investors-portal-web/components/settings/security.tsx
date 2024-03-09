@@ -1,18 +1,25 @@
 import eye from '@iconify/icons-fluent/eye-20-filled';
 import eyeOff from '@iconify/icons-fluent/eye-off-20-filled';
 import {
-  Box,
-  Button,
-  CircularProgress,
-  Divider,
-  Switch,
-  Typography,
+    Box,
+    Button,
+    CircularProgress,
+    Divider,
+    Switch,
+    Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import OneIcon from '../utils/OneIcon';
 import { OneTextField } from '../utils/OneTextField';
+
+interface SecurityData {
+  current_password: string;
+  new_password: string;
+  confirm_password: string;
+  enable_2fa: boolean;
+}
 
 export default function Security() {
   const [isLoading2FA, setIsLoading2FA] = useState<boolean>(false);
@@ -26,12 +33,7 @@ export default function Security() {
     }, 3000);
   }, []);
 
-  const initialValues: {
-    current_password: string;
-    new_password: string;
-    confirm_password: string;
-    enable_2fa: boolean;
-  } = {
+  const initialValues: SecurityData = {
     current_password: '',
     new_password: '',
     confirm_password: '',
