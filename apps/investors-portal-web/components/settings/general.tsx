@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { ConfirmDialog } from '../utils/ConfirmDialog';
 import { OneTextField } from '../utils/OneTextField';
+import { theme } from '../../lib/theme';
 
 interface IUserData {
   email: string;
@@ -95,9 +96,25 @@ export default function General() {
         isSubmitting={isDeletingAccount}
       />
       <Box sx={{ display: 'grid', rowGap: 5 }}>
-        <Box>
-          <Avatar>J</Avatar>
-          <Box>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            columnGap: 3,
+            alignItems: 'center',
+          }}
+        >
+          <Avatar
+            sx={{
+              height: '56px',
+              width: '56px',
+              backgroundColor: theme.palette.secondary.main,
+              color: '#8D8D8D',
+            }}
+          >
+            J
+          </Avatar>
+          <Box sx={{ display: 'grid', rowGap: 1, justifyItems: 'start' }}>
             <Typography>Profile Picture</Typography>
             <Button variant="contained" color="secondary">
               Upload
