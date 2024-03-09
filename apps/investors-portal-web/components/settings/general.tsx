@@ -137,26 +137,30 @@ export default function General() {
             {...formik.getFieldProps('email')}
             disabled={isSubmitting || isLoadingUserData}
           />
-          <OneTextField
-            OneLabel="First name"
-            placeholder="Enter your first name"
-            required
-            error={
-              formik.touched.first_name && Boolean(formik.errors.first_name)
-            }
-            helperText={formik.touched.first_name && formik.errors.first_name}
-            {...formik.getFieldProps('first_name')}
-            disabled={isSubmitting || isLoadingUserData}
-          />
-          <OneTextField
-            OneLabel="Last name"
-            placeholder="Enter your last name"
-            required
-            error={formik.touched.last_name && Boolean(formik.errors.last_name)}
-            helperText={formik.touched.last_name && formik.errors.last_name}
-            {...formik.getFieldProps('last_name')}
-            disabled={isSubmitting || isLoadingUserData}
-          />
+          <Box sx={{ display: 'grid', gridAutoFlow: 'column', columnGap: 3 }}>
+            <OneTextField
+              OneLabel="First name"
+              placeholder="Enter your first name"
+              required
+              error={
+                formik.touched.first_name && Boolean(formik.errors.first_name)
+              }
+              helperText={formik.touched.first_name && formik.errors.first_name}
+              {...formik.getFieldProps('first_name')}
+              disabled={isSubmitting || isLoadingUserData}
+            />
+            <OneTextField
+              OneLabel="Last name"
+              placeholder="Enter your last name"
+              required
+              error={
+                formik.touched.last_name && Boolean(formik.errors.last_name)
+              }
+              helperText={formik.touched.last_name && formik.errors.last_name}
+              {...formik.getFieldProps('last_name')}
+              disabled={isSubmitting || isLoadingUserData}
+            />
+          </Box>
           {submitError && !isSubmitting && !isLoadingUserData && (
             <Typography color="error">{submitError}</Typography>
           )}
