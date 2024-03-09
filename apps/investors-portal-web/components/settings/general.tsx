@@ -1,10 +1,10 @@
 import {
-  Avatar,
-  Box,
-  Button,
-  CircularProgress,
-  Divider,
-  Typography,
+    Avatar,
+    Box,
+    Button,
+    CircularProgress,
+    Divider,
+    Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
@@ -46,8 +46,6 @@ export default function General() {
         email: 'johndoe@mail.com',
         first_name: 'John',
         last_name: 'Doe',
-        profile_image_ref:
-          'https://avatars.githubusercontent.com/u/43315117?s=400&v=4',
       });
     }, 3000);
   }, []);
