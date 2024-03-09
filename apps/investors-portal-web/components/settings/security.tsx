@@ -102,6 +102,7 @@ export default function Security() {
           InputProps={{
             endAdornment: (
               <OneIcon
+                iconColor="#8D8D8D"
                 icon={showCurrentPassword ? eye : eyeOff}
                 title={showCurrentPassword ? 'Hide password' : 'Show password'}
                 onClick={() =>
