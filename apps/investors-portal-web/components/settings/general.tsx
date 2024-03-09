@@ -1,10 +1,10 @@
-import { Box, Button, Divider, Typography } from '@mui/material';
+import { Avatar, Box, Button, Divider, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { OneTextField } from '../utils/OneTextField';
 import { ConfirmDialog } from '../utils/ConfirmDialog';
-import { useRouter } from 'next/router';
+import { OneTextField } from '../utils/OneTextField';
 
 interface IUserData {
   email: string;
@@ -94,7 +94,16 @@ export default function General() {
         danger
         isSubmitting={isDeletingAccount}
       />
-      <Box>
+      <Box sx={{ display: 'grid', rowGap: 5 }}>
+        <Box>
+          <Avatar>J</Avatar>
+          <Box>
+            <Typography>Profile Picture</Typography>
+            <Button variant="contained" color="secondary">
+              Upload
+            </Button>
+          </Box>
+        </Box>
         <Box
           component="form"
           onSubmit={formik.handleSubmit}
@@ -154,7 +163,6 @@ export default function General() {
         </Box>
         <Box
           sx={{
-            pt: 5,
             display: 'grid',
             rowGap: 2,
             justifyItems: 'start',
