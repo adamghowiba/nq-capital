@@ -28,7 +28,7 @@ export default function SettingsDialog({
   }
 
   useEffect(() => {
-    if (isDialogOpen) {
+    if (isDialogOpen && activeTab === 4) {
       setIsLoadingBanks(true);
       //TODO: CALL API HERE TO LOAD BANKS
       setTimeout(() => {
@@ -36,7 +36,7 @@ export default function SettingsDialog({
         setBankAccounts([]);
       }, 3000);
     }
-  }, [isDialogOpen]);
+  }, [activeTab, isDialogOpen]);
 
   function changeDefaultBank(bankAccount: NewBankData) {
     setIsSubmitting(true);
