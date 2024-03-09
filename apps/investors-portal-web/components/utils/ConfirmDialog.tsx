@@ -4,10 +4,10 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Typography,
 } from '@mui/material';
+import { theme } from '../../lib/theme';
 import DialogTransition from './DialogTransition';
 
 export function ConfirmDialog({
@@ -44,19 +44,17 @@ export function ConfirmDialog({
         },
       }}
     >
-      <DialogTitle>
-        <Typography
-          variant="h3"
-          textAlign="start"
-          color={danger ? 'error' : 'initial'}
-        >
-          {dialogTitle}
-        </Typography>
+      <DialogTitle
+        variant="h3"
+        sx={{
+          textAlign: 'start !important',
+          color: danger ? `${theme.palette.error.main} !important` : 'initial',
+        }}
+      >
+        {dialogTitle}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText sx={{ textAlign: 'center' }}>
-          <Typography>{dialogMessage}</Typography>
-        </DialogContentText>
+        <Typography>{dialogMessage}</Typography>
       </DialogContent>
       <DialogActions
         sx={{
