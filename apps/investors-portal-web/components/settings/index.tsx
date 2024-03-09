@@ -6,6 +6,7 @@ import DialogTransition from '../utils/DialogTransition';
 import SettingsHeader from './header';
 import SettingsTopbar from './topbar';
 import Security from './security';
+import General from './general';
 
 export interface SettingsDialogProps {
   isDialogOpen: boolean;
@@ -71,7 +72,7 @@ export default function SettingsDialog({
   }
 
   const tabComponent = {
-    1: null,
+    1: <General />,
     2: null,
     3: <Security />,
     4: (
