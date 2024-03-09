@@ -5,6 +5,7 @@ import { NewBankData } from '../onboarding/newBankDialog';
 import DialogTransition from '../utils/DialogTransition';
 import SettingsHeader from './header';
 import SettingsTopbar from './topbar';
+import Security from './security';
 
 export interface SettingsDialogProps {
   isDialogOpen: boolean;
@@ -72,7 +73,7 @@ export default function SettingsDialog({
   const tabComponent = {
     1: null,
     2: null,
-    3: null,
+    3: <Security />,
     4: (
       <ListBanks
         bankAccounts={bankAccounts}
