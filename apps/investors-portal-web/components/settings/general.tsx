@@ -11,6 +11,7 @@ interface IUserData {
   email: string;
   first_name: string;
   last_name: string;
+  profile_image_ref?: string;
 }
 
 export default function General() {
@@ -31,6 +32,8 @@ export default function General() {
         email: 'johndoe@mail.com',
         first_name: 'John',
         last_name: 'Doe',
+        profile_image_ref:
+          'https://avatars.githubusercontent.com/u/43315117?s=400&v=4',
       });
     }, 3000);
   }, []);
@@ -111,8 +114,10 @@ export default function General() {
               backgroundColor: theme.palette.secondary.main,
               color: '#8D8D8D',
             }}
+            src={userData.profile_image_ref}
+            alt="profile"
           >
-            J
+            {userData.first_name ? userData.first_name[0] : 'U'}
           </Avatar>
           <Box sx={{ display: 'grid', rowGap: 1, justifyItems: 'start' }}>
             <Typography>Profile Picture</Typography>
