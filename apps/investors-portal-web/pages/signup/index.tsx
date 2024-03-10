@@ -128,7 +128,7 @@ export default function Signup() {
         </Button>
         <Typography sx={{ color: '#8D8D8D' }}>
           {'Already have an account? '}
-          <Link href={'signup'}>
+          <Link href={'signin'}>
             <Typography component="span" sx={{ color: '#202020' }}>
               Log In
             </Typography>
