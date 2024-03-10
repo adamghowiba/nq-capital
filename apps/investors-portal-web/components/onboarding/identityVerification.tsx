@@ -147,6 +147,7 @@ export default function IdentityVerification({
                 onChange={(value) =>
                   formik.setFieldValue('passport_expiry_date', value)
                 }
+                minDate={dayjs(new Date())}
                 slotProps={{
                   textField: {
                     ...formik.getFieldProps('passport_expiry_date'),
@@ -267,6 +268,7 @@ export default function IdentityVerification({
                 onChange={(value) =>
                   formik.setFieldValue('national_id_number_expiry_date', value)
                 }
+                minDate={dayjs(new Date())}
                 slotProps={{
                   textField: {
                     required:
