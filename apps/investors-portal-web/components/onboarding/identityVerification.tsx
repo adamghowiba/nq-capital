@@ -51,10 +51,7 @@ export default function IdentityVerification({
       .required(),
     passport_expiry_date: Yup.date()
       .required()
-      .min(
-        Yup.ref('passport_issue_date'),
-        'Expiry date must be greater than issue date!'
-      ),
+      .min(new Date(), 'This passport has expired'),
     national_id_number_issue_date: Yup.date()
       .max(new Date(), 'Cannot be greater than today')
       .nullable()
@@ -70,10 +67,7 @@ export default function IdentityVerification({
         then: (schema) => schema.required(),
         otherwise: (schema) => schema,
       })
-      .min(
-        Yup.ref('national_id_number_issue_date'),
-        'Expiry date must be greater than issue date!'
-      ),
+      .min(new Date(), 'This national ID is expired'),
   });
 
   const formik = useFormik({
