@@ -15,11 +15,37 @@ export default function Onboarding() {
   const { push } = useRouter();
   const totalSteps = 3;
   const [currentStep, setCurrentStep] = useState<number>(1);
+  const [maxAccessibleStep, setMaxAccessibleStep] = useState<number>(1);
 
-  function handleNext() {
+  function getNextStep(activeStep: number, totalSteps: number) {
+    if (activeStep < totalSteps) return activeStep + 1;
+    return activeStep;
+  }
+
+  /**
+   * This function handles the movement from one onboarding step to another
+   * it can be called from with the individual forms during form submission
+   * or through navigation items on the onboarding topbar
+   *
+   * when called through a form submission:
+   * 1. we do required verifications to update maxAccessibleStep.
+   * 2. we verify that we we're within step bounds and move to next step.
+   *
+   * When called through topbar navigation,
+   * we verify that we have acess to that step before moving to it
+   *
+   * @param {number=} formStep - the step of the form thats calling next
+   */
+  function handleNext(formStep?: number): void {
     setCurrentStep((activeStep) => {
-      if (activeStep < totalSteps) return activeStep + 1;
-      return activeStep;
+      if (typeof formStep === 'number') {
+        if (maxAccessibleStep <= formStep) setMaxAccessibleStep(formStep + 1);
+        return getNextStep(activeStep, totalSteps);
+      } else {
+        if (maxAccessibleStep >= activeStep + 1)
+          return getNextStep(activeStep, totalSteps);
+        return activeStep;
+      }
     });
   }
 
@@ -55,7 +81,7 @@ export default function Onboarding() {
             data={personalData}
             onNext={(data) => {
               setPersonnalData(data);
-              handleNext();
+              handleNext(1);
             }}
           />
         );
@@ -68,7 +94,7 @@ export default function Onboarding() {
             }}
             onNext={(data) => {
               setIdentityData(data);
-              handleNext();
+              handleNext(2);
             }}
             data={identityData}
           />
@@ -91,7 +117,7 @@ export default function Onboarding() {
             data={personalData}
             onNext={(data) => {
               setPersonnalData(data);
-              handleNext();
+              handleNext(1);
             }}
           />
         );
