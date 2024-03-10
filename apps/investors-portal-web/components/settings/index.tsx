@@ -26,7 +26,7 @@ export default function SettingsDialog({
   const settingsTabItems: ISettingsTabItem[] = [
     { position: 1, label: 'General' },
     { position: 2, label: 'Security' },
-    { position: 3, label: 'Billing' },
+    { position: 3, label: 'Payments' },
   ];
 
   function close() {
