@@ -11,14 +11,72 @@ import PersonalInformation, {
 } from '../../components/onboarding/personalInformation';
 import OnboardingTopbar from '../../components/onboarding/topbar';
 
+type OnboardingStep = 1 | 2 | 3;
 export default function Onboarding() {
   const { push } = useRouter();
-  const totalSteps = 3;
-  const [currentStep, setCurrentStep] = useState<number>(1);
+
+  const [personalData, setPersonnalData] = useState<PersonalInformationData>();
+  const [identityData, setIdentityData] = useState<IdentityVerificationData>();
+  const [financialData, setFinancialData] = useState<NewBankData[]>([]);
+
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  function submitOnboarding(data: NewBankData[]) {
+    //TODO: call api here to submit onboarding data
+    setIsSubmitting(true);
+    setTimeout(() => {
+      setIsSubmitting(false);
+      //TODO: move to onbaording route, indicating we're from onboarding to toast.
+      push('/?fromOnboarding=true');
+      //TODO: in case of failure, set financialData for usage during retry
+      setFinancialData(data);
+    }, 3000);
+  }
+
+  const stepComponents: Record<OnboardingStep, JSX.Element> = {
+    1: (
+      <PersonalInformation
+        data={personalData}
+        onNext={(data) => {
+          setPersonnalData(data);
+          handleNext(1);
+        }}
+      />
+    ),
+    2: (
+      <IdentityVerification
+        onBack={(data) => {
+          setIdentityData(data);
+          handleBack();
+        }}
+        onNext={(data) => {
+          setIdentityData(data);
+          handleNext(2);
+        }}
+        data={identityData}
+      />
+    ),
+    3: (
+      <FinancialInformation
+        data={financialData}
+        isSubmitting={isSubmitting}
+        onBack={(data) => {
+          setFinancialData(data);
+          handleBack();
+        }}
+        onNext={(data) => submitOnboarding(data)}
+      />
+    ),
+  };
+
+  const totalSteps = Object.keys(stepComponents).length;
+  const [currentStep, setCurrentStep] = useState<OnboardingStep>(1);
   const [maxAccessibleStep, setMaxAccessibleStep] = useState<number>(1);
 
-  function getNextStep(activeStep: number, totalSteps: number) {
-    if (activeStep < totalSteps) return activeStep + 1;
+  function getNextStep(
+    activeStep: OnboardingStep,
+    totalSteps: number
+  ): OnboardingStep {
+    if (activeStep < totalSteps) return (activeStep + 1) as OnboardingStep;
     return activeStep;
   }
 
@@ -50,78 +108,10 @@ export default function Onboarding() {
   }
 
   function handleBack() {
-    setCurrentStep((activeStep) => {
-      if (activeStep > 1) return activeStep - 1;
+    setCurrentStep((activeStep: OnboardingStep) => {
+      if (activeStep > 1) return (activeStep - 1) as OnboardingStep;
       return activeStep;
     });
-  }
-
-  const [personalData, setPersonnalData] = useState<PersonalInformationData>();
-  const [identityData, setIdentityData] = useState<IdentityVerificationData>();
-  const [financialData, setFinancialData] = useState<NewBankData[]>([]);
-
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  function submitOnboarding(data: NewBankData[]) {
-    //TODO: call api here to submit onboarding data
-    setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      //TODO: move to onbaording route, indicating we're from onboarding to toast.
-      push('/?fromOnboarding=true');
-      //TODO: in case of failure, set financialData for usage during retry
-      setFinancialData(data);
-    }, 3000);
-  }
-
-  function getStepComponent(activeStep: number) {
-    switch (activeStep) {
-      case 1:
-        return (
-          <PersonalInformation
-            data={personalData}
-            onNext={(data) => {
-              setPersonnalData(data);
-              handleNext(1);
-            }}
-          />
-        );
-      case 2:
-        return (
-          <IdentityVerification
-            onBack={(data) => {
-              setIdentityData(data);
-              handleBack();
-            }}
-            onNext={(data) => {
-              setIdentityData(data);
-              handleNext(2);
-            }}
-            data={identityData}
-          />
-        );
-      case 3:
-        return (
-          <FinancialInformation
-            data={financialData}
-            isSubmitting={isSubmitting}
-            onBack={(data) => {
-              setFinancialData(data);
-              handleBack();
-            }}
-            onNext={(data) => submitOnboarding(data)}
-          />
-        );
-      default:
-        return (
-          <PersonalInformation
-            data={personalData}
-            onNext={(data) => {
-              setPersonnalData(data);
-              handleNext(1);
-            }}
-          />
-        );
-    }
   }
 
   return (
@@ -146,7 +136,7 @@ export default function Onboarding() {
           alignContent: 'start',
         }}
       >
-        {getStepComponent(currentStep)}
+        {stepComponents[currentStep]}
       </Box>
     </Box>
   );
