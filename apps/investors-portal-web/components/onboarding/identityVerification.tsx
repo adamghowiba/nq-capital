@@ -208,6 +208,10 @@ export default function IdentityVerification({
           <OneTextField
             OneLabel="National ID"
             placeholder="Enter your national ID number"
+            required={
+              !!formik.values.national_id_number_expiry_date ||
+              !!formik.values.national_id_number_issue_date
+            }
             error={
               formik.touched.national_id_number &&
               Boolean(formik.errors.national_id_number)
@@ -239,6 +243,9 @@ export default function IdentityVerification({
                 maxDate={dayjs(new Date())}
                 slotProps={{
                   textField: {
+                    required:
+                      !!formik.values.national_id_number ||
+                      !!formik.values.national_id_number_expiry_date,
                     ...formik.getFieldProps('national_id_number_issue_date'),
                     error:
                       formik.touched.national_id_number_issue_date &&
@@ -262,6 +269,9 @@ export default function IdentityVerification({
                 }
                 slotProps={{
                   textField: {
+                    required:
+                      !!formik.values.national_id_number ||
+                      !!formik.values.national_id_number_issue_date,
                     ...formik.getFieldProps('national_id_number_expiry_date'),
                     error:
                       formik.touched.national_id_number_expiry_date &&
