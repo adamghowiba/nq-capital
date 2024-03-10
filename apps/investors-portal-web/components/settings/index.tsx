@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import ListBanks from '../onboarding/listBanks';
 import { NewBankData } from '../onboarding/newBankDialog';
 import DialogTransition from '../utils/DialogTransition';
-import SettingsHeader from './header';
-import SettingsTopbar from './topbar';
-import Security from './security';
 import General from './general';
+import SettingsHeader, { ISettingsTabItem } from './header';
+import Security from './security';
+import SettingsTopbar from './topbar';
 
 export interface SettingsDialogProps {
   isDialogOpen: boolean;
@@ -22,6 +22,12 @@ export default function SettingsDialog({
   const [isLoadingBanks, setIsLoadingBanks] = useState<boolean>(false);
   const [bankAccounts, setBankAccounts] = useState<NewBankData[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  const settingsTabItems: ISettingsTabItem[] = [
+    { position: 1, label: 'General' },
+    { position: 2, label: 'Security' },
+    { position: 3, label: 'Billing' },
+  ];
 
   function close() {
     closeDialog();
@@ -97,6 +103,7 @@ export default function SettingsDialog({
     >
       <SettingsTopbar handleBack={close} />
       <SettingsHeader
+        tabItems={settingsTabItems}
         activeTab={activeTab}
         handleTabChange={(tabNumber) => setActiveTab(tabNumber)}
       />

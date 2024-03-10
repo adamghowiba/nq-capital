@@ -4,10 +4,18 @@ import { SettingsActiveTab } from '.';
 interface SettingsHeaderProps {
   handleTabChange: (tabNumber: SettingsActiveTab) => void;
   activeTab: number;
+  tabItems: ISettingsTabItem[];
 }
+
+export interface ISettingsTabItem {
+  position: number;
+  label: string;
+}
+
 export default function SettingsHeader({
   activeTab,
   handleTabChange,
+  tabItems,
 }: SettingsHeaderProps) {
   return (
     <Box
@@ -39,10 +47,9 @@ export default function SettingsHeader({
         aria-label="secondary tabs example"
         sx={{ width: '604px' }}
       >
-        <Tab value={1} label="General" />
-        <Tab value={2} label="Notification" />
-        <Tab value={3} label="Security" />
-        <Tab value={4} label="Billing" />
+        {tabItems.map(({ label, position: pos }, index) => (
+          <Tab value={pos} label={label} key={index} />
+        ))}
       </Tabs>
     </Box>
   );
