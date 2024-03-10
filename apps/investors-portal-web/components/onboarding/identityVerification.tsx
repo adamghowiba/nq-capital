@@ -38,33 +38,33 @@ export default function IdentityVerification({
     national_id_number_issue_date: null,
   };
   const validationSchema = Yup.object().shape({
-    passport_number: Yup.string().required(),
+    passport_number: Yup.string().required('Required field'),
     national_id_number: Yup.string(),
     nationality: Yup.string()
       .oneOf(
         nationalities.map(({ nationality }) => nationality),
         'Select in dropdown'
       )
-      .required(),
+      .required('Required field'),
     passport_issue_date: Yup.date()
       .max(new Date(), 'Cannot be greater than today')
-      .required(),
+      .required('Required field'),
     passport_expiry_date: Yup.date()
-      .required()
+      .required('Required field')
       .min(new Date(), 'This passport has expired'),
     national_id_number_issue_date: Yup.date()
       .max(new Date(), 'Cannot be greater than today')
       .nullable()
       .when('national_id_number', {
         is: (val: string | undefined) => !!val,
-        then: (schema) => schema.required(),
+        then: (schema) => schema.required('Required field'),
         otherwise: (schema) => schema,
       }),
     national_id_number_expiry_date: Yup.date()
       .nullable()
       .when('national_id_number', {
         is: (val: string | undefined) => !!val,
-        then: (schema) => schema.required(),
+        then: (schema) => schema.required('Required field'),
         otherwise: (schema) => schema,
       })
       .min(new Date(), 'This national ID is expired'),

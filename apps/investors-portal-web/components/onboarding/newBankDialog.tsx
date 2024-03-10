@@ -48,22 +48,22 @@ export default function NewBankDialog({
     is_default: false,
   };
   const validationSchema = Yup.object().shape({
-    account_holder_name: Yup.string().required(),
-    bank_account_number: Yup.string().required(),
-    bank_address: Yup.string().required(),
-    bank_name: Yup.string().required(),
-    bank_routing_number: Yup.string().required(),
-    IBAN: Yup.string().required(),
-    swift_code: Yup.string().required(),
+    account_holder_name: Yup.string().required('Required field'),
+    bank_account_number: Yup.string().required('Required field'),
+    bank_address: Yup.string().required('Required field'),
+    bank_name: Yup.string().required('Required field'),
+    bank_routing_number: Yup.string().required('Required field'),
+    IBAN: Yup.string().required('Required field'),
+    swift_code: Yup.string().required('Required field'),
     bank_country: Yup.string()
       .oneOf(
         nationalities.map(({ country }) => country),
         'Select a country from dropdown'
       )
-      .required(),
+      .required('Required field'),
     account_type: Yup.string()
       .oneOf(bankAccountTypes, 'Select a type from dropdown')
-      .required(),
+      .required('Required field'),
   });
 
   const formik = useFormik({

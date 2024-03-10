@@ -20,7 +20,7 @@ export default function ForgotPassword() {
     email: '',
   };
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
+    email: Yup.string().email().required('Required field'),
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

@@ -18,8 +18,8 @@ export default function Signin() {
     password: '',
   };
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    password: Yup.string().required(),
+    email: Yup.string().email().required('Required field'),
+    password: Yup.string().required('Required field'),
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

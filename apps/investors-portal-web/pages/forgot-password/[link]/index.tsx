@@ -27,9 +27,9 @@ export default function ResetPassword() {
   } = useRouter();
 
   const validationSchema = Yup.object().shape({
-    password: Yup.string().required(),
+    password: Yup.string().required('Required field'),
     confirm_password: Yup.string()
-      .required()
+      .required('Required field')
       .oneOf([Yup.ref('password')], 'passwordMismatch'),
   });
 

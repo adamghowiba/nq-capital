@@ -56,9 +56,9 @@ export default function General() {
     last_name: '',
   };
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    first_name: Yup.string().required(),
-    last_name: Yup.string().required(),
+    email: Yup.string().email().required('Required field'),
+    first_name: Yup.string().required('Required field'),
+    last_name: Yup.string().required('Required field'),
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);

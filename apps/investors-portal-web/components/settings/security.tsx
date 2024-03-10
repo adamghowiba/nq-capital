@@ -40,18 +40,18 @@ export default function Security() {
     enable_2fa: has2FA ?? false,
   };
   const validationSchema = Yup.object().shape({
-    enable_2fa: Yup.boolean().required(),
+    enable_2fa: Yup.boolean().required('Required field'),
     new_password: Yup.string(),
     current_password: Yup.string().when('new_password', {
       is: (val: string | undefined) => !!val,
-      then: (schema) => schema.required(),
+      then: (schema) => schema.required('Required field'),
       otherwise: (schema) => schema,
     }),
     confirm_password: Yup.string()
       .oneOf([Yup.ref('new_password')], "Passwords don't match")
       .when('new_password', {
         is: (val: string | undefined) => !!val,
-        then: (schema) => schema.required(),
+        then: (schema) => schema.required('Required field'),
         otherwise: (schema) => schema,
       }),
   });

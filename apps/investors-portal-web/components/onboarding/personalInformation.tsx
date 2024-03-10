@@ -31,13 +31,13 @@ export default function PersonalInformation({
     confirm_password: '',
   };
   const validationSchema = Yup.object().shape({
-    first_name: Yup.string().required(),
-    last_name: Yup.string().required(),
-    email: Yup.string().email().required(),
-    mobile_number: Yup.string().required(),
-    password: Yup.string().required(),
+    first_name: Yup.string().required('Required field'),
+    last_name: Yup.string().required('Required field'),
+    email: Yup.string().email().required('Required field'),
+    mobile_number: Yup.string().required('Required field'),
+    password: Yup.string().required('Required field'),
     confirm_password: Yup.string()
-      .required()
+      .required('Required field')
       .oneOf([Yup.ref('password')], "Passwords don't match"),
   });
 

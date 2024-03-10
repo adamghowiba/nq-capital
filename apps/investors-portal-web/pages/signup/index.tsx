@@ -23,10 +23,10 @@ export default function Signup() {
     confirm_password: '',
   };
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    password: Yup.string().required(),
+    email: Yup.string().email().required('Required field'),
+    password: Yup.string().required('Required field'),
     confirm_password: Yup.string()
-      .required()
+      .required('Required field')
       .oneOf([Yup.ref('password')], 'passwordMismatch'),
   });
 
