@@ -3,11 +3,24 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import DashboardLayout from '../components/(dashboard)/layout';
 import { Providers } from '../components/Providers/Providers';
 import { theme } from '../lib/theme';
 import '../styles/global.css';
 
+const NO_LAYOUT_ROUTES = ['signup', 'signin', 'onboarding',];
+
 function CustomApp({ Component, pageProps }: AppProps) {
+  const { pathname } = useRouter();
+
+  const [hasLayout, setHasLayout] = useState<boolean>(false);
+  useEffect(() => {
+    if (NO_LAYOUT_ROUTES.includes(pathname.split('/')[1])) setHasLayout(false);
+    else setHasLayout(true);
+  }, [pathname]);
+
   return (
     <>
       <Head>
@@ -17,7 +30,13 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <ThemeProvider theme={theme}>
           <Providers>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Component {...pageProps} />
+              {hasLayout ? (
+                <DashboardLayout>
+                  <Component {...pageProps} />
+                </DashboardLayout>
+              ) : (
+                <Component {...pageProps} />
+              )}
             </LocalizationProvider>
           </Providers>
         </ThemeProvider>

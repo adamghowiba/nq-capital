@@ -1,7 +1,6 @@
 import { Box, Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import DashboardLayout from '../components/(dashboard)/layout';
 import OneSnackbar from '../components/utils/OneSnackbar';
 
 export function Index() {
@@ -21,13 +20,11 @@ export function Index() {
         isOpen={isOnboardingToastOpen}
         message="Onboarding Complete"
       />
-      <DashboardLayout>
-        <Box height={'100%'}>
-          <Button variant="contained" color="primary">
-            Testing
-          </Button>
-        </Box>
-      </DashboardLayout>
+      <Box height={'100%'}>
+        <Button variant="contained" color="primary">
+          Testing
+        </Button>
+      </Box>
     </>
   );
 }
