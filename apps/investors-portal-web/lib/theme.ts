@@ -381,8 +381,18 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       MuiDialog: {
         styleOverrides: {
           root: ({ theme }) => ({
+            '& .MuiDialogTitle-root': {
+              fontWeight: 500,
+              fontSize: theme.spacing(2),
+              letterSpacing: '-0.42px',
+              lineHeight: theme.spacing(3),
+              padding: theme.spacing(2),
+              borderBottom: '1px solid #EBEBEB',
+              textAlign: 'left',
+            },
             '& .MuiPaper-root': {
-              borderRadius: 0,
+              borderRadius: '16px',
+              minWidth: '590px',
               backgroundColor: theme.common.background,
             },
           }),
