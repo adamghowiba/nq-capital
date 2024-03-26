@@ -7,6 +7,7 @@ export interface BankCardMenuProps {
   onEdit: () => void;
   onDelete: () => void;
   onMakeDefault: () => void;
+  isDefault: boolean;
 }
 
 export default function BankCardMenu({
@@ -16,10 +17,10 @@ export default function BankCardMenu({
   onEdit,
   onDelete,
   onMakeDefault,
+  isDefault,
 }: BankCardMenuProps) {
   const more_menu_items = [
     { label: 'Edit', action: onEdit },
-    { label: 'Make Default', action: onMakeDefault },
     { label: 'Delete', action: onDelete },
   ];
 
@@ -33,7 +34,12 @@ export default function BankCardMenu({
       open={isOpen}
       onClose={closeMenu}
     >
-      {more_menu_items.map(({ action, label }, index) => (
+      {[
+        ...(isDefault
+          ? []
+          : [{ label: 'Make Default', action: onMakeDefault }]),
+        ...more_menu_items,
+      ].map(({ action, label }, index) => (
         <MenuItem
           key={index}
           onClick={() => {
