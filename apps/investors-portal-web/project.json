@@ -50,6 +50,13 @@
         "lintFilePatterns": ["apps/investors-portal-web/**/*.{ts,tsx,js,jsx}"]
       }
     },
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen --watch",
+        "cwd": "apps/investors-portal-web"
+      }
+    },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],

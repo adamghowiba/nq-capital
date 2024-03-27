@@ -6,5 +6,5 @@ export class UpdateTransactionInput extends PartialType(
   CreateTransactionInput
 ) {
   @Field(() => Int)
-  id: number;
+  id!: number;
 }

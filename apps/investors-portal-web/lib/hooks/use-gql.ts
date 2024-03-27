@@ -1,52 +1,53 @@
 import { type TypedDocumentNode } from '@graphql-typed-document-node/core';
-import {
-  DefaultError,
-  QueryKey,
-  UseQueryOptions,
-  useQuery,
-  type UseQueryResult,
-} from '@tanstack/react-query';
-import request from 'graphql-request';
-
-type CustomQueryOptions<
-  TQueryFnData = unknown,
-  TError = DefaultError,
-  TData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey
-> = Omit<
-  UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-  'queryKey' | 'queryFn'
->;
-
-// Utility type to check if an object type is empty
-type IsEmptyType<T> = keyof T extends never ? true : false;
-
-// Function overloads
-export function useGql<TResult, TVariables extends object>(
-  document: TypedDocumentNode<TResult, TVariables>,
-  variables: TVariables,
-  options?: CustomQueryOptions
-): UseQueryResult<TResult>;
-
-export function useGql<TResult>(
-  document: TypedDocumentNode<TResult, {}>,
-  options?: CustomQueryOptions
-): UseQueryResult<TResult>;
+import { QueryKey, UseQueryOptions, useQuery } from '@tanstack/react-query';
+import request, { Variables } from 'graphql-request';
+import { IsEmptyObject } from 'type-fest';
 
 // Implementation
-export function useGql<TResult, TVariables extends object>(
+export function useGql<
+  TResult,
+  TVariables extends Variables,
+  TQueryFnData = TResult,
+  TError = unknown,
+  TData = TQueryFnData,
+  TQueryKey extends QueryKey = QueryKey
+>(
   document: TypedDocumentNode<TResult, TVariables>,
-  variables?: TVariables,
-  options?: CustomQueryOptions
-): UseQueryResult<TResult> {
-  // Implementation remains unchanged, TypeScript will enforce the correct usage based on the function overloads
-  return useQuery<TResult>({
+  ...options: IsEmptyObject<TVariables> extends true
+    ?
+        | [
+            null | undefined,
+            Omit<
+              UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+              'queryKey'
+            >
+          ]
+        | [null | undefined]
+        | []
+    :
+        | readonly [
+            TVariables,
+            Omit<
+              UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
+              'queryKey'
+            >
+          ]
+        | [TVariables]
+) {
+  const queryKey = options?.[0]
+    ? [(document.definitions[0] as any).name.value, options?.[0]]
+    : [(document.definitions[0] as any).name.value];
+
+  return useQuery<TQueryFnData, TError, TData>({
+    // @ts-expect-error Cannot find viable way to assert query fn data
     queryFn: async ({ queryKey }) =>
       request<TResult, TVariables>(
         'http://localhost:5000/graphql',
         document,
+        // @ts-expect-error Cannot find viable way to assert query variable type
         queryKey[1] ? queryKey[1] : undefined
       ),
-    queryKey: [(document.definitions[0] as any).name.value, variables],
+    ...options,
+    queryKey: queryKey,
   });
 }
