@@ -21,7 +21,7 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
 
 const config: CodegenConfig = {
   schema: '../../schema.gql',
-  documents: ['lib/api/**/*.(gql|ts)', 'pages/*/**.tsx', 'pages/*.tsx'],
+  documents: ['lib/api/**/*.gql'],
   generates: {
     './lib/gql/gql-client.ts': {
       plugins: [
@@ -34,6 +34,7 @@ const config: CodegenConfig = {
         enumsAsTypes: true,
       },
     },
+    // Preset version is recommended, but was having issues adopting. Commented out for now @adamghowiba
     // './lib/gql/': {
     //   preset: 'client',
     //   presetConfig: {

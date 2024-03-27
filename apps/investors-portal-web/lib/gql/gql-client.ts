@@ -9,7 +9,7 @@ export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' |
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch("http://localhost:5000/graphql", {
+    const res = await fetch("http://localhost:5010/graphql", {
     method: "POST",
     ...({"headers":{"Content-Type":"application/json"},"credentials":"include"}),
       body: JSON.stringify({ query, variables }),
@@ -394,18 +394,6 @@ export type UserRole =
   | 'ADMIN'
   | 'MANAGER';
 
-export type UserNameFragment = { __typename?: 'UserEntity', first_name: string, last_name: string };
-
-export type ListUsersV2QueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  page?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type ListUsersV2Query = { __typename?: 'Query', users: { __typename?: 'PaginatedUserEntity', data?: Array<{ __typename?: 'UserEntity', id: number, first_name: string, last_name: string }> | null } };
-
-export type UserHeaderGqlFragment = { __typename?: 'UserEntity', id: number, middle_name?: string | null };
-
 export type ListUsersQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -413,71 +401,28 @@ export type ListUsersQueryVariables = Exact<{
 }>;
 
 
-export type ListUsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUserEntity', data?: Array<{ __typename?: 'UserEntity', id: number, middle_name?: string | null }> | null } };
-
-export type ListFundsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ListUsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUserEntity', data?: Array<{ __typename?: 'UserEntity', id: number, first_name: string, last_name: string, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, email: string, created_at: any, updated_at: any }> | null } };
 
 
-export type ListFundsQuery = { __typename?: 'Query', funds: Array<{ __typename?: 'FundEntity', id: number, name: string }> };
-
-
-export const UserNameFragmentDoc = `
-    fragment UserName on UserEntity {
-  first_name
-  last_name
-}
-    `;
-export const UserHeaderGqlFragmentDoc = `
-    fragment UserHeaderGql on UserEntity {
-  id
-  middle_name
-}
-    `;
-export const ListUsersV2Document = `
-    query ListUsersV2($limit: Int, $page: Int) {
-  users(limit: $limit, page: $page) {
-    data {
-      id
-      first_name
-      ...UserName
-    }
-  }
-}
-    ${UserNameFragmentDoc}`;
-
-export const useListUsersV2Query = <
-      TData = ListUsersV2Query,
-      TError = unknown
-    >(
-      variables?: ListUsersV2QueryVariables,
-      options?: Omit<UseQueryOptions<ListUsersV2Query, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListUsersV2Query, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<ListUsersV2Query, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['ListUsersV2'] : ['ListUsersV2', variables],
-    queryFn: fetcher<ListUsersV2Query, ListUsersV2QueryVariables>(ListUsersV2Document, variables),
-    ...options
-  }
-    )};
-
-useListUsersV2Query.document = ListUsersV2Document;
-
-useListUsersV2Query.getKey = (variables?: ListUsersV2QueryVariables) => variables === undefined ? ['ListUsersV2'] : ['ListUsersV2', variables];
-
-
-useListUsersV2Query.fetcher = (variables?: ListUsersV2QueryVariables) => fetcher<ListUsersV2Query, ListUsersV2QueryVariables>(ListUsersV2Document, variables);
 
 export const ListUsersDocument = `
     query ListUsers($limit: Int!, $page: Int, $role: UserRole) {
   users(limit: $limit, page: $page, role: $role) {
     data {
       id
-      ...UserHeaderGql
+      first_name
+      last_name
+      middle_name
+      avatar
+      mobile_number
+      role
+      email
+      created_at
+      updated_at
     }
   }
 }
-    ${UserHeaderGqlFragmentDoc}`;
+    `;
 
 export const useListUsersQuery = <
       TData = ListUsersQuery,
@@ -501,35 +446,3 @@ useListUsersQuery.getKey = (variables: ListUsersQueryVariables) => ['ListUsers',
 
 
 useListUsersQuery.fetcher = (variables: ListUsersQueryVariables) => fetcher<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, variables);
-
-export const ListFundsDocument = `
-    query ListFunds {
-  funds {
-    id
-    name
-  }
-}
-    `;
-
-export const useListFundsQuery = <
-      TData = ListFundsQuery,
-      TError = unknown
-    >(
-      variables?: ListFundsQueryVariables,
-      options?: Omit<UseQueryOptions<ListFundsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListFundsQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<ListFundsQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['ListFunds'] : ['ListFunds', variables],
-    queryFn: fetcher<ListFundsQuery, ListFundsQueryVariables>(ListFundsDocument, variables),
-    ...options
-  }
-    )};
-
-useListFundsQuery.document = ListFundsDocument;
-
-useListFundsQuery.getKey = (variables?: ListFundsQueryVariables) => variables === undefined ? ['ListFunds'] : ['ListFunds', variables];
-
-
-useListFundsQuery.fetcher = (variables?: ListFundsQueryVariables) => fetcher<ListFundsQuery, ListFundsQueryVariables>(ListFundsDocument, variables);

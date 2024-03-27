@@ -1,10 +1,16 @@
-# import {UserHeaderGql} from "./users.fragment.gql"
-
 query ListUsers($limit: Int!, $page: Int, $role: UserRole) {
   users(limit: $limit, page: $page, role: $role) {
     data {
       id
-      ...UserHeaderGql
+      first_name
+      last_name
+      middle_name
+      avatar
+      mobile_number
+      role
+      email
+      created_at
+      updated_at
     }
   }
 }
