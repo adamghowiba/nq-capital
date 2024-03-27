@@ -8,11 +8,13 @@
     "seed": "npx ts-node ./prisma/seed/seed.ts"
   },
   "dependencies": {
+    "@apollo/client": "^3.9.6",
     "@apollo/server": "^4.10.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/client-preset-swc-plugin": "^0.2.0",
     "@hookform/resolvers": "^3.3.4",
     "@iconify/icons-fluent": "^1.2.38",
     "@iconify/react": "^4.1.1",

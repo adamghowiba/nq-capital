@@ -1,0 +1,4 @@
+fragment UserHeaderGql on UserEntity {
+  id
+  middle_name
+}

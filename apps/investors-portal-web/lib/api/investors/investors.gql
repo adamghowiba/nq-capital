@@ -1,6 +1,1 @@
-query ListInvestors {
-  investors {
-    id
-    company_name
-  }
-}
+

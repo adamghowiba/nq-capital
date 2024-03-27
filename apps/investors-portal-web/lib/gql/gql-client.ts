@@ -394,8 +394,6 @@ export type UserRole =
   | 'ADMIN'
   | 'MANAGER';
 
-export type UserHeaderFragment = { __typename?: 'UserEntity', id: number, avatar?: string | null };
-
 export type UserNameFragment = { __typename?: 'UserEntity', first_name: string, last_name: string };
 
 export type ListUsersV2QueryVariables = Exact<{
@@ -423,12 +421,6 @@ export type ListFundsQueryVariables = Exact<{ [key: string]: never; }>;
 export type ListFundsQuery = { __typename?: 'Query', funds: Array<{ __typename?: 'FundEntity', id: number, name: string }> };
 
 
-export const UserHeaderFragmentDoc = `
-    fragment UserHeader on UserEntity {
-  id
-  avatar
-}
-    `;
 export const UserNameFragmentDoc = `
     fragment UserName on UserEntity {
   first_name
