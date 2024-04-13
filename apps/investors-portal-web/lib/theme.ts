@@ -360,6 +360,17 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           }),
         },
       },
+      MuiFormControl: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '& .MuiInputBase-root': {
+              border: 'none',
+              borderRadius: '12px',
+              background: '#F1F1F1',
+            },
+          }),
+        },
+      },
       MuiTextField: {
         defaultProps: {
           size: 'small',
