@@ -395,6 +395,9 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
               minWidth: '590px',
               backgroundColor: theme.common.background,
             },
+            '& .MuiDialog-paperFullScreen': {
+              borderRadius: 0,
+            },
           }),
         },
       },
