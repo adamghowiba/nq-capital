@@ -39,6 +39,9 @@ export class InvestorFundEntity
   @Field(() => Float)
   investor_balance_in_fund!: number;
 
+  @Field(() => Float)
+  balance!: number;
+
   @Field(() => FundEntity)
   fund!: FundEntity;
 

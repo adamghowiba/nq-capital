@@ -126,6 +126,7 @@ type InvestorFundEntity {
   fund_id: Int!
   investor: InvestorEntity!
   investor_balance_in_fund: Float!
+  balance: Float!
   fund: FundEntity!
   created_at: DateTime!
   updated_at: DateTime!
@@ -183,6 +184,7 @@ type Mutation {
   removeInvestor(id: Int!): InvestorEntity!
   createFund(createFundInput: CreateFundInput!): FundEntity!
   updateFund(updateFundInput: UpdateFundInput!): FundEntity!
+  adjustFund(adjustFundInput: AdjustFundInput!): FundEntity!
   addFundInvestors(addFundInvestorsInput: AddFundInvestorsInput!): FundEntity!
   removeFund(id: Int!): FundEntity!
 }
@@ -291,6 +293,17 @@ input CreateNestedInvestorFundWithoutFundInput {
 input UpdateFundInput {
   name: String
   id: Int!
+}
+
+input AdjustFundInput {
+  """
+  Amount to adjust the fund by. Can be a negative
+  or positive value.
+  """
+  amount: Float!
+  fund_id: Int!
+  adjusted_by_user_id: Int!
+  description: String
 }
 
 input AddFundInvestorsInput {

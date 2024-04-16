@@ -1,0 +1,13 @@
+query ListInvestors {
+  investors {
+    id
+    company_name
+    address_id
+    address {
+      id
+      verified
+      street
+      latitude
+    }
+  }
+}

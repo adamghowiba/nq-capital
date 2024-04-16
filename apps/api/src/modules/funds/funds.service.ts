@@ -7,6 +7,8 @@ import {
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
 import { AddFundInvestorsInput } from '../investor-funds/dto/update-fund-investors.input';
+import { AdjustFundInput } from './dto/adjust-fund.input';
+import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class FundsService {
@@ -38,6 +40,97 @@ export class FundsService {
     });
 
     return fund;
+  }
+
+  async adjustFund(adjustFundInput: AdjustFundInput) {
+    if (adjustFundInput.amount === 0)
+      throw new GraphQLError(
+        'A fund adjustment must be a positive or negative value and cannot be 0'
+      );
+
+    const fund = await this.prisma.fund.update({
+      where: { id: adjustFundInput.fund_id },
+      data: {
+        balance:
+          adjustFundInput.amount > 0
+            ? { increment: adjustFundInput.amount }
+            : { decrement: adjustFundInput.amount },
+      },
+    });
+
+    const updatedFundInvestors = await this.recalculateFundInvestorsBalance({
+      fundId: fund.id,
+    });
+
+    const fundAdjustment = await this.prisma.fundAdjustment.create({
+      data: {
+        amount: adjustFundInput.amount,
+        fund_id: adjustFundInput.fund_id,
+        adjusted_by_user_id: adjustFundInput.adjusted_by_user_id,
+        description: adjustFundInput.description,
+      },
+    });
+
+    return fund
+  }
+
+  async addInvestor(addFundInvestorInput: AddFundInvestorsInput) {
+    // TODO: Needs to be transaction
+    const fund = await this.prisma.fund.update({
+      where: { id: addFundInvestorInput.id },
+      data: {
+        balance: {
+          increment: addFundInvestorInput.initial_investment,
+        },
+        investors: {
+          create: {
+            stake_percentage: 0,
+            investor_id: addFundInvestorInput.investor_id,
+            initial_investment: addFundInvestorInput.initial_investment,
+            invested_amount: addFundInvestorInput.initial_investment,
+          },
+        },
+      },
+    });
+
+    const updatedFund = await this.recalculateInvestorStakes({
+      fundId: addFundInvestorInput.id,
+    });
+
+    return updatedFund;
+  }
+
+  async recalculateInvestorStakes(params: { fundId: number }) {
+    const fund = await this.prisma.fund.findUniqueOrThrow({
+      where: { id: params.fundId },
+      include: {
+        investors: true,
+      },
+    });
+
+    const fundBalance = fund.balance;
+
+    const investors = fund.investors.map((investor) => {
+      const stakePercentage = investor.invested_amount / fundBalance;
+
+      return { ...investor, stake_percentage: stakePercentage };
+    });
+
+    const updatedFund = await this.prisma.fund.update({
+      where: { id: params.fundId },
+      data: {
+        investors: {
+          update: investors.map((investor) => ({
+            where: { id: investor.id },
+            data: {
+              stake_percentage: investor.stake_percentage,
+            },
+          })),
+        },
+      },
+    });
+
+    return updatedFund;
   }
 
   /**
@@ -73,61 +166,41 @@ export class FundsService {
     return { investors: investors, totalInvestment };
   }
 
-  async addInvestor(addFundInvestorInput: AddFundInvestorsInput) {
-    // TODO: Needs to be transaction
-    const fund = await this.prisma.fund.update({
-      where: { id: addFundInvestorInput.id },
-      data: {
-        balance: {
-          increment: addFundInvestorInput.initial_investment,
-        },
-        investors: {
-          create: {
-            stake_percentage: 0,
-            investor_id: addFundInvestorInput.investor_id,
-            initial_investment: addFundInvestorInput.initial_investment,
-            invested_amount: addFundInvestorInput.initial_investment,
-          },
-        },
-      },
-    });
-
-    const updatedFund = await this.recalculateInvestorStakes({ fundId: addFundInvestorInput.id });
-
-    return updatedFund;
-  }
-
-  async recalculateInvestorStakes(params: { fundId: number }) {
+  /**
+   * Recalculate an investors balance for a particular fund.
+   * @param params
+   * @returns
+   */
+  async recalculateFundInvestorsBalance(params: { fundId: number }) {
     const fund = await this.prisma.fund.findUniqueOrThrow({
-      where: { id: params.fundId },
+      where: {
+        id: params.fundId,
+      },
+    });
+
+    const fundInvestor = await this.prisma.investorFund.findMany({
+      where: {
+        fund_id: params.fundId,
+      },
       include: {
-        investors: true,
+        investor: true,
       },
     });
 
-    const fundBalance = fund.balance;
+    const updatedFundInvestor = await this.prisma.$transaction(
+      fundInvestor.map((investorFund) => {
+        return this.prisma.investorFund.update({
+          where: {
+            id: investorFund.id,
+          },
+          data: {
+            balance: fund.balance * investorFund.stake_percentage.toNumber(),
+          },
+        });
+      })
+    );
 
-    const investors = fund.investors.map((investor) => {
-      const stakePercentage = investor.invested_amount / fundBalance;
-
-      return { ...investor, stake_percentage: stakePercentage };
-    });
-
-    const updatedFund = await this.prisma.fund.update({
-      where: { id: params.fundId },
-      data: {
-        investors: {
-          update: investors.map((investor) => ({
-            where: { id: investor.id },
-            data: {
-              stake_percentage: investor.stake_percentage,
-            },
-          })),
-        },
-      },
-    });
-
-    return updatedFund
+    return updatedFundInvestor;
   }
 
   async list() {

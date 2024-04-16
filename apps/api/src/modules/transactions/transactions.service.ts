@@ -1,26 +1,76 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
+import { PrismaService } from '@nq-capital/service-database';
+import { GraphQLError } from 'graphql';
+import { TransactionEntity } from './entities/transaction.entity';
+
+/**
+ * Events that trigger a transaction:
+ * - Investors invests in a fund
+ * - Investor withdraws from a fund
+ *
+ * Maybe Events:
+ * - Admin increases fund value
+ *
+ *
+ * History:
+ * Fund A: $100
+ *
+ * Investor A invests $50
+ * Investor B invests $50
+ * Both investor A & B own 50% of the fund
+ *
+//  * Fund goes up by $100 totaling $200.
+//  * Each investor has $100 in there portfolio.
+ *
+ * Investor C invests $100 totaling 100% of the fund.
+ * Investor A & B have a new ownership of 25%.
+ *
+ * Current fund amount: $300
+ * Investor C balance (50% stake): $150
+ * Investor A & B balance (25% stake): $75
+ */
 
 @Injectable()
 export class TransactionsService {
-  create(createTransactionInput: CreateTransactionInput) {
-    return 'This action adds a new transaction';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(
+    createTransactionInput: CreateTransactionInput
+  ): Promise<TransactionEntity> {
+    const transaction = await this.prisma.transaction.create({
+      data: createTransactionInput,
+    });
+
+    return transaction;
   }
 
-  findAll() {
-    return `This action returns all transactions`;
+  async list(): Promise<TransactionEntity[]> {
+    const transactions = await this.prisma.transaction.findMany({
+
+    });
+
+    return transactions;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  async retrieve(id: number): Promise<TransactionEntity> {
+    const transactions = await this.prisma.transaction.findUniqueOrThrow({
+      where: { id },
+    });
+
+    return transactions;
   }
 
   update(id: number, updateTransactionInput: UpdateTransactionInput) {
-    return `This action updates a #${id} transaction`;
+    throw new GraphQLError('Unimplemented');
   }
 
+  /**
+   * TODOS
+   * - Soft delete
+   */
   remove(id: number) {
-    return `This action removes a #${id} transaction`;
+    throw new GraphQLError('Unimplemented');
   }
 }

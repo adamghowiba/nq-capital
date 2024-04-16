@@ -13,6 +13,7 @@ import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
 import { FundsService } from './funds.service';
 import { AddFundInvestorsInput } from '../investor-funds/dto/update-fund-investors.input';
+import { AdjustFundInput } from './dto/adjust-fund.input';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {
@@ -36,6 +37,11 @@ export class FundsResolver {
   @Mutation(() => FundEntity)
   updateFund(@Args('updateFundInput') updateFundInput: UpdateFundInput) {
     return this.fundsService.update(updateFundInput.id, updateFundInput);
+  }
+
+  @Mutation(() => FundEntity)
+  adjustFund(@Args('adjustFundInput') adjustFundInput: AdjustFundInput) {
+    return this.fundsService.adjustFund(adjustFundInput);
   }
 
   @Mutation(() => FundEntity)

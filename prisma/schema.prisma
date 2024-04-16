@@ -29,6 +29,7 @@ model User {
   sent_invitations     Invitation[]
   created_at           DateTime             @default(now())
   updated_at           DateTime             @updatedAt
+  fund_adjustments     FundAdjustment[]
 }
 
 enum InvestorAccountStatus {
@@ -117,12 +118,27 @@ enum PaymentMethodType {
 }
 
 model Fund {
-  id         Int            @id @default(autoincrement())
-  name       String         @unique
-  balance    Float          @db.DoublePrecision()
-  investors  InvestorFund[]
-  created_at DateTime       @default(now())
-  updated_at DateTime       @updatedAt
+  id               Int              @id @default(autoincrement())
+  name             String           @unique
+  balance          Float            @db.DoublePrecision()
+  investors        InvestorFund[]
+  created_at       DateTime         @default(now())
+  updated_at       DateTime         @updatedAt
+  fund_adjustments FundAdjustment[]
+}
+
+model FundAdjustment {
+  id                  Int      @id @default(autoincrement())
+  description         String?
+  amount              Float    @db.DoublePrecision()
+  // change_type ChangeType (Negative or Positive)
+  // type FundAdjustmentType (Could be used to specify where the fund adjustment originated)
+  fund                Fund     @relation(fields: [fund_id], references: [id])
+  fund_id             Int
+  adjusted_by_user    User     @relation(fields: [adjusted_by_user_id], references: [id])
+  adjusted_by_user_id Int
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
 }
 
 model InvestorFund {
@@ -130,6 +146,7 @@ model InvestorFund {
   stake_percentage   Decimal
   initial_investment Float    @db.DoublePrecision()
   invested_amount    Float    @db.DoublePrecision()
+  balance            Float    @db.DoublePrecision() @default(0)
   investor           Investor @relation(fields: [investor_id], references: [id])
   investor_id        Int
   fund               Fund     @relation(fields: [fund_id], references: [id])

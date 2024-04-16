@@ -1,4 +1,4 @@
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -60,6 +60,17 @@ export type AddressEntity = {
   street_2?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
   verified: Scalars['Float']['output'];
+};
+
+export type AdjustFundInput = {
+  adjusted_by_user_id: Scalars['Int']['input'];
+  /**
+   * Amount to adjust the fund by. Can be a negative
+   * or positive value.
+   */
+  amount: Scalars['Float']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  fund_id: Scalars['Int']['input'];
 };
 
 export type BankAccountEntity = {
@@ -194,6 +205,7 @@ export type InvestorEntity = {
 
 export type InvestorFundEntity = {
   __typename?: 'InvestorFundEntity';
+  balance: Scalars['Float']['output'];
   created_at: Scalars['DateTime']['output'];
   fund: FundEntity;
   fund_id: Scalars['Int']['output'];
@@ -210,6 +222,7 @@ export type InvestorFundEntity = {
 export type Mutation = {
   __typename?: 'Mutation';
   addFundInvestors: FundEntity;
+  adjustFund: FundEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
   createUser: UserEntity;
@@ -224,6 +237,11 @@ export type Mutation = {
 
 export type MutationAddFundInvestorsArgs = {
   addFundInvestorsInput: AddFundInvestorsInput;
+};
+
+
+export type MutationAdjustFundArgs = {
+  adjustFundInput: AdjustFundInput;
 };
 
 
@@ -394,6 +412,25 @@ export type UserRole =
   | 'ADMIN'
   | 'MANAGER';
 
+export type ListTestInvestorsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListTestInvestorsQuery = { __typename?: 'Query', investors: Array<{ __typename?: 'InvestorEntity', id: number, company_name?: string | null, address_id?: number | null, address?: { __typename?: 'AddressEntity', id: number, verified: number, street: string, latitude: number } | null }> };
+
+export type RetrieveInvestorQueryVariables = Exact<{
+  investor_id: Scalars['Int']['input'];
+}>;
+
+
+export type RetrieveInvestorQuery = { __typename?: 'Query', investor: { __typename?: 'InvestorEntity', id: number, company_name?: string | null } };
+
+export type CreateCoolInvestorMutationVariables = Exact<{
+  createInvestorInput: CreateInvestorInput;
+}>;
+
+
+export type CreateCoolInvestorMutation = { __typename?: 'Mutation', createInvestor: { __typename?: 'InvestorEntity', id: number, company_name?: string | null, company_tax_id?: string | null } };
+
 export type ListUsersQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -404,6 +441,103 @@ export type ListUsersQueryVariables = Exact<{
 export type ListUsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUserEntity', data?: Array<{ __typename?: 'UserEntity', id: number, first_name: string, last_name: string, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, email: string, created_at: any, updated_at: any }> | null } };
 
 
+
+export const ListTestInvestorsDocument = `
+    query ListTestInvestors {
+  investors {
+    id
+    company_name
+    address_id
+    address {
+      id
+      verified
+      street
+      latitude
+    }
+  }
+}
+    `;
+
+export const useListTestInvestorsQuery = <
+      TData = ListTestInvestorsQuery,
+      TError = unknown
+    >(
+      variables?: ListTestInvestorsQueryVariables,
+      options?: Omit<UseQueryOptions<ListTestInvestorsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListTestInvestorsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListTestInvestorsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListTestInvestors'] : ['ListTestInvestors', variables],
+    queryFn: fetcher<ListTestInvestorsQuery, ListTestInvestorsQueryVariables>(ListTestInvestorsDocument, variables),
+    ...options
+  }
+    )};
+
+useListTestInvestorsQuery.document = ListTestInvestorsDocument;
+
+useListTestInvestorsQuery.getKey = (variables?: ListTestInvestorsQueryVariables) => variables === undefined ? ['ListTestInvestors'] : ['ListTestInvestors', variables];
+
+
+useListTestInvestorsQuery.fetcher = (variables?: ListTestInvestorsQueryVariables) => fetcher<ListTestInvestorsQuery, ListTestInvestorsQueryVariables>(ListTestInvestorsDocument, variables);
+
+export const RetrieveInvestorDocument = `
+    query RetrieveInvestor($investor_id: Int!) {
+  investor(id: $investor_id) {
+    id
+    company_name
+  }
+}
+    `;
+
+export const useRetrieveInvestorQuery = <
+      TData = RetrieveInvestorQuery,
+      TError = unknown
+    >(
+      variables: RetrieveInvestorQueryVariables,
+      options?: Omit<UseQueryOptions<RetrieveInvestorQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RetrieveInvestorQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RetrieveInvestorQuery, TError, TData>(
+      {
+    queryKey: ['RetrieveInvestor', variables],
+    queryFn: fetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables),
+    ...options
+  }
+    )};
+
+useRetrieveInvestorQuery.document = RetrieveInvestorDocument;
+
+useRetrieveInvestorQuery.getKey = (variables: RetrieveInvestorQueryVariables) => ['RetrieveInvestor', variables];
+
+
+useRetrieveInvestorQuery.fetcher = (variables: RetrieveInvestorQueryVariables) => fetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables);
+
+export const CreateCoolInvestorDocument = `
+    mutation CreateCoolInvestor($createInvestorInput: CreateInvestorInput!) {
+  createInvestor(createInvestorInput: $createInvestorInput) {
+    id
+    company_name
+    company_tax_id
+  }
+}
+    `;
+
+export const useCreateCoolInvestorMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateCoolInvestorMutation, TError, CreateCoolInvestorMutationVariables, TContext>) => {
+    
+    return useMutation<CreateCoolInvestorMutation, TError, CreateCoolInvestorMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateCoolInvestor'],
+    mutationFn: (variables?: CreateCoolInvestorMutationVariables) => fetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useCreateCoolInvestorMutation.fetcher = (variables: CreateCoolInvestorMutationVariables) => fetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables);
 
 export const ListUsersDocument = `
     query ListUsers($limit: Int!, $page: Int, $role: UserRole) {
