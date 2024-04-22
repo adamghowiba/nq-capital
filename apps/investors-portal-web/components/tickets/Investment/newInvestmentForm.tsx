@@ -27,6 +27,7 @@ interface NewInvestmentFormProps {
   data?: NewInvestment;
   onReview: (data: NewInvestment) => void;
   isSubmittingTicket: boolean;
+  onBack: () => void;
 }
 
 export interface NewInvestment {
@@ -40,6 +41,7 @@ export default function NewInvestmentForm({
   investmentReceivers,
   data,
   onReview,
+  onBack,
   isSubmittingTicket,
 }: NewInvestmentFormProps) {
   const PAYMENT_METHODS = ['Bank Transfer', 'Cheque', 'Zelle'];
@@ -77,6 +79,11 @@ export default function NewInvestmentForm({
       resetForm();
     },
   });
+
+  function close() {
+    formik.resetForm();
+    onBack();
+  }
 
   return (
     <Box

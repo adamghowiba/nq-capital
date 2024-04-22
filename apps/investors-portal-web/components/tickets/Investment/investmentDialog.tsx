@@ -2,6 +2,7 @@ import { Box, Dialog } from '@mui/material';
 import { useState } from 'react';
 import InvestmentDialogHeader from './investmentDialogHeader';
 import NewInvestmentForm, { NewInvestment } from './newInvestmentForm';
+import NewInvestmentSummary from './newInvestmentSummary';
 
 interface InvestmentDialogProps {
   isDialogOpen: boolean;
@@ -13,6 +14,13 @@ export default function InvestmentDialog({
 }: InvestmentDialogProps) {
   function close() {
     closeDialog();
+    setNewInvestmentData({
+      receiver: '',
+      amount: 0,
+      investmentDate: new Date(),
+      paymentMode: '',
+      comment: '',
+    });
   }
 
   const [currentStep, setCurrentStep] = useState<FormStep>('form');
@@ -60,6 +68,7 @@ export default function InvestmentDialog({
           setNewInvestmentData(data);
           handleNext();
         }}
+        onBack={close}
         isSubmittingTicket={isSubmittingTicket}
         data={newInvestmentData}
       />
