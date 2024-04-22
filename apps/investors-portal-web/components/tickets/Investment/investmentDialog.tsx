@@ -145,7 +145,8 @@ export default function InvestmentDialog({
     >
       <InvestmentDialogHeader
         currentStep={currentStepIndex + 1}
-        totalSteps={TOTAL_STEPS}
+        // -1 because the created step is not counted
+        totalSteps={TOTAL_STEPS - 1}
         handleBack={handleBack}
         handleNext={() => handleNext(true)}
         onClose={close}
