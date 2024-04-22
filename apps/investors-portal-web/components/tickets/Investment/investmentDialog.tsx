@@ -1,4 +1,4 @@
-import { Box, Dialog } from '@mui/material';
+import { Box, Dialog, Typography } from '@mui/material';
 import { useState } from 'react';
 import InvestmentDialogHeader from './investmentDialogHeader';
 import NewInvestmentForm, { NewInvestment } from './newInvestmentForm';
@@ -25,7 +25,7 @@ export default function InvestmentDialog({
   }
 
   const [currentStep, setCurrentStep] = useState<FormStep>('form');
-  const FORM_STEPS = ['form', 'summary'] as const;
+  const FORM_STEPS = ['form', 'summary', 'created'] as const;
   const TOTAL_STEPS = FORM_STEPS.length;
   type FormStep = (typeof FORM_STEPS)[number];
   const currentStepIndex = FORM_STEPS.indexOf(currentStep);
@@ -55,7 +55,7 @@ export default function InvestmentDialog({
     setIsSubmittingTicket(true);
     setTimeout(() => {
       setIsSubmittingTicket(false);
-      close();
+      handleNext();
     }, 2000);
   }
 
@@ -99,6 +99,15 @@ export default function InvestmentDialog({
         onSubmit={(data: NewInvestment) => submitInvestment(data)}
       />
     ),
+    created: (
+      <Box sx={{ display: 'grid', rowGap: 2 }}>
+        <Typography variant="h4">Investment created</Typography>
+        <Typography>
+          Your investment has been successfully created. You will receive a
+          confirmation email shortly.
+        </Typography>
+      </Box>
+    ),
   };
 
   return (
@@ -109,6 +118,7 @@ export default function InvestmentDialog({
         handleBack={handleBack}
         handleNext={() => handleNext(true)}
         onClose={close}
+        isCreated={currentStep === 'created'}
       />
       <Box sx={{ padding: '40px 0', display: 'grid', justifyItems: 'center' }}>
         {stepComponent[currentStep]}

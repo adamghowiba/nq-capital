@@ -11,6 +11,7 @@ interface InvestmentDialogHeaderProps {
   handleNext: () => void;
   handleBack: () => void;
   onClose: () => void;
+  isCreated: boolean;
 }
 export default function InvestmentDialogHeader({
   currentStep,
@@ -18,6 +19,7 @@ export default function InvestmentDialogHeader({
   handleBack,
   handleNext,
   onClose,
+  isCreated,
 }: InvestmentDialogHeaderProps) {
   return (
     <DContainer
@@ -54,43 +56,49 @@ export default function InvestmentDialogHeader({
             iconColor="#BBBBBB"
             onClick={onClose}
           />
-          <Divider
-            sx={{
-              border: 'none',
-              borderLeft: '1px solid #BBBBBB',
-              height: '70%',
-            }}
-            orientation="vertical"
-          />
-          <Box
-            sx={{
-              display: 'grid',
-              gridAutoFlow: 'column',
-              alignItems: 'center',
-              columnGap: 1,
-            }}
-          >
-            <OneIcon
-              icon={left}
-              fontSize={15}
-              size="small"
-              title="Previous"
-              iconColor="#BBBBBB"
-              onClick={handleBack}
-            />
-            <OneIcon
-              icon={right}
-              fontSize={15}
-              size="small"
-              title="Next"
-              iconColor="#BBBBBB"
-              onClick={handleNext}
-            />
-          </Box>
+          {!isCreated && (
+            <>
+              <Divider
+                sx={{
+                  border: 'none',
+                  borderLeft: '1px solid #BBBBBB',
+                  height: '70%',
+                }}
+                orientation="vertical"
+              />
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridAutoFlow: 'column',
+                  alignItems: 'center',
+                  columnGap: 1,
+                }}
+              >
+                <OneIcon
+                  icon={left}
+                  fontSize={15}
+                  size="small"
+                  title="Previous"
+                  iconColor="#BBBBBB"
+                  onClick={handleBack}
+                />
+                <OneIcon
+                  icon={right}
+                  fontSize={15}
+                  size="small"
+                  title="Next"
+                  iconColor="#BBBBBB"
+                  onClick={handleNext}
+                />
+              </Box>
+            </>
+          )}
         </Box>
-        <Typography
-          sx={{ color: '#8D8D8D', fontWeight: 500 }}
-        >{`${currentStep}/${totalSteps}`}</Typography>
+        {!isCreated && (
+          <Typography
+            sx={{ color: '#8D8D8D', fontWeight: 500 }}
+          >{`${currentStep}/${totalSteps}`}</Typography>
+        )}
       </Box>
     </DContainer>
   );
