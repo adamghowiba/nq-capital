@@ -1,5 +1,6 @@
-import { Box, Dialog, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Box, Dialog } from '@mui/material';
+import { ReactNode, useState } from 'react';
+import InvestmentCreated from './investmentCreated';
 import InvestmentDialogHeader from './investmentDialogHeader';
 import NewInvestmentForm, { NewInvestment } from './newInvestmentForm';
 import NewInvestmentSummary from './newInvestmentSummary';
@@ -8,20 +9,33 @@ interface InvestmentDialogProps {
   isDialogOpen: boolean;
   closeDialog: () => void;
 }
+
+interface Investment extends NewInvestment {
+  id: string;
+}
+
 export default function InvestmentDialog({
   closeDialog,
   isDialogOpen,
 }: InvestmentDialogProps) {
+  const initialInvestmentState: NewInvestment = {
+    receiver: '',
+    amount: 0,
+    investmentDate: new Date(),
+    paymentMode: '',
+    comment: '',
+  };
+
+  function createNew() {
+    setCurrentStep('form');
+    setMaxAccessibleStep(0);
+    setCreatedInvestment(null);
+    setNewInvestmentData(initialInvestmentState);
+  }
+
   function close() {
     closeDialog();
-    setCurrentStep('form');
-    setNewInvestmentData({
-      receiver: '',
-      amount: 0,
-      investmentDate: new Date(),
-      paymentMode: '',
-      comment: '',
-    });
+    createNew();
   }
 
   const [currentStep, setCurrentStep] = useState<FormStep>('form');
@@ -50,11 +64,18 @@ export default function InvestmentDialog({
     setCurrentStep(FORM_STEPS[previousStepIndex]);
   }
 
+  const [createdInvestment, setCreatedInvestment] = useState<Investment | null>(
+    null
+  );
+
   function submitInvestment(data: NewInvestment) {
     //TODO: CALL API HERE TO CREATE NEW INVESTMENT
     setIsSubmittingTicket(true);
     setTimeout(() => {
       setIsSubmittingTicket(false);
+      setNewInvestmentData(initialInvestmentState);
+      //TODO: GET THIS DATA FROM API AFTER CREATION
+      setCreatedInvestment({ ...data, id: 'uuidv4' });
       handleNext();
     }, 2000);
   }
@@ -67,17 +88,13 @@ export default function InvestmentDialog({
       id: 'uuidv4',
     },
   ];
-  const [newInvestmentData, setNewInvestmentData] = useState<NewInvestment>({
-    receiver: '',
-    amount: 0,
-    investmentDate: new Date(),
-    paymentMode: '',
-    comment: '',
-  });
+  const [newInvestmentData, setNewInvestmentData] = useState<NewInvestment>(
+    initialInvestmentState
+  );
 
   const [isSubmittingTicket, setIsSubmittingTicket] = useState<boolean>(false);
 
-  const stepComponent: Record<FormStep, JSX.Element> = {
+  const stepComponent: Record<FormStep, ReactNode> = {
     form: (
       <NewInvestmentForm
         investmentReceivers={investmentReceivers}
@@ -99,19 +116,33 @@ export default function InvestmentDialog({
         onSubmit={(data: NewInvestment) => submitInvestment(data)}
       />
     ),
-    created: (
-      <Box sx={{ display: 'grid', rowGap: 2 }}>
-        <Typography variant="h4">Investment created</Typography>
-        <Typography>
-          Your investment has been successfully created. You will receive a
-          confirmation email shortly.
-        </Typography>
-      </Box>
+    created: createdInvestment && (
+      <InvestmentCreated
+        amount={createdInvestment.amount}
+        createNew={createNew}
+        close={close}
+        ticketId={createdInvestment.id}
+      />
     ),
   };
 
   return (
-    <Dialog open={isDialogOpen} fullScreen onClose={close}>
+    <Dialog
+      open={isDialogOpen}
+      fullScreen
+      onClose={close}
+      sx={{
+        '& .MuiPaper-root': {
+          ...(currentStep === 'created'
+            ? {
+                height: '100%',
+                display: 'grid',
+                gridTemplateRows: 'auto 1fr',
+              }
+            : {}),
+        },
+      }}
+    >
       <InvestmentDialogHeader
         currentStep={currentStepIndex + 1}
         totalSteps={TOTAL_STEPS}
