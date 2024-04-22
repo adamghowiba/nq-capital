@@ -361,6 +361,10 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         },
       },
       MuiFormControl: {
+        defaultProps: {
+          size: 'small',
+          fullWidth: true,
+        },
         styleOverrides: {
           root: ({ theme }) => ({
             '& .MuiInputBase-root': {
