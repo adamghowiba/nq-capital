@@ -14,6 +14,7 @@ export default function InvestmentDialog({
 }: InvestmentDialogProps) {
   function close() {
     closeDialog();
+    setCurrentStep('form');
     setNewInvestmentData({
       receiver: '',
       amount: 0,
@@ -40,6 +41,15 @@ export default function InvestmentDialog({
     const previousStepIndex = currentStepIndex - 1;
     if (previousStepIndex < 0) return;
     setCurrentStep(FORM_STEPS[previousStepIndex]);
+  }
+
+  function submitInvestment(data: NewInvestment) {
+    //TODO: CALL API HERE TO CREATE NEW INVESTMENT
+    setIsSubmittingTicket(true);
+    setTimeout(() => {
+      setIsSubmittingTicket(false);
+      close();
+    }, 2000);
   }
 
   const investmentReceivers = [
@@ -73,7 +83,15 @@ export default function InvestmentDialog({
         data={newInvestmentData}
       />
     ),
-    summary: <Box>Summary</Box>,
+    summary: (
+      <NewInvestmentSummary
+        data={newInvestmentData}
+        receivers={investmentReceivers}
+        isSubmittingTicket={isSubmittingTicket}
+        onBack={handleBack}
+        onSubmit={(data: NewInvestment) => submitInvestment(data)}
+      />
+    ),
   };
 
   return (
