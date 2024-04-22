@@ -150,6 +150,7 @@ export default function InvestmentDialog({
         handleNext={() => handleNext(true)}
         onClose={close}
         isCreated={currentStep === 'created'}
+        isSubmitting={isSubmittingTicket}
       />
       <Box sx={{ padding: '40px 0', display: 'grid', justifyItems: 'center' }}>
         {stepComponent[currentStep]}

@@ -12,6 +12,7 @@ interface InvestmentDialogHeaderProps {
   handleBack: () => void;
   onClose: () => void;
   isCreated: boolean;
+  isSubmitting: boolean;
 }
 export default function InvestmentDialogHeader({
   currentStep,
@@ -20,6 +21,7 @@ export default function InvestmentDialogHeader({
   handleNext,
   onClose,
   isCreated,
+  isSubmitting,
 }: InvestmentDialogHeaderProps) {
   return (
     <DContainer
@@ -55,6 +57,7 @@ export default function InvestmentDialogHeader({
             title="Close"
             iconColor="#BBBBBB"
             onClick={onClose}
+            disabled={isSubmitting}
           />
           {!isCreated && (
             <>
@@ -81,6 +84,7 @@ export default function InvestmentDialogHeader({
                   title="Previous"
                   iconColor="#BBBBBB"
                   onClick={handleBack}
+                  disabled={isSubmitting}
                 />
                 <OneIcon
                   icon={right}
@@ -89,6 +93,7 @@ export default function InvestmentDialogHeader({
                   title="Next"
                   iconColor="#BBBBBB"
                   onClick={handleNext}
+                  disabled={isSubmitting}
                 />
               </Box>
             </>
