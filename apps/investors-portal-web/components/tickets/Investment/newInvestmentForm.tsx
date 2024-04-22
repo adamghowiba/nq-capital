@@ -16,7 +16,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import StepHeader from '../../onboarding/stepHeader';
 
-interface InvestmentReceiver {
+export interface InvestmentReceiver {
   first_name: string;
   last_name: string;
   email: string;
