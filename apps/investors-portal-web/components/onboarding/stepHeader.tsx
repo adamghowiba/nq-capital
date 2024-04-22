@@ -11,11 +11,11 @@ export default function StepHeader({
   gap = 2,
 }: StepHeaderProps) {
   return (
-    <Box sx={{ display: 'grid', rowGap: 1 }}>
-      <Typography variant="h2" color="#202020" fontWeight={500}>
+    <Box sx={{ display: 'grid', rowGap: gap }}>
+      <Typography variant="h2" py={0} color="#202020" fontWeight={500}>
         {title}
       </Typography>
-      <Typography variant="h5" color="#8D8D8D">
+      <Typography variant="h5" py={0} color="#8D8D8D">
         {subtitle}
       </Typography>
     </Box>
