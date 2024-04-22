@@ -29,12 +29,19 @@ export default function InvestmentDialog({
   const TOTAL_STEPS = FORM_STEPS.length;
   type FormStep = (typeof FORM_STEPS)[number];
   const currentStepIndex = FORM_STEPS.indexOf(currentStep);
+  const [maxAccessibleStep, setMaxAccessibleStep] = useState<number>(0);
 
-  function handleNext() {
+  function handleNext(isNav?: boolean) {
     const nextStepIndex = currentStepIndex + 1;
     if (nextStepIndex > TOTAL_STEPS - 1) return;
-
-    setCurrentStep(FORM_STEPS[nextStepIndex]);
+    if (isNav) {
+      if (maxAccessibleStep >= nextStepIndex)
+        setCurrentStep(FORM_STEPS[nextStepIndex]);
+    } else {
+      if (maxAccessibleStep <= nextStepIndex)
+        setMaxAccessibleStep(nextStepIndex);
+      setCurrentStep(FORM_STEPS[nextStepIndex]);
+    }
   }
 
   function handleBack() {
@@ -100,7 +107,7 @@ export default function InvestmentDialog({
         currentStep={currentStepIndex + 1}
         totalSteps={TOTAL_STEPS}
         handleBack={handleBack}
-        handleNext={handleNext}
+        handleNext={() => handleNext(true)}
         onClose={close}
       />
       <Box sx={{ padding: '40px 0', display: 'grid', justifyItems: 'center' }}>
