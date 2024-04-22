@@ -9,8 +9,9 @@ import DashboardLayout from '../components/(dashboard)/layout';
 import { Providers } from '../components/Providers/Providers';
 import { theme } from '../lib/theme';
 import '../styles/global.css';
+import { IntlProvider } from 'react-intl';
 
-const NO_LAYOUT_ROUTES = ['signup', 'signin', 'onboarding',];
+const NO_LAYOUT_ROUTES = ['signup', 'signin', 'onboarding'];
 
 function CustomApp({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter();
@@ -27,19 +28,21 @@ function CustomApp({ Component, pageProps }: AppProps) {
         <title>Investors Portal</title>
       </Head>
       <main className="app">
-        <ThemeProvider theme={theme}>
-          <Providers>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              {hasLayout ? (
-                <DashboardLayout>
+        <IntlProvider locale="en">
+          <ThemeProvider theme={theme}>
+            <Providers>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                {hasLayout ? (
+                  <DashboardLayout>
+                    <Component {...pageProps} />
+                  </DashboardLayout>
+                ) : (
                   <Component {...pageProps} />
-                </DashboardLayout>
-              ) : (
-                <Component {...pageProps} />
-              )}
-            </LocalizationProvider>
-          </Providers>
-        </ThemeProvider>
+                )}
+              </LocalizationProvider>
+            </Providers>
+          </ThemeProvider>
+        </IntlProvider>
       </main>
     </>
   );
