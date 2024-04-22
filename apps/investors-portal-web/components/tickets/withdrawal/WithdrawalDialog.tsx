@@ -1,6 +1,7 @@
 import { Box, Dialog } from '@mui/material';
 import { ReactNode, useState } from 'react';
 import InvestmentDialogHeader from '../Investment/investmentDialogHeader';
+import NewWithdrawalForm, { NewWithdrawal } from './newWithdrawalForm';
 
 interface WithdrawalDialogProps {
   isDialogOpen: boolean;
@@ -43,9 +44,25 @@ export default function WithdrawalDialog({
   }
 
   const [isSubmittingTicket, setIsSubmittingTicket] = useState<boolean>(false);
+  const [newWithdrawalData, setNewWithdrawalData] = useState<NewWithdrawal>({
+    accountId: '',
+    amount: 0,
+    withdrawalDate: new Date(),
+    comment: '',
+  });
 
   const stepComponent: Record<FormStep, ReactNode> = {
-    form: <Box>Hello World Form</Box>,
+    form: (
+      <NewWithdrawalForm
+        isSubmittingTicket={isSubmittingTicket}
+        onBack={handleBack}
+        onReview={(data) => {
+          setNewWithdrawalData(data);
+          handleNext();
+        }}
+        data={newWithdrawalData}
+      />
+    ),
     summary: <Box>World Hello Summary</Box>,
     created: <Box>Created Ticket</Box>,
   };
