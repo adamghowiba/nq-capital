@@ -10,12 +10,14 @@ interface InvestmentDialogHeaderProps {
   totalSteps: number;
   handleNext: () => void;
   handleBack: () => void;
+  onClose: () => void;
 }
 export default function InvestmentDialogHeader({
   currentStep,
   totalSteps,
   handleBack,
   handleNext,
+  onClose,
 }: InvestmentDialogHeaderProps) {
   return (
     <DContainer
@@ -50,6 +52,7 @@ export default function InvestmentDialogHeader({
             size="small"
             title="Close"
             iconColor="#BBBBBB"
+            onClick={onClose}
           />
           <Divider
             sx={{

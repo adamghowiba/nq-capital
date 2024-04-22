@@ -101,6 +101,7 @@ export default function InvestmentDialog({
         totalSteps={TOTAL_STEPS}
         handleBack={handleBack}
         handleNext={handleNext}
+        onClose={close}
       />
       <Box sx={{ padding: '40px 0', display: 'grid', justifyItems: 'center' }}>
         {stepComponent[currentStep]}
