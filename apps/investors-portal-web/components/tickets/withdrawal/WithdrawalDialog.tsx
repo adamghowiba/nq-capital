@@ -11,6 +11,10 @@ interface WithdrawalDialogProps {
   isDialogOpen: boolean;
   closeDialog: () => void;
 }
+
+interface Withdrawal extends NewWithdrawal {
+  id: string;
+}
 export default function WithdrawalDialog({
   isDialogOpen,
   closeDialog,
@@ -38,6 +42,13 @@ export default function WithdrawalDialog({
       swift_code: '1234567890',
     },
   ];
+
+  const initialWithdrawalState: NewWithdrawal = {
+    accountId: '',
+    amount: 0,
+    withdrawalDate: new Date(),
+    comment: '',
+  };
 
   const [currentStep, setCurrentStep] = useState<FormStep>('form');
   const FORM_STEPS = ['form', 'summary', 'created'] as const;
@@ -72,12 +83,25 @@ export default function WithdrawalDialog({
   }
 
   const [isSubmittingTicket, setIsSubmittingTicket] = useState<boolean>(false);
-  const [newWithdrawalData, setNewWithdrawalData] = useState<NewWithdrawal>({
-    accountId: '',
-    amount: 0,
-    withdrawalDate: new Date(),
-    comment: '',
-  });
+  const [newWithdrawalData, setNewWithdrawalData] = useState<NewWithdrawal>(
+    initialWithdrawalState
+  );
+
+  const [createdWithdrawal, setCreatedWithdrawal] = useState<Withdrawal | null>(
+    null
+  );
+
+  function submitRequest(data: NewWithdrawal) {
+    //TODO: CALL API HERE TO CREATE NEW INVESTMENT
+    setIsSubmittingTicket(true);
+    setTimeout(() => {
+      setIsSubmittingTicket(false);
+      setNewWithdrawalData(initialWithdrawalState);
+      //TODO: GET THIS DATA FROM API AFTER CREATION
+      setCreatedWithdrawal({ ...data, id: 'uuidv4' });
+      handleNext();
+    }, 2000);
+  }
 
   const stepComponent: Record<FormStep, ReactNode> = {
     form: (
@@ -98,7 +122,7 @@ export default function WithdrawalDialog({
         data={newWithdrawalData}
         isSubmittingTicket={isSubmittingTicket}
         onBack={handleBack}
-        onSubmit={(data) => alert(data)}
+        onSubmit={submitRequest}
         registeredAccounts={registeredAccounts}
       />
     ),
