@@ -1,5 +1,5 @@
 import { Box, Dialog } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import InvestmentCreated from './investmentCreated';
 import InvestmentDialogHeader from './investmentDialogHeader';
 import NewInvestmentForm, { NewInvestment } from './newInvestmentForm';
@@ -80,6 +80,15 @@ export default function InvestmentDialog({
     }, 2000);
   }
 
+  //TODO: GET THIS DATA FROM LOADING INVESTMENT RECEIVERS
+  const [isLoadingInvestmentReceivers, setIsLoadingInvestmentReceivers] =
+    useState<boolean>(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoadingInvestmentReceivers(false);
+    }, 3000);
+  }, []);
+  //TODO: CALL API TO RECEIVE THIS INFORMATION.
   const investmentReceivers = [
     {
       first_name: 'Jane',
@@ -98,6 +107,7 @@ export default function InvestmentDialog({
     form: (
       <NewInvestmentForm
         investmentReceivers={investmentReceivers}
+        isLoadingInvestmentReceivers={isLoadingInvestmentReceivers}
         onReview={(data) => {
           setNewInvestmentData(data);
           handleNext();

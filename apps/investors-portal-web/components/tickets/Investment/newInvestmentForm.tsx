@@ -28,6 +28,7 @@ interface NewInvestmentFormProps {
   onReview: (data: NewInvestment) => void;
   isSubmittingTicket: boolean;
   onBack: () => void;
+  isLoadingInvestmentReceivers: boolean;
 }
 
 export interface NewInvestment {
@@ -43,6 +44,7 @@ export default function NewInvestmentForm({
   onReview,
   onBack,
   isSubmittingTicket,
+  isLoadingInvestmentReceivers,
 }: NewInvestmentFormProps) {
   const PAYMENT_METHODS = ['Bank Transfer', 'Cheque', 'Zelle'];
 
@@ -137,7 +139,7 @@ export default function NewInvestmentForm({
                   formik.touched.receiver && Boolean(formik.errors.receiver)
                 }
                 {...formik.getFieldProps('receiver')}
-                disabled={isSubmittingTicket}
+                disabled={isSubmittingTicket || isLoadingInvestmentReceivers}
                 size="small"
               />
               {formik.touched.receiver && formik.errors.receiver && (
