@@ -1,7 +1,11 @@
 import { Box, Dialog } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import InvestmentDialogHeader from '../Investment/investmentDialogHeader';
-import NewWithdrawalForm, { NewWithdrawal } from './newWithdrawalForm';
+import NewWithdrawalForm, {
+    NewWithdrawal,
+    RegisteredAccount,
+} from './newWithdrawalForm';
+import NewWithdrawalSummary from './newWithdrawalSummary';
 
 interface WithdrawalDialogProps {
   isDialogOpen: boolean;
@@ -11,6 +15,30 @@ export default function WithdrawalDialog({
   isDialogOpen,
   closeDialog,
 }: WithdrawalDialogProps) {
+  //TODO: GET THIS DATA FROM LOADING REGISTERD ACCOUNTS
+  const [isLoadingRegisteredAccounts, setIsLoadingRegisteredAccounts] =
+    useState<boolean>(true);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoadingRegisteredAccounts(false);
+    }, 3000);
+  }, []);
+  //TODO: CALL API HERE TO FETCH REGISTERED ACCOUNTS
+  const registeredAccounts: RegisteredAccount[] = [
+    {
+      id: '1',
+      account_holder_name: 'John Doe',
+      account_type: 'Savings',
+      bank_account_number: '1234567890',
+      bank_address: 'Bank of America',
+      bank_country: 'United States',
+      bank_name: 'Bank of America',
+      bank_routing_number: '123456789',
+      IBAN: '1234567890',
+      swift_code: '1234567890',
+    },
+  ];
+
   const [currentStep, setCurrentStep] = useState<FormStep>('form');
   const FORM_STEPS = ['form', 'summary', 'created'] as const;
   const TOTAL_STEPS = FORM_STEPS.length;
@@ -61,9 +89,19 @@ export default function WithdrawalDialog({
           handleNext();
         }}
         data={newWithdrawalData}
+        registeredAccounts={registeredAccounts}
+        isLoadingRegisteredAccounts={isLoadingRegisteredAccounts}
       />
     ),
-    summary: <Box>World Hello Summary</Box>,
+    summary: (
+      <NewWithdrawalSummary
+        data={newWithdrawalData}
+        isSubmittingTicket={isSubmittingTicket}
+        onBack={handleBack}
+        onSubmit={(data) => alert(data)}
+        registeredAccounts={registeredAccounts}
+      />
+    ),
     created: <Box>Created Ticket</Box>,
   };
 

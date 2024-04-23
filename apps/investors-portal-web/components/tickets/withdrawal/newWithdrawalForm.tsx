@@ -17,7 +17,6 @@ import {
 import { MobileDatePicker } from '@mui/x-date-pickers';
 import dayjs, { Dayjs } from 'dayjs';
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { NewBankData } from '../../onboarding/newBankDialog';
 import StepHeader from '../../onboarding/stepHeader';
@@ -27,9 +26,11 @@ interface NewWithdrawalFormProps {
   onReview: (data: NewWithdrawal) => void;
   isSubmittingTicket: boolean;
   onBack: () => void;
+  registeredAccounts: RegisteredAccount[];
+  isLoadingRegisteredAccounts: boolean;
 }
 
-interface RegisteredAccount
+export interface RegisteredAccount
   extends Omit<NewBankData, 'temp_id' | 'is_default'> {
   id: string;
 }
@@ -45,31 +46,9 @@ export default function NewWithdrawalForm({
   onReview,
   onBack,
   isSubmittingTicket,
+  isLoadingRegisteredAccounts,
+  registeredAccounts,
 }: NewWithdrawalFormProps) {
-  //TODO: GET THIS DATA FROM LOADING REGISTERD ACCOUNTS
-  const [isLoadingRegisteredAccounts, setIsLoadingRegisteredAccounts] =
-    useState<boolean>(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoadingRegisteredAccounts(false);
-    }, 3000);
-  }, []);
-  //TODO: CALL API HERE TO FETCH REGISTERED ACCOUNTS
-  const registeredAccounts: RegisteredAccount[] = [
-    {
-      id: '1',
-      account_holder_name: 'John Doe',
-      account_type: 'Savings',
-      bank_account_number: '1234567890',
-      bank_address: 'Bank of America',
-      bank_country: 'United States',
-      bank_name: 'Bank of America',
-      bank_routing_number: '123456789',
-      IBAN: '1234567890',
-      swift_code: '1234567890',
-    },
-  ];
-
   const initialValues: NewWithdrawal = data ?? {
     accountId: '',
     amount: 0,
