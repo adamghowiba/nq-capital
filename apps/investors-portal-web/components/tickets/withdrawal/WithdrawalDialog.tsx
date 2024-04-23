@@ -1,6 +1,7 @@
 import { Box, Dialog } from '@mui/material';
 import { ReactNode, useEffect, useState } from 'react';
 import InvestmentDialogHeader from '../Investment/investmentDialogHeader';
+import WithdrawalCreated from './WithdrawalCreated';
 import NewWithdrawalForm, {
     NewWithdrawal,
     RegisteredAccount,
@@ -12,7 +13,7 @@ interface WithdrawalDialogProps {
   closeDialog: () => void;
 }
 
-interface Withdrawal extends NewWithdrawal {
+export interface Withdrawal extends NewWithdrawal {
   id: string;
 }
 export default function WithdrawalDialog({
@@ -76,10 +77,16 @@ export default function WithdrawalDialog({
     setCurrentStep(FORM_STEPS[previousStepIndex]);
   }
 
-  function close() {
+  function createNew() {
     setCurrentStep('form');
     setMaxAccessibleStep(0);
+    setCreatedWithdrawal(null);
+    setNewWithdrawalData(initialWithdrawalState);
+  }
+
+  function close() {
     closeDialog();
+    createNew();
   }
 
   const [isSubmittingTicket, setIsSubmittingTicket] = useState<boolean>(false);
@@ -126,7 +133,14 @@ export default function WithdrawalDialog({
         registeredAccounts={registeredAccounts}
       />
     ),
-    created: <Box>Created Ticket</Box>,
+    created: createdWithdrawal && (
+      <WithdrawalCreated
+        close={close}
+        createNew={createNew}
+        registeredAccounts={registeredAccounts}
+        withdrawal={createdWithdrawal}
+      />
+    ),
   };
 
   return (
