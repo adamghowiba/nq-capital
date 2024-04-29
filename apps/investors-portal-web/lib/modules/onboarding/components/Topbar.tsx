@@ -3,7 +3,7 @@ import right from '@iconify/icons-fluent/chevron-right-16-regular';
 import { Box, Divider, Stack, Typography } from '@mui/material';
 import DContainer from '../../../../components/DContainer/DContainer';
 import Logo from '../../../../components/Logo/logo';
-import OneIcon from '../../../../components/utils/OneIcon';
+import OneIcon from '../../../utils/OneIcon';
 import { HStack } from '../../../../components/Stack/Stack';
 
 export interface OnboardingTopbarProps {

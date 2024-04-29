@@ -126,39 +126,29 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         fontFamily: ['Inter', 'sans-serif'].join(','),
         h1: {
           fontSize: '30px',
-          lineHeight: '36px',
           letterSpacing: '-0.72px',
-          paddingBottom: '10px',
           fontWeight: 700,
           color: 'var(--titleActive)',
         },
         h2: {
-          fontWeight: 700,
+          fontWeight: 500,
           fontSize: '24px',
-          lineHeight: '28px',
           letterSpacing: '-0.72px',
-          paddingBottom: '10px',
         },
         h3: {
           fontWeight: 600,
           fontSize: '20px',
-          lineHeight: '24px',
           letterSpacing: '-0.42px',
-          paddingBottom: '10px',
         },
         h4: {
           fontWeight: 600,
           fontSize: '18px',
-          lineHeight: '20px',
           letterSpacing: '-0.42px',
-          paddingBottom: '10px',
         },
         h5: {
           fontWeight: 500,
           fontSize: '16px',
-          lineHeight: '20px',
           letterSpacing: '-0.42px',
-          paddingBottom: '10px',
         },
         body1: {
           fontSize: '14px',
@@ -221,6 +211,34 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           }),
         },
       },
+      MuiCard: {
+        variants: [
+          {
+            props: {
+              variant: 'outlined',
+            },
+            style: {
+              border: 'none',
+              boxShadow: '0px 0px 0px 1px rgba(100, 100, 100, 0.18)',
+              borderRadius: '16px',
+            },
+          },
+        ],
+      },
+      MuiCardHeader: {
+        styleOverrides: {
+          root: () => {
+            return {
+              display: 'flex',
+              alignItems: 'center',
+              borderRadius: 'inherit',
+              lineHeight: '1',
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+            };
+          },
+        },
+      },
       MuiBackdrop: {
         styleOverrides: {
           root: () => ({
@@ -243,7 +261,11 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
               lineHeight: '12px',
               padding: '12px',
             },
-            '&.MuiButton-sizeMedium': { padding: '12px 16px' },
+            '&.MuiButton-sizeMedium': {
+              padding: '8px 12px',
+              fontSize: '14px',
+              height: '34px',
+            },
             '&.MuiButton-sizeLarge': { padding: '12px 20px' },
             '&.MuiButton-colorInherit.MuiButton-outlined ': {
               border: `1px solid ${theme.common.line}`,

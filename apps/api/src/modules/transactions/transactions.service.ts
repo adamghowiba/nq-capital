@@ -47,9 +47,7 @@ export class TransactionsService {
   }
 
   async list(): Promise<TransactionEntity[]> {
-    const transactions = await this.prisma.transaction.findMany({
-
-    });
+    const transactions = await this.prisma.transaction.findMany({});
 
     return transactions;
   }

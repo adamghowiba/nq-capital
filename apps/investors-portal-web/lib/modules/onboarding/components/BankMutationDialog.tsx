@@ -2,7 +2,7 @@ import { Autocomplete, Box, Button, Dialog, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { NATIONALITIES } from '../../../constants/nationalities.constants';
-import { OneTextField } from '../../../../components/utils/OneTextField';
+import { OneTextField } from '../../../utils/OneTextField';
 import { BANK_ACCOUNT_TYPES } from '../../../constants/bank.constants';
 
 export interface NewBankDialogProps {

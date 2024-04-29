@@ -9,7 +9,7 @@ export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' |
 
 function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
   return async (): Promise<TData> => {
-    const res = await fetch("http://localhost:5010/graphql", {
+    const res = await fetch("http://localhost:5000/graphql", {
     method: "POST",
     ...({"headers":{"Content-Type":"application/json"},"credentials":"include"}),
       body: JSON.stringify({ query, variables }),
@@ -154,6 +154,17 @@ export type CreateNestedInvestorFundWithoutFundInput = {
   investor_id: Scalars['Int']['input'];
 };
 
+export type CreateTransactionInput = {
+  amount: Scalars['Int']['input'];
+  balance_after: Scalars['Int']['input'];
+  currency_code: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['Int']['input']>;
+  external_id?: InputMaybe<Scalars['String']['input']>;
+  fee?: InputMaybe<Scalars['Float']['input']>;
+  status: TransactionStatus;
+  type: TransactionType;
+};
+
 export type CreateUserInput = {
   avatar?: InputMaybe<Scalars['String']['input']>;
   email: Scalars['String']['input'];
@@ -225,12 +236,15 @@ export type Mutation = {
   adjustFund: FundEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
+  createTransaction: TransactionEntity;
   createUser: UserEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
+  removeTransaction: TransactionEntity;
   removeUser: UserEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
+  updateTransaction: TransactionEntity;
   updateUser: UserEntity;
 };
 
@@ -255,6 +269,11 @@ export type MutationCreateInvestorArgs = {
 };
 
 
+export type MutationCreateTransactionArgs = {
+  createTransactionInput: CreateTransactionInput;
+};
+
+
 export type MutationCreateUserArgs = {
   createUserInput: CreateUserInput;
 };
@@ -266,6 +285,11 @@ export type MutationRemoveFundArgs = {
 
 
 export type MutationRemoveInvestorArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveTransactionArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -282,6 +306,11 @@ export type MutationUpdateFundArgs = {
 
 export type MutationUpdateInvestorArgs = {
   updateInvestorInput: UpdateInvestorInput;
+};
+
+
+export type MutationUpdateTransactionArgs = {
+  updateTransactionInput: UpdateTransactionInput;
 };
 
 
@@ -315,6 +344,8 @@ export type Query = {
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
   investors: Array<InvestorEntity>;
+  transaction: TransactionEntity;
+  transactions: Array<TransactionEntity>;
   user: UserEntity;
   users: PaginatedUserEntity;
 };
@@ -343,6 +374,11 @@ export type QueryInvestorFundsArgs = {
 };
 
 
+export type QueryTransactionArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['Int']['input'];
 };
@@ -353,6 +389,35 @@ export type QueryUsersArgs = {
   page?: Scalars['Int']['input'];
   role?: InputMaybe<UserRole>;
 };
+
+export type TransactionEntity = {
+  __typename?: 'TransactionEntity';
+  amount: Scalars['Int']['output'];
+  balance_after: Scalars['Int']['output'];
+  created_at: Scalars['DateTime']['output'];
+  currency_code: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  external_id?: Maybe<Scalars['String']['output']>;
+  fee?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['Int']['output'];
+  status: TransactionStatus;
+  type: TransactionType;
+  updated_at: Scalars['DateTime']['output'];
+};
+
+export type TransactionStatus =
+  | 'CANCELLED'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'PENDING'
+  | 'REVERSED';
+
+export type TransactionType =
+  | 'ADJUSTMENT'
+  | 'DEPOSIT'
+  | 'FEE'
+  | 'REFUND'
+  | 'WITHDRAWAL';
 
 export type UpdateFundInput = {
   id: Scalars['Int']['input'];
@@ -379,6 +444,18 @@ export type UpdateInvestorInput = {
   nationality?: InputMaybe<Scalars['String']['input']>;
   passport_number?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateTransactionInput = {
+  amount?: InputMaybe<Scalars['Int']['input']>;
+  balance_after?: InputMaybe<Scalars['Int']['input']>;
+  currency_code?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['Int']['input']>;
+  external_id?: InputMaybe<Scalars['String']['input']>;
+  fee?: InputMaybe<Scalars['Float']['input']>;
+  id: Scalars['Int']['input'];
+  status?: InputMaybe<TransactionStatus>;
+  type?: InputMaybe<TransactionType>;
 };
 
 export type UpdateUserInput = {
@@ -431,6 +508,13 @@ export type CreateCoolInvestorMutationVariables = Exact<{
 
 export type CreateCoolInvestorMutation = { __typename?: 'Mutation', createInvestor: { __typename?: 'InvestorEntity', id: number, company_name?: string | null, company_tax_id?: string | null } };
 
+export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
+
+export type ListTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any }> };
+
 export type ListUsersQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -441,7 +525,21 @@ export type ListUsersQueryVariables = Exact<{
 export type ListUsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUserEntity', data?: Array<{ __typename?: 'UserEntity', id: number, first_name: string, last_name: string, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, email: string, created_at: any, updated_at: any }> | null } };
 
 
-
+export const TransactionsAllFragmentFragmentDoc = `
+    fragment TransactionsAllFragment on TransactionEntity {
+  id
+  type
+  amount
+  currency_code
+  balance_after
+  description
+  fee
+  external_id
+  status
+  updated_at
+  created_at
+}
+    `;
 export const ListTestInvestorsDocument = `
     query ListTestInvestors {
   investors {
@@ -538,6 +636,37 @@ export const useCreateCoolInvestorMutation = <
 
 
 useCreateCoolInvestorMutation.fetcher = (variables: CreateCoolInvestorMutationVariables) => fetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables);
+
+export const ListTransactionsDocument = `
+    query ListTransactions {
+  transactions {
+    ...TransactionsAllFragment
+  }
+}
+    ${TransactionsAllFragmentFragmentDoc}`;
+
+export const useListTransactionsQuery = <
+      TData = ListTransactionsQuery,
+      TError = unknown
+    >(
+      variables?: ListTransactionsQueryVariables,
+      options?: Omit<UseQueryOptions<ListTransactionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListTransactionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListTransactionsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListTransactions'] : ['ListTransactions', variables],
+    queryFn: fetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables),
+    ...options
+  }
+    )};
+
+useListTransactionsQuery.document = ListTransactionsDocument;
+
+useListTransactionsQuery.getKey = (variables?: ListTransactionsQueryVariables) => variables === undefined ? ['ListTransactions'] : ['ListTransactions', variables];
+
+
+useListTransactionsQuery.fetcher = (variables?: ListTransactionsQueryVariables) => fetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables);
 
 export const ListUsersDocument = `
     query ListUsers($limit: Int!, $page: Int, $role: UserRole) {

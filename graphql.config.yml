@@ -1,4 +1,5 @@
-schema:
-  - schema.gql
-# documents:
-#   - "apps/**/*.graphql"
+projects:
+  investors-portal-web:
+    schema: http://localhost:5000/graphql
+    documents: "apps/investors-portal-web/**/*.gql"
+    exclude: "apps/investors-portal-web/.next/**/*"

@@ -140,6 +140,36 @@ type PaginatedInvestorFundEntity {
   hasNextPage: Boolean!
 }
 
+type TransactionEntity {
+  id: Int!
+  type: TransactionType!
+  amount: Int!
+  currency_code: String!
+  balance_after: Int!
+  description: String
+  fee: Float
+  external_id: String
+  status: TransactionStatus!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  ADJUSTMENT
+  FEE
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REVERSED
+  FAILED
+}
+
 """Prisma Decimal Scalar"""
 scalar Decimal
 
@@ -173,6 +203,8 @@ type Query {
     fundId: Int
   ): PaginatedInvestorFundEntity!
   investorFund(id: Int!): [InvestorFundEntity!]!
+  transactions: [TransactionEntity!]!
+  transaction(id: Int!): TransactionEntity!
 }
 
 type Mutation {
@@ -187,6 +219,9 @@ type Mutation {
   adjustFund(adjustFundInput: AdjustFundInput!): FundEntity!
   addFundInvestors(addFundInvestorsInput: AddFundInvestorsInput!): FundEntity!
   removeFund(id: Int!): FundEntity!
+  createTransaction(createTransactionInput: CreateTransactionInput!): TransactionEntity!
+  updateTransaction(updateTransactionInput: UpdateTransactionInput!): TransactionEntity!
+  removeTransaction(id: Int!): TransactionEntity!
 }
 
 input CreateUserInput {
@@ -296,10 +331,7 @@ input UpdateFundInput {
 }
 
 input AdjustFundInput {
-  """
-  Amount to adjust the fund by. Can be a negative
-  or positive value.
-  """
+  "Amount to adjust the fund by. Can be a negative\r\nor positive value."
   amount: Float!
   fund_id: Int!
   adjusted_by_user_id: Int!
@@ -310,4 +342,27 @@ input AddFundInvestorsInput {
   id: Int!
   investor_id: Int!
   initial_investment: Float!
+}
+
+input CreateTransactionInput {
+  type: TransactionType!
+  amount: Int!
+  currency_code: String!
+  balance_after: Int!
+  description: Int
+  fee: Float
+  external_id: String
+  status: TransactionStatus!
+}
+
+input UpdateTransactionInput {
+  type: TransactionType
+  amount: Int
+  currency_code: String
+  balance_after: Int
+  description: Int
+  fee: Float
+  external_id: String
+  status: TransactionStatus
+  id: Int!
 }

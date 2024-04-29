@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import * as Yup from 'yup';
 import AuthHeader from '../../../lib/modules/auth/components/AuthHeader';
-import OneSnackbar from '../../../components/utils/OneSnackbar';
+import OneSnackbar from '../../../lib/utils/OneSnackbar';
 import { NextPageWithLayout } from '../../_app';
 
 const ResetPassword: NextPageWithLayout = () => {

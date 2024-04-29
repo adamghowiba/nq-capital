@@ -5,7 +5,7 @@ import { Icon } from '@iconify/react';
 import { Avatar, Box, Typography } from '@mui/material';
 import { useState } from 'react';
 import { theme } from '../../../theme';
-import OneIcon from '../../../../components/utils/OneIcon';
+import OneIcon from '../../../utils/OneIcon';
 import BankCardMenu from './BankCardMenu';
 import { NewBankData } from './BankMutationDialog';
 

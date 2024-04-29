@@ -1,7 +1,7 @@
 import add from '@iconify/icons-fluent/add-24-filled';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useState } from 'react';
-import OneIcon from '../../../../components/utils/OneIcon';
+import OneIcon from '../../../utils/OneIcon';
 import BankCard from './BankCard';
 import NewBankDialog, { NewBankData } from './BankMutationDialog';
 import StepHeader from './StepHeader';

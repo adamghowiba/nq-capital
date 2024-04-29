@@ -19,7 +19,7 @@ export class TransactionEntity implements Transaction {
   @Field(() => Int)
   balance_after!: number;
 
-  @Field(() => Int, { nullable: true })
+  @Field(() => String, { nullable: true })
   description!: string | null;
 
   @Field(() => Float, { nullable: true })

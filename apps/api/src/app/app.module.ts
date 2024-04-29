@@ -19,12 +19,14 @@ import { FundsModule } from '../modules/funds/funds.module';
 import { PrismaDecimalScalar } from '../common/scalars/prisma-decimal.scalar';
 import { InvestorFundsModule } from '../modules/investor-funds/investor-funds.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { TransactionsModule } from '../modules/transactions/transactions.module';
 
 const APP_MODULES = [
   UsersModule,
   InvestorsModule,
   FundsModule,
   InvestorFundsModule,
+  TransactionsModule
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
