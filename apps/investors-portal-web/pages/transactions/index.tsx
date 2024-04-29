@@ -1,8 +1,18 @@
 import caretDown12Filled from '@iconify/icons-fluent/caret-down-12-filled';
-import { Button, Typography } from '@mui/material';
+import { Icon } from '@iconify/react';
+import { Button } from '@mui/material';
+import {
+  GridToolbarContainer,
+  useGridApiContext
+} from '@mui/x-data-grid';
+import {
+  ButtonTab,
+  ButtonTabs,
+} from 'apps/investors-portal-web/lib/components/Tabs/ButtonTabs';
+import { FC, useState } from 'react';
 import Box from '../../lib/components/Box/Box';
-import { Stat } from '../../lib/components/KPICard/KPICard';
 import NLink from '../../lib/components/Link/Link';
+import PageHeader from '../../lib/components/PageHeader/PageHeader';
 import Screen from '../../lib/components/Screen/Screen';
 import { HStack } from '../../lib/components/Stack/Stack';
 import CustomDataGrid from '../../lib/components/StyledDataGrid/CustomDataGrid';
@@ -11,21 +21,11 @@ import {
   TransactionType,
   useListTransactionsQuery,
 } from '../../lib/gql/gql-client';
-import AccountValueChart from '../../lib/modules/home/AccountValueChart';
+import {
+  EmptyTransactions
+} from '../../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../../lib/utils/currency.utils';
 import { formatISOForTable } from '../../lib/utils/date.utils';
-import { FC, useEffect, useState } from 'react';
-import {
-  EmptyTransactionCard,
-  EmptyTransactions,
-} from '../../lib/modules/transactions/components/EmpyTransactions';
-import PageHeader from '../../lib/components/PageHeader/PageHeader';
-import { GridToolbarContainer } from '@mui/x-data-grid';
-import { Icon } from '@iconify/react';
-import {
-  ButtonTab,
-  ButtonTabs,
-} from 'apps/investors-portal-web/lib/components/Tabs/ButtonTabs';
 
 type TransactionTypeFilter = TransactionType | 'ALL';
 
@@ -49,6 +49,7 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
   ];
 
   const selectedType = selectedTypeProp ?? 'ALL';
+  const apiRef = useGridApiContext();
 
   return (
     <GridToolbarContainer sx={{ border: 'none', py: 2 }}>
@@ -75,25 +76,6 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
               })}
               label={type.toLowerCase()}
             />
-
-            // <Button
-            //   variant="contained"
-            //   color={selectedType === type ? 'primary' : 'secondary'}
-            //   key={type}
-            //   onClick={() => onChangeSelectedType?.(type)}
-            //   sx={{
-            //     textTransform: 'capitalize',
-            //     flexShrink: 0,
-            //     minWidth: 0,
-            //     borderRadius: '100px',
-            //     minHeight: 0,
-            //     '&.MuiButton-sizeMedium': {
-            //       height: '32px',
-            //     },
-            //   }}
-            // >
-            //   {type?.toLowerCase()}
-            // </Button>
           ))}
         </ButtonTabs>
       </HStack>
@@ -102,9 +84,15 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
         <Button variant="contained" color="secondary">
           Filter
         </Button>
-        <Button variant="contained" color="secondary">
+
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => apiRef.current.exportDataAsCsv()}
+        >
           Export
         </Button>
+
         <Button
           variant="contained"
           color="primary"
@@ -125,8 +113,6 @@ const TransactionsPage = ({ ...props }) => {
     {},
     { select: (res) => res.transactions }
   );
-
-  console.log(selectedTransactionType);
 
   return (
     <>
@@ -151,6 +137,18 @@ const TransactionsPage = ({ ...props }) => {
                 selectedType: selectedTransactionType,
                 onChangeSelectedType: setSelectedTransactionType,
               },
+            }}
+            filterModel={{
+              items: [
+                {
+                  field: 'type',
+                  operator: 'equals',
+                  value:
+                    selectedTransactionType === 'ALL'
+                      ? ''
+                      : selectedTransactionType,
+                },
+              ],
             }}
             columns={[
               {

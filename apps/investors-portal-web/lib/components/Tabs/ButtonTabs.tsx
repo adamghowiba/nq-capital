@@ -1,5 +1,29 @@
-import { Tab, TabProps, Tabs, TabsProps, styled } from "@mui/material";
+import { Tab, TabProps, Tabs, TabsProps, styled } from '@mui/material';
 
+// TODO: REPLACE BUTTON STYLES WITH BELOW
+// <Button
+//   variant="contained"
+//   color={selectedType === type ? 'primary' : 'secondary'}
+//   key={type}
+//   onClick={() => onChangeSelectedType?.(type)}
+//   sx={{
+//     textTransform: 'capitalize',
+//     flexShrink: 0,
+//     minWidth: 0,
+//     borderRadius: '100px',
+//     minHeight: 0,
+//     '&.MuiButton-sizeMedium': {
+//       height: '32px',
+//     },
+//   }}
+// >
+//   {type?.toLowerCase()}
+// </Button>
+
+/**
+ * Button tabs are single "button" like tabs. Typically used
+ * in data table filters
+ */
 export const ButtonTabs = styled((props: TabsProps) => (
   <Tabs
     {...props}
@@ -28,25 +52,25 @@ export const ButtonTabs = styled((props: TabsProps) => (
   },
 });
 
-export const ButtonTab = styled((props: TabProps) => <Tab disableRipple {...props} />)(
-  ({ theme }) => ({
-    textTransform: 'none',
-    fontWeight: theme.typography.fontWeightMedium,
-    fontSize: theme.typography.pxToRem(15),
-    color: '#8D8D8D',
-    zIndex: 2,
-    minHeight: 'unset',
-    lineHeight: '1.3',
-    '&.Mui-selected': {
-      color: '#646464',
-      // backgroundColor: 'white',
-    },
-    '&.Mui-focusVisible': {
-      backgroundColor: 'rgba(100, 95, 228, 0.32)',
-    },
-    '&.MuiButtonBase-root': {
-      minWidth: '70px',
-      padding: '4px 12px',
-    },
-  })
-);
+export const ButtonTab = styled((props: TabProps) => (
+  <Tab disableRipple {...props} />
+))(({ theme }) => ({
+  textTransform: 'none',
+  fontWeight: theme.typography.fontWeightMedium,
+  fontSize: theme.typography.pxToRem(15),
+  color: '#8D8D8D',
+  zIndex: 2,
+  minHeight: 'unset',
+  lineHeight: '1.3',
+  '&.Mui-selected': {
+    color: '#646464',
+    // backgroundColor: 'white',
+  },
+  '&.Mui-focusVisible': {
+    backgroundColor: 'rgba(100, 95, 228, 0.32)',
+  },
+  '&.MuiButtonBase-root': {
+    minWidth: '70px',
+    padding: '4px 12px',
+  },
+}));

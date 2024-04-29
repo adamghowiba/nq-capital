@@ -26,6 +26,14 @@
                 "onlyDependOnLibsWithTags": [
                   "*"
                 ]
+              },
+              {
+                "sourceTag": "type:ui",
+                "onlyDependOnLibsWithTags": ["type:ui"]
+              },
+              {
+                "sourceTag": "type:api",
+                "onlyDependOnLibsWithTags": ["type:api", "scope:shared"]
               }
             ]
           }

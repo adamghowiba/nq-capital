@@ -170,6 +170,33 @@ enum TransactionStatus {
   FAILED
 }
 
+type TicketEntity {
+  id: Int!
+  data: JSON!
+  type: TicketType!
+  status: TicketStatus!
+  updated_at: DateTime!
+  created_at: DateTime!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+"""Type of ticket"""
+enum TicketType {
+  WITHDRAW
+  SUPPORT
+}
+
+"""Status of ticket"""
+enum TicketStatus {
+  CLOSED
+  OPEN
+  UNDER_REVIEW
+}
+
 """Prisma Decimal Scalar"""
 scalar Decimal
 
@@ -205,6 +232,8 @@ type Query {
   investorFund(id: Int!): [InvestorFundEntity!]!
   transactions: [TransactionEntity!]!
   transaction(id: Int!): TransactionEntity!
+  tickets: [TicketEntity!]!
+  ticket(id: Int!): TicketEntity!
 }
 
 type Mutation {
@@ -222,6 +251,9 @@ type Mutation {
   createTransaction(createTransactionInput: CreateTransactionInput!): TransactionEntity!
   updateTransaction(updateTransactionInput: UpdateTransactionInput!): TransactionEntity!
   removeTransaction(id: Int!): TransactionEntity!
+  createTicket(createTicketInput: CreateTicketInput!): TicketEntity!
+  updateTicket(updateTicketInput: UpdateTicketInput!): TicketEntity!
+  removeTicket(id: Int!): TicketEntity!
 }
 
 input CreateUserInput {
@@ -364,5 +396,18 @@ input UpdateTransactionInput {
   fee: Float
   external_id: String
   status: TransactionStatus
+  id: Int!
+}
+
+input CreateTicketInput {
+  data: JSON!
+  type: TicketType!
+  status: TicketStatus = OPEN
+}
+
+input UpdateTicketInput {
+  data: JSON
+  type: TicketType
+  status: TicketStatus = OPEN
   id: Int!
 }

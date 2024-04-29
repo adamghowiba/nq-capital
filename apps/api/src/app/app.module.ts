@@ -20,13 +20,15 @@ import { PrismaDecimalScalar } from '../common/scalars/prisma-decimal.scalar';
 import { InvestorFundsModule } from '../modules/investor-funds/investor-funds.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TransactionsModule } from '../modules/transactions/transactions.module';
+import { TicketsModule } from '../modules/tickets/tickets.module';
 
 const APP_MODULES = [
   UsersModule,
   InvestorsModule,
   FundsModule,
   InvestorFundsModule,
-  TransactionsModule
+  TransactionsModule,
+  TicketsModule,
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
@@ -55,7 +57,7 @@ if (isDevelopment)
       wildcard: true,
       global: true,
       verboseMemoryLeak: true,
-    })
+    }),
   ],
   controllers: [AppController],
   providers: [

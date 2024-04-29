@@ -37,6 +37,8 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
   /** Prisma Decimal Scalar */
   Decimal: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSON: { input: any; output: any; }
 };
 
 export type AddFundInvestorsInput = {
@@ -154,6 +156,12 @@ export type CreateNestedInvestorFundWithoutFundInput = {
   investor_id: Scalars['Int']['input'];
 };
 
+export type CreateTicketInput = {
+  data: Scalars['JSON']['input'];
+  status?: InputMaybe<TicketStatus>;
+  type: TicketType;
+};
+
 export type CreateTransactionInput = {
   amount: Scalars['Int']['input'];
   balance_after: Scalars['Int']['input'];
@@ -236,14 +244,17 @@ export type Mutation = {
   adjustFund: FundEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
+  createTicket: TicketEntity;
   createTransaction: TransactionEntity;
   createUser: UserEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
+  removeTicket: TicketEntity;
   removeTransaction: TransactionEntity;
   removeUser: UserEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
+  updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
 };
@@ -269,6 +280,11 @@ export type MutationCreateInvestorArgs = {
 };
 
 
+export type MutationCreateTicketArgs = {
+  createTicketInput: CreateTicketInput;
+};
+
+
 export type MutationCreateTransactionArgs = {
   createTransactionInput: CreateTransactionInput;
 };
@@ -285,6 +301,11 @@ export type MutationRemoveFundArgs = {
 
 
 export type MutationRemoveInvestorArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveTicketArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -306,6 +327,11 @@ export type MutationUpdateFundArgs = {
 
 export type MutationUpdateInvestorArgs = {
   updateInvestorInput: UpdateInvestorInput;
+};
+
+
+export type MutationUpdateTicketArgs = {
+  updateTicketInput: UpdateTicketInput;
 };
 
 
@@ -344,6 +370,8 @@ export type Query = {
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
   investors: Array<InvestorEntity>;
+  ticket: TicketEntity;
+  tickets: Array<TicketEntity>;
   transaction: TransactionEntity;
   transactions: Array<TransactionEntity>;
   user: UserEntity;
@@ -374,6 +402,11 @@ export type QueryInvestorFundsArgs = {
 };
 
 
+export type QueryTicketArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryTransactionArgs = {
   id: Scalars['Int']['input'];
 };
@@ -389,6 +422,27 @@ export type QueryUsersArgs = {
   page?: Scalars['Int']['input'];
   role?: InputMaybe<UserRole>;
 };
+
+export type TicketEntity = {
+  __typename?: 'TicketEntity';
+  created_at: Scalars['DateTime']['output'];
+  data: Scalars['JSON']['output'];
+  id: Scalars['Int']['output'];
+  status: TicketStatus;
+  type: TicketType;
+  updated_at: Scalars['DateTime']['output'];
+};
+
+/** Status of ticket */
+export type TicketStatus =
+  | 'CLOSED'
+  | 'OPEN'
+  | 'UNDER_REVIEW';
+
+/** Type of ticket */
+export type TicketType =
+  | 'SUPPORT'
+  | 'WITHDRAW';
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
@@ -444,6 +498,13 @@ export type UpdateInvestorInput = {
   nationality?: InputMaybe<Scalars['String']['input']>;
   passport_number?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateTicketInput = {
+  data?: InputMaybe<Scalars['JSON']['input']>;
+  id: Scalars['Int']['input'];
+  status?: InputMaybe<TicketStatus>;
+  type?: InputMaybe<TicketType>;
 };
 
 export type UpdateTransactionInput = {
