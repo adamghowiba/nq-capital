@@ -32,6 +32,7 @@ export default function BankCard({
         anchorEl={anchorEl}
         closeMenu={() => setAnchorEl(null)}
         isOpen={!!anchorEl}
+        isDefault={is_default}
         onEdit={onEdit}
         onDelete={onDelete}
         onMakeDefault={onMakeDefault}

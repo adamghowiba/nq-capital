@@ -48,8 +48,10 @@ export default function FinancialInformation({
 
   function handleEditBank(bank: NewBankData) {
     setBankAccounts((prev) => {
-      const otherBanks = prev.filter(({ temp_id }) => temp_id !== bank.temp_id);
-      return [...otherBanks, bank];
+      return prev.map((nb) => {
+        if (nb.temp_id === bank.temp_id) return bank;
+        return nb;
+      });
     });
   }
 
