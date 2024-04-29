@@ -1,4 +1,4 @@
-import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -157,7 +157,9 @@ export type CreateNestedInvestorFundWithoutFundInput = {
 };
 
 export type CreateTicketInput = {
+  assigned_to_user_id?: InputMaybe<Scalars['Int']['input']>;
   data: Scalars['JSON']['input'];
+  investor_id: Scalars['Int']['input'];
   status?: InputMaybe<TicketStatus>;
   type: TicketType;
 };
@@ -238,6 +240,20 @@ export type InvestorFundEntity = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+/** Login user input */
+export type LoginInput = {
+  /** Email of the user */
+  email: Scalars['String']['input'];
+  /** Password of the user */
+  password: Scalars['String']['input'];
+  user_type: UserType;
+};
+
+export type LogoutEntity = {
+  __typename?: 'LogoutEntity';
+  status: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addFundInvestors: FundEntity;
@@ -247,6 +263,8 @@ export type Mutation = {
   createTicket: TicketEntity;
   createTransaction: TransactionEntity;
   createUser: UserEntity;
+  login: UserEntity;
+  logout: LogoutEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
   removeTicket: TicketEntity;
@@ -292,6 +310,11 @@ export type MutationCreateTransactionArgs = {
 
 export type MutationCreateUserArgs = {
   createUserInput: CreateUserInput;
+};
+
+
+export type MutationLoginArgs = {
+  loginInput: LoginInput;
 };
 
 
@@ -370,6 +393,9 @@ export type Query = {
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
   investors: Array<InvestorEntity>;
+  me: SessionEntity;
+  meInvestor: InvestorEntity;
+  meUser: UserEntity;
   ticket: TicketEntity;
   tickets: Array<TicketEntity>;
   transaction: TransactionEntity;
@@ -423,11 +449,19 @@ export type QueryUsersArgs = {
   role?: InputMaybe<UserRole>;
 };
 
+export type SessionEntity = {
+  __typename?: 'SessionEntity';
+  investor?: Maybe<InvestorEntity>;
+  user?: Maybe<UserEntity>;
+};
+
 export type TicketEntity = {
   __typename?: 'TicketEntity';
+  assigned_to_user_id?: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['DateTime']['output'];
-  data: Scalars['JSON']['output'];
+  data?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['Int']['output'];
+  investor_id: Scalars['Int']['output'];
   status: TicketStatus;
   type: TicketType;
   updated_at: Scalars['DateTime']['output'];
@@ -441,8 +475,8 @@ export type TicketStatus =
 
 /** Type of ticket */
 export type TicketType =
-  | 'SUPPORT'
-  | 'WITHDRAW';
+  | 'DOCUMENT_REQUEST'
+  | 'SUPPORT';
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
@@ -501,8 +535,10 @@ export type UpdateInvestorInput = {
 };
 
 export type UpdateTicketInput = {
+  assigned_to_user_id?: InputMaybe<Scalars['Int']['input']>;
   data?: InputMaybe<Scalars['JSON']['input']>;
   id: Scalars['Int']['input'];
+  investor_id?: InputMaybe<Scalars['Int']['input']>;
   status?: InputMaybe<TicketStatus>;
   type?: InputMaybe<TicketType>;
 };
@@ -550,10 +586,34 @@ export type UserRole =
   | 'ADMIN'
   | 'MANAGER';
 
-export type ListTestInvestorsQueryVariables = Exact<{ [key: string]: never; }>;
+/** Type of user */
+export type UserType =
+  | 'ADMIN'
+  | 'INVESTOR';
+
+export type LoginMutationVariables = Exact<{
+  loginInput: LoginInput;
+}>;
 
 
-export type ListTestInvestorsQuery = { __typename?: 'Query', investors: Array<{ __typename?: 'InvestorEntity', id: number, company_name?: string | null, address_id?: number | null, address?: { __typename?: 'AddressEntity', id: number, verified: number, street: string, latitude: number } | null }> };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, email: string } };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutEntity', status: string } };
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'SessionEntity', user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string } | null, investor?: { __typename?: 'InvestorEntity', id: number, company_name?: string | null, first_name: string, last_name: string, email: string } | null } };
+
+export type MeInvestorQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeInvestorQuery = { __typename?: 'Query', meInvestor: { __typename?: 'InvestorEntity', id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any } };
+
+export type InvestorAllFragmentFragment = { __typename?: 'InvestorEntity', id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any };
 
 export type RetrieveInvestorQueryVariables = Exact<{
   investor_id: Scalars['Int']['input'];
@@ -576,6 +636,8 @@ export type ListTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ListTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any }> };
 
+export type UserAllFragmentFragment = { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, email: string, created_at: any, updated_at: any };
+
 export type ListUsersQueryVariables = Exact<{
   limit: Scalars['Int']['input'];
   page?: InputMaybe<Scalars['Int']['input']>;
@@ -586,6 +648,22 @@ export type ListUsersQueryVariables = Exact<{
 export type ListUsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUserEntity', data?: Array<{ __typename?: 'UserEntity', id: number, first_name: string, last_name: string, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, email: string, created_at: any, updated_at: any }> | null } };
 
 
+export const InvestorAllFragmentFragmentDoc = `
+    fragment InvestorAllFragment on InvestorEntity {
+  id
+  first_name
+  middle_name
+  last_name
+  email
+  company_name
+  is_accredited
+  avatar
+  mobile_number
+  account_status
+  created_at
+  updated_at
+}
+    `;
 export const TransactionsAllFragmentFragmentDoc = `
     fragment TransactionsAllFragment on TransactionEntity {
   id
@@ -601,44 +679,143 @@ export const TransactionsAllFragmentFragmentDoc = `
   created_at
 }
     `;
-export const ListTestInvestorsDocument = `
-    query ListTestInvestors {
-  investors {
+export const UserAllFragmentFragmentDoc = `
+    fragment UserAllFragment on UserEntity {
+  id
+  first_name
+  last_name
+  middle_name
+  avatar
+  mobile_number
+  role
+  email
+  created_at
+  updated_at
+}
+    `;
+export const LoginDocument = `
+    mutation Login($loginInput: LoginInput!) {
+  login(loginInput: $loginInput) {
     id
-    company_name
-    address_id
-    address {
+    first_name
+    last_name
+    email
+  }
+}
+    `;
+
+export const useLoginMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<LoginMutation, TError, LoginMutationVariables, TContext>) => {
+    
+    return useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
+      {
+    mutationKey: ['Login'],
+    mutationFn: (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useLoginMutation.fetcher = (variables: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables);
+
+export const LogoutDocument = `
+    mutation Logout {
+  logout {
+    status
+  }
+}
+    `;
+
+export const useLogoutMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<LogoutMutation, TError, LogoutMutationVariables, TContext>) => {
+    
+    return useMutation<LogoutMutation, TError, LogoutMutationVariables, TContext>(
+      {
+    mutationKey: ['Logout'],
+    mutationFn: (variables?: LogoutMutationVariables) => fetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useLogoutMutation.fetcher = (variables?: LogoutMutationVariables) => fetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables);
+
+export const MeDocument = `
+    query Me {
+  me {
+    user {
       id
-      verified
-      street
-      latitude
+      first_name
+      last_name
+    }
+    investor {
+      id
+      company_name
+      first_name
+      last_name
+      email
     }
   }
 }
     `;
 
-export const useListTestInvestorsQuery = <
-      TData = ListTestInvestorsQuery,
+export const useMeQuery = <
+      TData = MeQuery,
       TError = unknown
     >(
-      variables?: ListTestInvestorsQueryVariables,
-      options?: Omit<UseQueryOptions<ListTestInvestorsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListTestInvestorsQuery, TError, TData>['queryKey'] }
+      variables?: MeQueryVariables,
+      options?: Omit<UseQueryOptions<MeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MeQuery, TError, TData>['queryKey'] }
     ) => {
     
-    return useQuery<ListTestInvestorsQuery, TError, TData>(
+    return useQuery<MeQuery, TError, TData>(
       {
-    queryKey: variables === undefined ? ['ListTestInvestors'] : ['ListTestInvestors', variables],
-    queryFn: fetcher<ListTestInvestorsQuery, ListTestInvestorsQueryVariables>(ListTestInvestorsDocument, variables),
+    queryKey: variables === undefined ? ['Me'] : ['Me', variables],
+    queryFn: fetcher<MeQuery, MeQueryVariables>(MeDocument, variables),
     ...options
   }
     )};
 
-useListTestInvestorsQuery.document = ListTestInvestorsDocument;
+useMeQuery.document = MeDocument;
 
-useListTestInvestorsQuery.getKey = (variables?: ListTestInvestorsQueryVariables) => variables === undefined ? ['ListTestInvestors'] : ['ListTestInvestors', variables];
+useMeQuery.getKey = (variables?: MeQueryVariables) => variables === undefined ? ['Me'] : ['Me', variables];
 
 
-useListTestInvestorsQuery.fetcher = (variables?: ListTestInvestorsQueryVariables) => fetcher<ListTestInvestorsQuery, ListTestInvestorsQueryVariables>(ListTestInvestorsDocument, variables);
+useMeQuery.fetcher = (variables?: MeQueryVariables) => fetcher<MeQuery, MeQueryVariables>(MeDocument, variables);
+
+export const MeInvestorDocument = `
+    query MeInvestor {
+  meInvestor {
+    ...InvestorAllFragment
+  }
+}
+    ${InvestorAllFragmentFragmentDoc}`;
+
+export const useMeInvestorQuery = <
+      TData = MeInvestorQuery,
+      TError = unknown
+    >(
+      variables?: MeInvestorQueryVariables,
+      options?: Omit<UseQueryOptions<MeInvestorQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MeInvestorQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MeInvestorQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['MeInvestor'] : ['MeInvestor', variables],
+    queryFn: fetcher<MeInvestorQuery, MeInvestorQueryVariables>(MeInvestorDocument, variables),
+    ...options
+  }
+    )};
+
+useMeInvestorQuery.document = MeInvestorDocument;
+
+useMeInvestorQuery.getKey = (variables?: MeInvestorQueryVariables) => variables === undefined ? ['MeInvestor'] : ['MeInvestor', variables];
+
+
+useMeInvestorQuery.fetcher = (variables?: MeInvestorQueryVariables) => fetcher<MeInvestorQuery, MeInvestorQueryVariables>(MeInvestorDocument, variables);
 
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($investor_id: Int!) {
@@ -733,20 +910,11 @@ export const ListUsersDocument = `
     query ListUsers($limit: Int!, $page: Int, $role: UserRole) {
   users(limit: $limit, page: $page, role: $role) {
     data {
-      id
-      first_name
-      last_name
-      middle_name
-      avatar
-      mobile_number
-      role
-      email
-      created_at
-      updated_at
+      ...UserAllFragment
     }
   }
 }
-    `;
+    ${UserAllFragmentFragmentDoc}`;
 
 export const useListUsersQuery = <
       TData = ListUsersQuery,

@@ -172,9 +172,11 @@ enum TransactionStatus {
 
 type TicketEntity {
   id: Int!
-  data: JSON!
+  data: JSON
   type: TicketType!
   status: TicketStatus!
+  investor_id: Int!
+  assigned_to_user_id: Int
   updated_at: DateTime!
   created_at: DateTime!
 }
@@ -186,7 +188,7 @@ scalar JSON
 
 """Type of ticket"""
 enum TicketType {
-  WITHDRAW
+  DOCUMENT_REQUEST
   SUPPORT
 }
 
@@ -195,6 +197,15 @@ enum TicketStatus {
   CLOSED
   OPEN
   UNDER_REVIEW
+}
+
+type LogoutEntity {
+  status: String!
+}
+
+type SessionEntity {
+  user: UserEntity
+  investor: InvestorEntity
 }
 
 """Prisma Decimal Scalar"""
@@ -234,6 +245,9 @@ type Query {
   transaction(id: Int!): TransactionEntity!
   tickets: [TicketEntity!]!
   ticket(id: Int!): TicketEntity!
+  me: SessionEntity!
+  meInvestor: InvestorEntity!
+  meUser: UserEntity!
 }
 
 type Mutation {
@@ -254,6 +268,8 @@ type Mutation {
   createTicket(createTicketInput: CreateTicketInput!): TicketEntity!
   updateTicket(updateTicketInput: UpdateTicketInput!): TicketEntity!
   removeTicket(id: Int!): TicketEntity!
+  login(loginInput: LoginInput!): UserEntity!
+  logout: LogoutEntity!
 }
 
 input CreateUserInput {
@@ -401,13 +417,33 @@ input UpdateTransactionInput {
 
 input CreateTicketInput {
   data: JSON!
+  investor_id: Int!
+  assigned_to_user_id: Int
   type: TicketType!
   status: TicketStatus = OPEN
 }
 
 input UpdateTicketInput {
   data: JSON
+  investor_id: Int
+  assigned_to_user_id: Int
   type: TicketType
   status: TicketStatus = OPEN
   id: Int!
+}
+
+"""Login user input"""
+input LoginInput {
+  """Email of the user"""
+  email: String!
+
+  """Password of the user"""
+  password: String!
+  user_type: UserType!
+}
+
+"""Type of user"""
+enum UserType {
+  INVESTOR
+  ADMIN
 }

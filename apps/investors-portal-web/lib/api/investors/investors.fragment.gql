@@ -1,0 +1,14 @@
+fragment InvestorAllFragment on InvestorEntity {
+  id
+  first_name
+  middle_name
+  last_name
+  email
+  company_name
+  is_accredited
+  avatar
+  mobile_number
+  account_status
+  created_at
+  updated_at
+}

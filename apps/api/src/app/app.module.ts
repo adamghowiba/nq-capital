@@ -21,6 +21,9 @@ import { InvestorFundsModule } from '../modules/investor-funds/investor-funds.mo
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { TransactionsModule } from '../modules/transactions/transactions.module';
 import { TicketsModule } from '../modules/tickets/tickets.module';
+import { AuthModule } from '../modules/auth/auth.module';
+import { ExceptionFilterModule } from '../common/filters/filter.module';
+import { PassportModule } from '@nestjs/passport';
 
 const APP_MODULES = [
   UsersModule,
@@ -29,6 +32,7 @@ const APP_MODULES = [
   InvestorFundsModule,
   TransactionsModule,
   TicketsModule,
+  AuthModule,
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
@@ -58,6 +62,8 @@ if (isDevelopment)
       global: true,
       verboseMemoryLeak: true,
     }),
+    ExceptionFilterModule.forRoot(),
+    PassportModule.register({ session: true, defaultStrategy: 'local' }),
   ],
   controllers: [AppController],
   providers: [

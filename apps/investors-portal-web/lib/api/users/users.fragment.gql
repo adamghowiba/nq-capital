@@ -1,0 +1,12 @@
+fragment UserAllFragment on UserEntity {
+  id
+  first_name
+  last_name
+  middle_name
+  avatar
+  mobile_number
+  role
+  email
+  created_at
+  updated_at
+}

@@ -213,20 +213,20 @@ model Ticket {
   created_at          DateTime     @default(now())
 }
 
-enum MessageUserType {
-  USER
+enum UserType {
+  INVESTOR
   ADMIN
 }
 
 model Message {
-  id         Int             @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   content    String
-  type       MessageUserType
-  ticket     Ticket?         @relation(fields: [ticket_id], references: [id])
+  type       UserType
+  ticket     Ticket?  @relation(fields: [ticket_id], references: [id])
   ticket_id  Int?
-  edit_count Int             @default(0)
-  updated_at DateTime        @updatedAt
-  created_at DateTime        @default(now())
+  edit_count Int      @default(0)
+  updated_at DateTime @updatedAt
+  created_at DateTime @default(now())
 }
 
 model Transaction {
@@ -307,4 +307,11 @@ model Asset {
   url        String
   asset_type AssetType @default(UNKNOWN)
   mime_type  String
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }

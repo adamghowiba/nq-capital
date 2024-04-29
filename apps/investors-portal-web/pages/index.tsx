@@ -16,14 +16,23 @@ import {
   EmptyTransactions,
 } from '../lib/modules/transactions/components/EmpyTransactions';
 import PageHeader from '../lib/components/PageHeader/PageHeader';
+import { useInvestor } from '../lib/hooks/use-investor';
 
 const Index = () => {
+  const investor = useInvestor();
+
   const [dateFilter, setDateFilter] = useState<'year' | 'month'>('month');
 
   const transactionsQuery = useListTransactionsQuery(
     {},
     { select: (res) => res.transactions }
   );
+
+  const handleRefetch = async () => {
+    const data = await investor.refetch();
+
+    console.log(data.data?.me);
+  };
 
   return (
     <>
@@ -37,6 +46,13 @@ const Index = () => {
               </Button>
               <Button variant="contained" color="secondary">
                 Export
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleRefetch}
+              >
+                Refetch
               </Button>
             </>
           }

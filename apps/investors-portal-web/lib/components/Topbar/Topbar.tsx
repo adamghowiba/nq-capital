@@ -11,8 +11,12 @@ import DContainer from '../DContainer/DContainer';
 import OneIcon from '../../utils/OneIcon';
 import TopbarSearch from './TopbarSearch';
 import Logo from '../Logo/logo';
+import { FC } from 'react';
+import { useInvestor } from '../../hooks/use-investor';
 
-function Topbar() {
+const Topbar: FC<any> = () => {
+  const investor = useInvestor();
+
   const rightIcons: {
     title: string;
     icon: IconifyIcon;
@@ -82,7 +86,9 @@ function Topbar() {
                 >
                   JS
                 </Avatar>
-                <Typography>Jane Smith</Typography>
+                <Typography>
+                  {investor.data?.first_name} {investor.data?.last_name}
+                </Typography>
                 <Tooltip arrow title="Swap user">
                   <IconButton size="small">
                     <Icon icon={upDown} fontSize="16px" />
@@ -114,6 +120,6 @@ function Topbar() {
       </Box>
     </>
   );
-}
+};
 
 export default Topbar;

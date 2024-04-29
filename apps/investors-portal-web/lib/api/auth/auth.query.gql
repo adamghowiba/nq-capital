@@ -1,0 +1,22 @@
+query Me {
+  me {
+    user {
+      id
+      first_name
+      last_name
+    }
+    investor {
+      id
+      company_name
+      first_name
+      last_name
+      email
+    }
+  }
+}
+
+query MeInvestor {
+  meInvestor {
+    ...InvestorAllFragment
+  }
+}

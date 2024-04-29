@@ -6,6 +6,7 @@ import { ListUserArgs } from './dto/get-user.args';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UserEntity } from './entities/user.entity';
 import { hash } from 'bcrypt';
+import { ApiError } from '../../common/exceptions/api.error';
 
 @Injectable()
 export class UsersService {
@@ -32,10 +33,12 @@ export class UsersService {
     return users;
   }
 
-  async retrieve(params: { id: number }) {
+  async retrieve(params: { id: number }): Promise<UserEntity> {
     const user = await this.prisma.user.findUnique({
       where: { id: params.id },
     });
+
+    if (!user) throw new ApiError('User not found', { statusCode: 404 });
 
     return user;
   }

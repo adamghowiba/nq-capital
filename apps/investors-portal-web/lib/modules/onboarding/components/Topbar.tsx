@@ -1,10 +1,10 @@
 import left from '@iconify/icons-fluent/chevron-left-16-regular';
 import right from '@iconify/icons-fluent/chevron-right-16-regular';
-import { Box, Divider, Stack, Typography } from '@mui/material';
-import DContainer from '../../../../components/DContainer/DContainer';
-import Logo from '../../../../components/Logo/logo';
+import { Box, Divider, Typography } from '@mui/material';
+import DContainer from '../../../../lib/components/DContainer/DContainer';
+import Logo from '../../../../lib/components/Logo/logo';
+import { HStack } from '../../../../lib/components/Stack/Stack';
 import OneIcon from '../../../utils/OneIcon';
-import { HStack } from '../../../../components/Stack/Stack';
 
 export interface OnboardingTopbarProps {
   /**
