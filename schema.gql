@@ -173,6 +173,7 @@ enum TransactionStatus {
 type TicketEntity {
   id: Int!
   data: JSON
+  priority: TicketPriority!
   type: TicketType!
   status: TicketStatus!
   investor_id: Int!
@@ -185,6 +186,14 @@ type TicketEntity {
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSON
+
+"""Priority of ticket"""
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
 
 """Type of ticket"""
 enum TicketType {
@@ -417,7 +426,8 @@ input UpdateTransactionInput {
 
 input CreateTicketInput {
   data: JSON!
-  investor_id: Int!
+  priority: TicketPriority = MEDIUM
+  investor_id: Int
   assigned_to_user_id: Int
   type: TicketType!
   status: TicketStatus = OPEN
@@ -425,6 +435,7 @@ input CreateTicketInput {
 
 input UpdateTicketInput {
   data: JSON
+  priority: TicketPriority = MEDIUM
   investor_id: Int
   assigned_to_user_id: Int
   type: TicketType

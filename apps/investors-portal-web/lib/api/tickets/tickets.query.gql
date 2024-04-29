@@ -1,0 +1,11 @@
+query ListTickers {
+  tickets {
+    ...TicketsAllFragment
+  }
+}
+
+query RetrieveTicket($id: Int!) {
+  ticket(id: $id) {
+    ...TicketsAllFragment
+  }
+}

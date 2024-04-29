@@ -59,6 +59,18 @@ declare module '@mui/material/styles' {
   }
 }
 
+declare module '@mui/material/InputBase' {
+  interface InputBasePropsSizeOverrides {
+    large: true;
+  }
+}
+
+declare module '@mui/material/TextField' {
+  interface TextFieldPropsSizeOverrides {
+    large: true;
+  }
+}
+
 // Update the Typography's variant prop options
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
@@ -163,6 +175,16 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           fontSize: '0.75rem',
           fontWeight: 300,
         },
+        subtitle1: {
+          fontSize: '16px',
+          color: '#8D8D8D',
+          fontWeight: '400',
+        },
+        subtitle2: {
+          fontSize: '14px',
+          color: '#8D8D8D',
+          fontWeight: '400',
+        },
       },
       ...newTheme?.typography,
     },
@@ -256,23 +278,42 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             textTransform: 'none',
             fontWeight: 'var(--semiBold)',
             lineHeight: '14px',
-            '&.MuiButton-sizeSmall': {
-              fontSize: '12px',
-              lineHeight: '12px',
-              padding: '12px',
-            },
-            '&.MuiButton-sizeMedium': {
-              padding: '8px 12px',
-              fontSize: '14px',
-              height: '34px',
-            },
-            '&.MuiButton-sizeLarge': { padding: '12px 20px' },
             '&.MuiButton-colorInherit.MuiButton-outlined ': {
               border: `1px solid ${theme.common.line}`,
               color: theme.common.body,
             },
           }),
         },
+        variants: [
+          {
+            props: {
+              size: 'medium',
+            },
+            style: {
+              padding: '8px 12px',
+              fontSize: '14px',
+              height: '34px',
+            },
+          },
+          {
+            props: {
+              size: 'large',
+            },
+            style: {
+              padding: '12px 20px',
+            },
+          },
+          {
+            props: {
+              size: 'small',
+            },
+            style: {
+              fontSize: '12px',
+              lineHeight: '12px',
+              padding: '12px',
+            },
+          },
+        ],
       },
       MuiFormLabel: {
         styleOverrides: {
@@ -295,7 +336,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
       MuiTextField: {
         defaultProps: {
-          size: 'small',
+          size: 'medium',
         },
         styleOverrides: {
           root: ({ theme }) => ({
@@ -304,12 +345,102 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
               border: 'none',
               borderRadius: '12px',
               background: '#F1F1F1',
+              outline: 'none !important',
             },
-            '& .MuiOutlinedInput-notchedOutline': {
+            '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
               border: `1px solid ${theme.common.line}`,
+              outline: 'none !important',
+              transition: 'border-color 0.15s ease',
             },
+            '& .MuiOutlinedInput-root:not(:focus-within):hover .MuiOutlinedInput-notchedOutline':
+              {
+                borderColor: `${theme.palette.grey[300]}`,
+              },
+            '& .MuiOutlinedInput-root:focus-within .MuiOutlinedInput-notchedOutline':
+              {
+                borderColor: `${theme.palette.grey[300]}`,
+              },
           }),
         },
+        variants: [
+          {
+            props: {
+              size: 'small',
+            },
+            style: {
+              '& .MuiInputBase-input': {
+                padding: '0px',
+              },
+              '& .MuiInputBase-root.MuiOutlinedInput-root': {
+                padding: '4px 8px',
+                fontSize: '12px',
+              },
+            },
+          },
+          {
+            props: {
+              size: 'medium',
+            },
+            style: {
+              '& .MuiInputBase-root.MuiOutlinedInput-root': {
+                padding: '8px 12px',
+              },
+              '& .MuiInputBase-input': {
+                padding: 0,
+              },
+            },
+          },
+          {
+            props: {
+              size: 'large',
+            },
+            style: {
+              '& .MuiInputBase-root.MuiOutlinedInput-root': {
+                padding: '12px 12px',
+              },
+              '& .MuiInputBase-input': {
+                padding: 0,
+              },
+            },
+          },
+        ],
+        // TODO: Old approach for handling input sizes, remove after testing
+        // variants: [
+        //   {
+        //     props: {
+        //       size: 'small',
+        //     },
+        //     style: {
+        //       '& .MuiInputBase-input': {
+        //         padding: '4px 8px',
+        //         fontSize: '12px',
+        //       },
+        //     },
+        //   },
+        // {
+        //   props: {
+        //     size: 'medium',
+        //   },
+        //   style: {
+        //     '& .MuiInputBase-input': {
+        //       padding: '8px 12px',
+        //     },
+        //     '& .MuiInputBase-inputAdornedStart': {
+        //       paddingLeft: '0px',
+        //     },
+        //   },
+        // },
+        // {
+        //   props: {
+        //     size: 'large',
+        //   },
+        //   style: {
+        //     '& .MuiInputBase-input': {
+        //       padding: '12px 12px',
+        //     },
+        //   },
+        // },
+        // ],
       },
       MuiDialog: {
         styleOverrides: {

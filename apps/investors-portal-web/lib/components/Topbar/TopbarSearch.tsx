@@ -13,7 +13,7 @@ const TopbarSearch: FC<TopbarSearchProps> = ({ ...props }) => {
     <>
       <TextField
         placeholder="Search tickets..."
-        size="small"
+        size="medium"
         sx={{
           '& .MuiOutlinedInput-root': {
             bgcolor: 'white',

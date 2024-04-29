@@ -1,38 +1,26 @@
-import { Button, Typography } from '@mui/material';
+import { Button } from '@mui/material';
+import { useState } from 'react';
 import Box from '../lib/components/Box/Box';
 import { Stat } from '../lib/components/KPICard/KPICard';
 import NLink from '../lib/components/Link/Link';
+import PageHeader from '../lib/components/PageHeader/PageHeader';
 import Screen from '../lib/components/Screen/Screen';
 import { HStack } from '../lib/components/Stack/Stack';
 import CustomDataGrid from '../lib/components/StyledDataGrid/CustomDataGrid';
 import TransactionTypeChip from '../lib/components/TransactionTypeBadge/TransactionTypeBadge';
 import { useListTransactionsQuery } from '../lib/gql/gql-client';
 import AccountValueChart from '../lib/modules/home/AccountValueChart';
+import { EmptyTransactions } from '../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../lib/utils/currency.utils';
 import { formatISOForTable } from '../lib/utils/date.utils';
-import { useState } from 'react';
-import {
-  EmptyTransactionCard,
-  EmptyTransactions,
-} from '../lib/modules/transactions/components/EmpyTransactions';
-import PageHeader from '../lib/components/PageHeader/PageHeader';
-import { useInvestor } from '../lib/hooks/use-investor';
 
 const Index = () => {
-  const investor = useInvestor();
-
   const [dateFilter, setDateFilter] = useState<'year' | 'month'>('month');
 
   const transactionsQuery = useListTransactionsQuery(
     {},
     { select: (res) => res.transactions }
   );
-
-  const handleRefetch = async () => {
-    const data = await investor.refetch();
-
-    console.log(data.data?.me);
-  };
 
   return (
     <>
@@ -47,12 +35,8 @@ const Index = () => {
               <Button variant="contained" color="secondary">
                 Export
               </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleRefetch}
-              >
-                Refetch
+              <Button variant="contained" color="secondary">
+                Create New
               </Button>
             </>
           }

@@ -13,6 +13,7 @@ import TopbarSearch from './TopbarSearch';
 import Logo from '../Logo/logo';
 import { FC } from 'react';
 import { useInvestor } from '../../hooks/use-investor';
+import Link from 'next/link';
 
 const Topbar: FC<any> = () => {
   const investor = useInvestor();
@@ -65,8 +66,12 @@ const Topbar: FC<any> = () => {
                 justifyItems: 'center',
               }}
             >
-              <Logo />
+              <Link href="/">
+                <Logo />
+              </Link>
+
               <Divider orientation="vertical" sx={{ height: '60%' }} />
+
               <Box
                 sx={{
                   display: 'grid',
@@ -82,13 +87,18 @@ const Topbar: FC<any> = () => {
                     fontWeight: '500',
                     fontSize: '12px',
                     color: '#8D8D8D',
+                    width: '32px',
+                    height: '32px',
                   }}
                 >
-                  JS
+                  {investor.data?.first_name[0]}
+                  {investor.data?.last_name[0]}
                 </Avatar>
+
                 <Typography>
                   {investor.data?.first_name} {investor.data?.last_name}
                 </Typography>
+
                 <Tooltip arrow title="Swap user">
                   <IconButton size="small">
                     <Icon icon={upDown} fontSize="16px" />
@@ -96,7 +106,9 @@ const Topbar: FC<any> = () => {
                 </Tooltip>
               </Box>
             </Box>
+
             <TopbarSearch />
+
             <Box
               sx={{
                 display: 'grid',

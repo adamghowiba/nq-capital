@@ -7,6 +7,7 @@ import { LoginInput } from './dto/login.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { InvestorEntity } from '../investors/entities/investor.entity';
 import { UserEntity } from '../users/entities/user.entity';
+import { SerializeSessionPayload } from './session/session.serializer';
 
 @Injectable()
 export class AuthService {
@@ -16,35 +17,7 @@ export class AuthService {
     private readonly eventEmitter: EventEmitter2
   ) {}
 
-  async loginInvestor(loginInput: Omit<LoginInput, 'user_type'>) {
-    const investor = await this.prisma.investor.findUnique({
-      where: { email: loginInput.email },
-    });
-
-    if (!investor)
-      throw new ApiError(`investor ${loginInput.email} not found`, {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        type: 'authenticate_error',
-      });
-
-    if (!investor?.password)
-      throw new ApiError(`Investor doesn't have a password`);
-
-    const matchingPassword = await compare(
-      loginInput.password,
-      investor.password
-    );
-
-    if (!matchingPassword)
-      throw new ApiError(`Invalid password please try again`, {
-        statusCode: HttpStatus.UNAUTHORIZED,
-        type: 'authenticate_error',
-      });
-
-    return investor;
-  }
-
-  async login(loginInput: Omit<LoginInput, 'user_type'>) {
+  async loginAdmin(loginInput: Omit<LoginInput, 'user_type'>) {
     const user = await this.prisma.user.findUnique({
       where: { email: loginInput.email },
     });
@@ -66,12 +39,10 @@ export class AuthService {
     return user;
   }
 
-  async loginV2(
-    loginInput: LoginInput
-  ): Promise<
-    | { type: 'INVESTOR'; investor: InvestorEntity }
-    | { type: 'ADMIN'; user: UserEntity }
-  > {
+  /**
+   * Shared login method for both investors and admins
+   */
+  async login(loginInput: LoginInput): Promise<SerializeSessionPayload> {
     const userType = loginInput.user_type;
     const userTypeModel = userType === 'ADMIN' ? 'user' : 'investor';
 

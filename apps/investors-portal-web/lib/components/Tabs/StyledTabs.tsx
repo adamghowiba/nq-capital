@@ -7,7 +7,7 @@ export const StyledTabs = styled((props: TabsProps) => (
   />
 ))({
   backgroundColor: '#F1F1F1',
-  padding: '4px',
+  padding: '2px',
   minHeight: 'unset',
   borderRadius: '8px',
   '& .MuiTabs-indicator': {
@@ -39,7 +39,6 @@ export const StyledTab = styled((props: TabProps) => <Tab disableRipple {...prop
     lineHeight: '1.3',
     '&.Mui-selected': {
       color: '#646464',
-      // backgroundColor: 'white',
     },
     '&.Mui-focusVisible': {
       backgroundColor: 'rgba(100, 95, 228, 0.32)',

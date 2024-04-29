@@ -39,7 +39,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
         { statusCode: 400 }
       );
 
-    const user = await this.authService.loginV2({
+    const user = await this.authService.login({
       email: email,
       password,
       user_type: userType,

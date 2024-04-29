@@ -1,5 +1,11 @@
 import { Field, HideField, InputType, Int } from '@nestjs/graphql';
-import { Prisma, TicketStatus, TicketType } from '@prisma/client';
+import {
+  $Enums,
+  Prisma,
+  TicketPriority,
+  TicketStatus,
+  TicketType,
+} from '@prisma/client';
 import { IsEnum, IsNumber, IsObject, IsOptional, Min } from 'class-validator';
 import GraphQLJSON from 'graphql-type-json';
 
@@ -12,7 +18,10 @@ export class CreateTicketInput implements Prisma.TicketUncheckedCreateInput {
   @IsObject()
   data!: Prisma.NullTypes.JsonNull | Prisma.InputJsonValue;
 
-  @Field(() => Int)
+  @Field(() => TicketPriority, { nullable: true, defaultValue: 'MEDIUM' })
+  priority?: TicketPriority = 'MEDIUM';
+
+  @Field(() => Int, { nullable: true })
   @IsNumber()
   @IsOptional()
   @Min(1)

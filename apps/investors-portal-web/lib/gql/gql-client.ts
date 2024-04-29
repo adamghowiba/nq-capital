@@ -159,7 +159,8 @@ export type CreateNestedInvestorFundWithoutFundInput = {
 export type CreateTicketInput = {
   assigned_to_user_id?: InputMaybe<Scalars['Int']['input']>;
   data: Scalars['JSON']['input'];
-  investor_id: Scalars['Int']['input'];
+  investor_id?: InputMaybe<Scalars['Int']['input']>;
+  priority?: InputMaybe<TicketPriority>;
   status?: InputMaybe<TicketStatus>;
   type: TicketType;
 };
@@ -462,10 +463,18 @@ export type TicketEntity = {
   data?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['Int']['output'];
   investor_id: Scalars['Int']['output'];
+  priority: TicketPriority;
   status: TicketStatus;
   type: TicketType;
   updated_at: Scalars['DateTime']['output'];
 };
+
+/** Priority of ticket */
+export type TicketPriority =
+  | 'HIGH'
+  | 'LOW'
+  | 'MEDIUM'
+  | 'URGENT';
 
 /** Status of ticket */
 export type TicketStatus =
@@ -539,6 +548,7 @@ export type UpdateTicketInput = {
   data?: InputMaybe<Scalars['JSON']['input']>;
   id: Scalars['Int']['input'];
   investor_id?: InputMaybe<Scalars['Int']['input']>;
+  priority?: InputMaybe<TicketPriority>;
   status?: InputMaybe<TicketStatus>;
   type?: InputMaybe<TicketType>;
 };
@@ -629,6 +639,34 @@ export type CreateCoolInvestorMutationVariables = Exact<{
 
 export type CreateCoolInvestorMutation = { __typename?: 'Mutation', createInvestor: { __typename?: 'InvestorEntity', id: number, company_name?: string | null, company_tax_id?: string | null } };
 
+export type TicketsAllFragmentFragment = { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any };
+
+export type CreateTickerMutationVariables = Exact<{
+  createTicketInput: CreateTicketInput;
+}>;
+
+
+export type CreateTickerMutation = { __typename?: 'Mutation', createTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
+export type UpdateTicketMutationVariables = Exact<{
+  updateTicketInput: UpdateTicketInput;
+}>;
+
+
+export type UpdateTicketMutation = { __typename?: 'Mutation', updateTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
+export type ListTickersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListTickersQuery = { __typename?: 'Query', tickets: Array<{ __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any }> };
+
+export type RetrieveTicketQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
 export type ListTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -662,6 +700,19 @@ export const InvestorAllFragmentFragmentDoc = `
   account_status
   created_at
   updated_at
+}
+    `;
+export const TicketsAllFragmentFragmentDoc = `
+    fragment TicketsAllFragment on TicketEntity {
+  id
+  data
+  priority
+  type
+  status
+  investor_id
+  assigned_to_user_id
+  updated_at
+  created_at
 }
     `;
 export const TransactionsAllFragmentFragmentDoc = `
@@ -874,6 +925,116 @@ export const useCreateCoolInvestorMutation = <
 
 
 useCreateCoolInvestorMutation.fetcher = (variables: CreateCoolInvestorMutationVariables) => fetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables);
+
+export const CreateTickerDocument = `
+    mutation CreateTicker($createTicketInput: CreateTicketInput!) {
+  createTicket(createTicketInput: $createTicketInput) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useCreateTickerMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateTickerMutation, TError, CreateTickerMutationVariables, TContext>) => {
+    
+    return useMutation<CreateTickerMutation, TError, CreateTickerMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateTicker'],
+    mutationFn: (variables?: CreateTickerMutationVariables) => fetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useCreateTickerMutation.fetcher = (variables: CreateTickerMutationVariables) => fetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables);
+
+export const UpdateTicketDocument = `
+    mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
+  updateTicket(updateTicketInput: $updateTicketInput) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useUpdateTicketMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateTicketMutation, TError, UpdateTicketMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateTicketMutation, TError, UpdateTicketMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateTicket'],
+    mutationFn: (variables?: UpdateTicketMutationVariables) => fetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useUpdateTicketMutation.fetcher = (variables: UpdateTicketMutationVariables) => fetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables);
+
+export const ListTickersDocument = `
+    query ListTickers {
+  tickets {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useListTickersQuery = <
+      TData = ListTickersQuery,
+      TError = unknown
+    >(
+      variables?: ListTickersQueryVariables,
+      options?: Omit<UseQueryOptions<ListTickersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListTickersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListTickersQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListTickers'] : ['ListTickers', variables],
+    queryFn: fetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables),
+    ...options
+  }
+    )};
+
+useListTickersQuery.document = ListTickersDocument;
+
+useListTickersQuery.getKey = (variables?: ListTickersQueryVariables) => variables === undefined ? ['ListTickers'] : ['ListTickers', variables];
+
+
+useListTickersQuery.fetcher = (variables?: ListTickersQueryVariables) => fetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables);
+
+export const RetrieveTicketDocument = `
+    query RetrieveTicket($id: Int!) {
+  ticket(id: $id) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useRetrieveTicketQuery = <
+      TData = RetrieveTicketQuery,
+      TError = unknown
+    >(
+      variables: RetrieveTicketQueryVariables,
+      options?: Omit<UseQueryOptions<RetrieveTicketQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RetrieveTicketQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RetrieveTicketQuery, TError, TData>(
+      {
+    queryKey: ['RetrieveTicket', variables],
+    queryFn: fetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables),
+    ...options
+  }
+    )};
+
+useRetrieveTicketQuery.document = RetrieveTicketDocument;
+
+useRetrieveTicketQuery.getKey = (variables: RetrieveTicketQueryVariables) => ['RetrieveTicket', variables];
+
+
+useRetrieveTicketQuery.fetcher = (variables: RetrieveTicketQueryVariables) => fetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables);
 
 export const ListTransactionsDocument = `
     query ListTransactions {

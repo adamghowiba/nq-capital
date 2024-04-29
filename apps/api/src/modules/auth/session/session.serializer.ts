@@ -16,7 +16,7 @@ interface SerializedSession {
 /**
  * Incoming payload from a login
  */
-type SerializeSessionPayload =
+export type SerializeSessionPayload =
   | { type: 'INVESTOR'; investor: InvestorEntity }
   | { type: 'ADMIN'; user: UserEntity };
 

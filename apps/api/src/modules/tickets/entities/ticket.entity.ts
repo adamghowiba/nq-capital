@@ -5,7 +5,14 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { Prisma, Ticket, TicketStatus, TicketType } from '@prisma/client';
+import {
+  Prisma,
+  TicketPriority,
+  Ticket,
+  TicketStatus,
+  TicketType,
+} from '@prisma/client';
+
 import GraphQLJSON from 'graphql-type-json';
 
 registerEnumType(TicketType, {
@@ -18,6 +25,11 @@ registerEnumType(TicketStatus, {
   description: 'Status of ticket',
 });
 
+registerEnumType(TicketPriority, {
+  name: 'TicketPriority',
+  description: 'Priority of ticket',
+});
+
 @ObjectType()
 export class TicketEntity implements Ticket {
   @Field(() => Int)
@@ -25,6 +37,9 @@ export class TicketEntity implements Ticket {
 
   @Field(() => GraphQLJSON)
   data!: Prisma.JsonValue;
+
+  @Field(() => TicketPriority)
+  priority!: TicketPriority;
 
   @Field(() => TicketType)
   type!: TicketType;

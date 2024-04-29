@@ -3,6 +3,13 @@ import { TicketsService } from './tickets.service';
 import { TicketEntity } from './entities/ticket.entity';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
+import {
+  GqlSession,
+  InvestorSession,
+} from '../../common/decorators/auth/gql-user.decorator';
+import { InvestorEntity } from '../investors/entities/investor.entity';
+import { CreateTicketMessageInput } from './dto/create-ticket-message.input';
+import { SessionEntity } from '../auth/entities/session.entity';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {
@@ -10,9 +17,22 @@ export class TicketsResolver {
 
   @Mutation(() => TicketEntity)
   createTicket(
-    @Args('createTicketInput') createTicketInput: CreateTicketInput
+    @Args('createTicketInput') createTicketInput: CreateTicketInput,
+    @InvestorSession() investorSession: InvestorEntity
   ) {
-    return this.ticketsService.create(createTicketInput);
+    return this.ticketsService.create({
+      ...createTicketInput,
+      investor_id: investorSession?.id,
+    });
+  }
+
+  @Mutation(() => TicketEntity, { name: 'createTicketMessage' })
+  message(
+    @Args('createTicketMessageInput')
+    createTicketMessageInput: CreateTicketMessageInput,
+    @GqlSession() session: SessionEntity
+  ) {
+    return this.ticketsService.message({...createTicketMessageInput, });
   }
 
   @Query(() => [TicketEntity], { name: 'tickets' })

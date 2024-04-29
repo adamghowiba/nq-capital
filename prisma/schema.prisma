@@ -31,6 +31,7 @@ model User {
   updated_at           DateTime             @updatedAt
   fund_adjustments     FundAdjustment[]
   assigned_tickets     Ticket[]
+  messages             Message[]
 }
 
 enum InvestorAccountStatus {
@@ -68,6 +69,7 @@ model Investor {
   tickets         Ticket[]
   created_at      DateTime              @default(now())
   updated_at      DateTime              @updatedAt
+  messages        Message[]
 }
 
 model Note {
@@ -192,7 +194,7 @@ enum TicketType {
   SUPPORT
 }
 
-enum TickerPriority {
+enum TicketPriority {
   LOW
   MEDIUM
   HIGH
@@ -200,17 +202,18 @@ enum TickerPriority {
 }
 
 model Ticket {
-  id                  Int          @id @default(autoincrement())
+  id                  Int            @id @default(autoincrement())
   data                Json
   type                TicketType
-  status              TicketStatus @default(OPEN)
-  investor            Investor     @relation(fields: [investor_id], references: [id], onDelete: Cascade)
+  status              TicketStatus   @default(OPEN)
+  priority            TicketPriority @default(MEDIUM)
+  investor            Investor       @relation(fields: [investor_id], references: [id], onDelete: Cascade)
   investor_id         Int
-  assigned_to_user    User?        @relation(fields: [assigned_to_user_id], references: [id])
+  assigned_to_user    User?          @relation(fields: [assigned_to_user_id], references: [id])
   assigned_to_user_id Int?
   messages            Message[]
-  updated_at          DateTime     @updatedAt
-  created_at          DateTime     @default(now())
+  updated_at          DateTime       @updatedAt
+  created_at          DateTime       @default(now())
 }
 
 enum UserType {
@@ -219,14 +222,18 @@ enum UserType {
 }
 
 model Message {
-  id         Int      @id @default(autoincrement())
-  content    String
-  type       UserType
-  ticket     Ticket?  @relation(fields: [ticket_id], references: [id])
-  ticket_id  Int?
-  edit_count Int      @default(0)
-  updated_at DateTime @updatedAt
-  created_at DateTime @default(now())
+  id                  Int       @id @default(autoincrement())
+  content             String
+  type                UserType
+  ticket              Ticket?   @relation(fields: [ticket_id], references: [id])
+  ticket_id           Int?
+  sent_by_user        User?     @relation(fields: [sent_by_user_id], references: [id])
+  sent_by_user_id     Int?
+  sent_by_investor    Investor? @relation(fields: [sent_by_investor_id], references: [id])
+  sent_by_investor_id Int?
+  edit_count          Int       @default(0)
+  updated_at          DateTime  @updatedAt
+  created_at          DateTime  @default(now())
 }
 
 model Transaction {
