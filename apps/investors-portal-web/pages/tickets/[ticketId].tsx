@@ -7,16 +7,16 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import Screen from 'apps/investors-portal-web/lib/components/Screen/Screen';
+import Screen from '../../lib/components/Screen/Screen';
 import {
   HStack,
   VStack,
-} from 'apps/investors-portal-web/lib/components/Stack/Stack';
+} from '../../lib/components/Stack/Stack';
 import {
   useRetrieveTicketQuery,
   useSendTicketMessageMutation,
-} from 'apps/investors-portal-web/lib/gql/gql-client';
-import { formatISOForTable } from 'apps/investors-portal-web/lib/utils/date.utils';
+} from '../../lib/gql/gql-client';
+import { formatISOForTable } from '../../lib/utils/date.utils';
 import { useRouter } from 'next/router';
 import React, { FC, ReactNode, useState } from 'react';
 import { Unstable_Grid2 as Grid } from '@mui/material';
@@ -25,7 +25,7 @@ import add12Icon from '@iconify/icons-fluent/add-12-filled';
 import send16FilledIcon from '@iconify/icons-fluent/send-16-filled';
 import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
 import { Icon } from '@iconify/react';
-import MessageCard from 'apps/investors-portal-web/lib/components/MessageCard/MessageCard';
+import MessageCard from '../../lib/components/MessageCard/MessageCard';
 import { useMutation } from '@tanstack/react-query';
 
 const TickerDetailPage = ({ ...props }) => {
@@ -169,7 +169,7 @@ const TickerDetailPage = ({ ...props }) => {
             </Box>
 
             <VStack p={2} gap={4}>
-              {ticker.from({ length: 5 }).map((_, index) => (
+              {/* {ticker.from({ length: 5 }).map((_, index) => (
                 <MessageCard
                   content="Hello, how can I help you today?"
                   date="2021-09-01T08:30:00Z"
@@ -177,7 +177,7 @@ const TickerDetailPage = ({ ...props }) => {
                   key={index}
                   isVerified={index === 2}
                 />
-              ))}
+              ))} */}
             </VStack>
 
             <HStack p={2} borderTop="1px solid #EBEBEB" mt="auto" gap={1}>

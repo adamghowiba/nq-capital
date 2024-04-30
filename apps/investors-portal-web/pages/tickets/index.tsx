@@ -9,16 +9,16 @@ import {
   ListTickersQuery,
   TicketType,
   useListTickersQuery,
-} from 'apps/investors-portal-web/lib/gql/gql-client';
+} from '../../lib/gql/gql-client';
 import { PathParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime';
-import { formatISOForTable } from 'apps/investors-portal-web/lib/utils/date.utils';
-import CustomDataGrid from 'apps/investors-portal-web/lib/components/StyledDataGrid/CustomDataGrid';
-import Box from 'apps/investors-portal-web/lib/components/Box/Box';
-import NLink from 'apps/investors-portal-web/lib/components/Link/Link';
+import { formatISOForTable } from '../../lib/utils/date.utils';
+import CustomDataGrid from '../../lib/components/StyledDataGrid/CustomDataGrid';
+import Box from '../../lib/components/Box/Box';
+import NLink from '../../lib/components/Link/Link';
 import ColoredChip, {
   ChipColorSchema,
   ColoredChipProps,
-} from 'apps/investors-portal-web/lib/components/ColoredChip/ColoredChip';
+} from '../../lib/components/ColoredChip/ColoredChip';
 
 const TicketsPage: NextPageWithLayout = ({ ...props }) => {
   const [isTicketDrawerOpen, setIsTicketDrawerOpen] = useState(false);

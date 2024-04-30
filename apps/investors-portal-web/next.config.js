@@ -12,6 +12,9 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  env: {
+    APP_ENV: process.env?.APP_ENV || 'staging',
+  }
 };
 
 const plugins = [

@@ -21,10 +21,6 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
-      <Head>
-        <title>Investors Portal</title>
-      </Head>
-
       <main className="app">
         <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
       </main>
