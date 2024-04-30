@@ -10,11 +10,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { queryClient } from 'apps/investors-portal-web/lib/api/query-client';
+import { queryClient } from '../../lib/api/query-client';
 import {
   useLoginMutation,
   useMeQuery,
-} from 'apps/investors-portal-web/lib/gql/gql-client';
+} from '../../lib/gql/gql-client';
 import Link from 'next/link';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';

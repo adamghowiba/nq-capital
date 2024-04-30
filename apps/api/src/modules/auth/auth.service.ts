@@ -47,7 +47,7 @@ export class AuthService {
     const userTypeModel = userType === 'ADMIN' ? 'user' : 'investor';
 
     const profile =
-      loginInput.user_type === 'ADMIN'
+      userType === 'ADMIN'
         ? await this.prisma.user.findUnique({
             where: { email: loginInput.email },
           })
