@@ -1,5 +1,5 @@
 import { Field, GraphQLISODateTime, Int, ObjectType } from '@nestjs/graphql';
-import { $Enums, Message, Prisma, UserType } from '@prisma/client';
+import { $Enums, Message, UserType } from '@prisma/client';
 
 @ObjectType()
 export class MessageEntity implements Message {

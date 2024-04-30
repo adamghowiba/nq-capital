@@ -38,20 +38,31 @@ export const stringifyISODate = (isoDateTime: string) => {
   ]);
 
   if (diff.months > 0) {
-    return `${diff.months} month${diff.months > 1 ? 's' : ''} ago`;
+    const months = Math.floor(diff.months);
+
+    return `${months} month${months > 1 ? 's' : ''} ago`;
   }
 
   if (diff.days > 0) {
-    return `${diff.days} day${diff.days > 1 ? 's' : ''} ago`;
+    const days = Math.floor(diff.days);
+    return `${days} day${days > 1 ? 's' : ''} ago`;
   }
 
   if (diff.hours > 0) {
-    return `${diff.hours} hour${diff.hours > 1 ? 's' : ''} ago`;
+    const hours = Math.floor(diff.hours);
+
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
   }
 
   if (diff.minutes > 0) {
-    return `${diff.minutes} minute${diff.minutes > 1 ? 's' : ''} ago`;
+    const minutes = Math.floor(diff.minutes);
+
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
   }
 
-  return `${diff.seconds} second${diff.seconds > 1 ? 's' : ''} ago`;
+  const seconds = Math.floor(diff.seconds);
+
+  if (seconds <= 30) return 'Just now';
+
+  return `${seconds} seconds ago`;
 };

@@ -224,6 +224,8 @@ type MessageEntity {
   edit_count: Int!
   updated_at: DateTime!
   created_at: DateTime!
+  sent_by_investor: InvestorEntity
+  sent_by_user: UserEntity
 }
 
 """Type of user"""
@@ -276,6 +278,8 @@ type Query {
   me: SessionEntity!
   meInvestor: InvestorEntity!
   meUser: UserEntity!
+  messages: [MessageEntity!]!
+  message(id: Int!): MessageEntity!
 }
 
 type Mutation {
@@ -299,6 +303,9 @@ type Mutation {
   removeTicket(id: Int!): TicketEntity!
   login(loginInput: LoginInput!): UserEntity!
   logout: LogoutEntity!
+  createMessage(createMessageInput: SendMessageInput!): MessageEntity!
+  updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
+  removeMessage(id: Int!): MessageEntity!
 }
 
 input CreateUserInput {
@@ -477,4 +484,15 @@ input LoginInput {
   """Password of the user"""
   password: String!
   user_type: UserType!
+}
+
+input SendMessageInput {
+  content: String!
+  type: UserType!
+}
+
+input UpdateMessageInput {
+  content: String
+  type: UserType
+  id: Int!
 }

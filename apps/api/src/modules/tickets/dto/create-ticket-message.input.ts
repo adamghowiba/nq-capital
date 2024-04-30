@@ -1,33 +1,7 @@
-import { Field, HideField, InputType } from '@nestjs/graphql';
-import { $Enums, Prisma, UserType } from '@prisma/client';
-import { Transform } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { Field, InputType } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
+import { SendMessageInput } from '../../messages/dto/create-message.input';
 
-@InputType()
-export class SendMessageInput implements Prisma.MessageUncheckedCreateInput {
-  @HideField()
-  id?: number | undefined;
-
-  @Field(() => String)
-  @IsString()
-  @Transform((params) => (params.value ? params.value?.trim?.() : params.value))
-  content!: string;
-
-  @Field(() => UserType)
-  type!: $Enums.UserType;
-
-  @HideField()
-  ticket_id?: number | null | undefined;
-
-  @HideField()
-  edit_count?: number | undefined;
-
-  @HideField()
-  updated_at?: string | Date | undefined;
-
-  @HideField()
-  created_at?: string | Date | undefined;
-}
 
 @InputType()
 export class SendTicketMessageInput

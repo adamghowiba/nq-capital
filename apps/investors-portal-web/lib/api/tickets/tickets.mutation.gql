@@ -12,8 +12,6 @@ mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
 
 mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
   sendTicketMessage(sendTicketMessageInput: $sendTicketMessageInput) {
-    id
-    content
-    type
+    ...MessageBaseFragment
   }
 }

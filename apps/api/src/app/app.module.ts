@@ -24,6 +24,7 @@ import { TicketsModule } from '../modules/tickets/tickets.module';
 import { AuthModule } from '../modules/auth/auth.module';
 import { ExceptionFilterModule } from '../common/filters/filter.module';
 import { PassportModule } from '@nestjs/passport';
+import { MessagesModule } from '../modules/messages/messages.module';
 
 const APP_MODULES = [
   UsersModule,
@@ -33,6 +34,7 @@ const APP_MODULES = [
   TransactionsModule,
   TicketsModule,
   AuthModule,
+  MessagesModule
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];

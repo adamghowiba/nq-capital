@@ -21,7 +21,7 @@ import {
   ApplicationSessionEntity,
   SessionEntity,
 } from '../auth/entities/session.entity';
-import { MessageEntity } from './entities/message.entity';
+import { MessageEntity } from '../messages/entities/message.entity';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {

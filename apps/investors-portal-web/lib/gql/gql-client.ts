@@ -242,7 +242,9 @@ export type MessageEntity = {
   created_at: Scalars['DateTime']['output'];
   edit_count: Scalars['Int']['output'];
   id: Scalars['Int']['output'];
+  sent_by_investor?: Maybe<InvestorEntity>;
   sent_by_investor_id?: Maybe<Scalars['Int']['output']>;
+  sent_by_user?: Maybe<UserEntity>;
   sent_by_user_id?: Maybe<Scalars['Int']['output']>;
   ticket_id?: Maybe<Scalars['Int']['output']>;
   type: UserType;
@@ -255,6 +257,7 @@ export type Mutation = {
   adjustFund: FundEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
+  createMessage: MessageEntity;
   createTicket: TicketEntity;
   createTransaction: TransactionEntity;
   createUser: UserEntity;
@@ -262,12 +265,14 @@ export type Mutation = {
   logout: LogoutEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
+  removeMessage: MessageEntity;
   removeTicket: TicketEntity;
   removeTransaction: TransactionEntity;
   removeUser: UserEntity;
   sendTicketMessage: MessageEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
+  updateMessage: MessageEntity;
   updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
@@ -291,6 +296,11 @@ export type MutationCreateFundArgs = {
 
 export type MutationCreateInvestorArgs = {
   createInvestorInput: CreateInvestorInput;
+};
+
+
+export type MutationCreateMessageArgs = {
+  createMessageInput: SendMessageInput;
 };
 
 
@@ -324,6 +334,11 @@ export type MutationRemoveInvestorArgs = {
 };
 
 
+export type MutationRemoveMessageArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationRemoveTicketArgs = {
   id: Scalars['Int']['input'];
 };
@@ -351,6 +366,11 @@ export type MutationUpdateFundArgs = {
 
 export type MutationUpdateInvestorArgs = {
   updateInvestorInput: UpdateInvestorInput;
+};
+
+
+export type MutationUpdateMessageArgs = {
+  updateMessageInput: UpdateMessageInput;
 };
 
 
@@ -397,6 +417,8 @@ export type Query = {
   me: SessionEntity;
   meInvestor: InvestorEntity;
   meUser: UserEntity;
+  message: MessageEntity;
+  messages: Array<MessageEntity>;
   ticket: TicketEntity;
   tickets: Array<TicketEntity>;
   transaction: TransactionEntity;
@@ -429,6 +451,11 @@ export type QueryInvestorFundsArgs = {
 };
 
 
+export type QueryMessageArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type QueryTicketArgs = {
   id: Scalars['Int']['input'];
 };
@@ -448,6 +475,11 @@ export type QueryUsersArgs = {
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
   role?: InputMaybe<UserRole>;
+};
+
+export type SendMessageInput = {
+  content: Scalars['String']['input'];
+  type: UserType;
 };
 
 export type SendTicketMessageInput = {
@@ -550,6 +582,12 @@ export type UpdateInvestorInput = {
   password?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateMessageInput = {
+  content?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  type?: InputMaybe<UserType>;
+};
+
 export type UpdateTicketInput = {
   assigned_to_user_id?: InputMaybe<Scalars['Int']['input']>;
   data?: InputMaybe<Scalars['JSON']['input']>;
@@ -646,6 +684,8 @@ export type CreateCoolInvestorMutationVariables = Exact<{
 
 export type CreateCoolInvestorMutation = { __typename?: 'Mutation', createInvestor: { __typename?: 'InvestorEntity', id: number, company_name?: string | null, company_tax_id?: string | null } };
 
+export type MessageBaseFragmentFragment = { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null };
+
 export type TicketsAllFragmentFragment = { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any };
 
 export type CreateTickerMutationVariables = Exact<{
@@ -667,7 +707,7 @@ export type SendTicketMessageMutationVariables = Exact<{
 }>;
 
 
-export type SendTicketMessageMutation = { __typename?: 'Mutation', sendTicketMessage: { __typename?: 'MessageEntity', id: number, content: string, type: UserType } };
+export type SendTicketMessageMutation = { __typename?: 'Mutation', sendTicketMessage: { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null } };
 
 export type ListTickersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -679,7 +719,7 @@ export type RetrieveTicketQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType }> } };
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
@@ -714,6 +754,31 @@ export const InvestorAllFragmentFragmentDoc = `
   account_status
   created_at
   updated_at
+}
+    `;
+export const MessageBaseFragmentFragmentDoc = `
+    fragment MessageBaseFragment on MessageEntity {
+  id
+  content
+  type
+  sent_by_user_id
+  sent_by_investor_id
+  sent_by_user {
+    id
+    first_name
+    last_name
+    avatar
+    role
+  }
+  sent_by_investor {
+    id
+    first_name
+    last_name
+    avatar
+  }
+  edit_count
+  updated_at
+  created_at
 }
     `;
 export const TicketsAllFragmentFragmentDoc = `
@@ -967,12 +1032,10 @@ export const useUpdateTicketMutation = <
 export const SendTicketMessageDocument = `
     mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
   sendTicketMessage(sendTicketMessageInput: $sendTicketMessageInput) {
-    id
-    content
-    type
+    ...MessageBaseFragment
   }
 }
-    `;
+    ${MessageBaseFragmentFragmentDoc}`;
 
 export const useSendTicketMessageMutation = <
       TError = unknown,
@@ -1019,14 +1082,13 @@ export const RetrieveTicketDocument = `
     query RetrieveTicket($id: Int!) {
   ticket(id: $id) {
     messages {
-      id
-      content
-      type
+      ...MessageBaseFragment
     }
     ...TicketsAllFragment
   }
 }
-    ${TicketsAllFragmentFragmentDoc}`;
+    ${MessageBaseFragmentFragmentDoc}
+${TicketsAllFragmentFragmentDoc}`;
 
 export const useRetrieveTicketQuery = <
       TData = RetrieveTicketQuery,

@@ -29,8 +29,6 @@ export class TicketsService {
     sendMessageInput: SendTicketMessageInput,
     params: ApplicationSessionEntity
   ) {
-    console.log(sendMessageInput);
-
     const ticketMessage = await this.prisma.message.create({
       data: {
         ...sendMessageInput,
