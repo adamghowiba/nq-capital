@@ -1,4 +1,5 @@
 import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
+import { gqlFetcher } from './fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -6,26 +7,6 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: 
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
-
-function fetcher<TData, TVariables>(query: string, variables?: TVariables) {
-  return async (): Promise<TData> => {
-    const res = await fetch("http://localhost:5000/graphql", {
-    method: "POST",
-    ...({"headers":{"Content-Type":"application/json"},"credentials":"include"}),
-      body: JSON.stringify({ query, variables }),
-    });
-
-    const json = await res.json();
-
-    if (json.errors) {
-      const { message } = json.errors[0];
-
-      throw new Error(message);
-    }
-
-    return json.data;
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string; }
@@ -796,7 +777,7 @@ export const useLoginMutation = <
     return useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
       {
     mutationKey: ['Login'],
-    mutationFn: (variables?: LoginMutationVariables) => fetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables)(),
+    mutationFn: (variables?: LoginMutationVariables) => gqlFetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables)(),
     ...options
   }
     )};
@@ -817,7 +798,7 @@ export const useLogoutMutation = <
     return useMutation<LogoutMutation, TError, LogoutMutationVariables, TContext>(
       {
     mutationKey: ['Logout'],
-    mutationFn: (variables?: LogoutMutationVariables) => fetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables)(),
+    mutationFn: (variables?: LogoutMutationVariables) => gqlFetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables)(),
     ...options
   }
     )};
@@ -852,7 +833,7 @@ export const useMeQuery = <
     return useQuery<MeQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['Me'] : ['Me', variables],
-    queryFn: fetcher<MeQuery, MeQueryVariables>(MeDocument, variables),
+    queryFn: gqlFetcher<MeQuery, MeQueryVariables>(MeDocument, variables),
     ...options
   }
     )};
@@ -880,7 +861,7 @@ export const useMeInvestorQuery = <
     return useQuery<MeInvestorQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['MeInvestor'] : ['MeInvestor', variables],
-    queryFn: fetcher<MeInvestorQuery, MeInvestorQueryVariables>(MeInvestorDocument, variables),
+    queryFn: gqlFetcher<MeInvestorQuery, MeInvestorQueryVariables>(MeInvestorDocument, variables),
     ...options
   }
     )};
@@ -909,7 +890,7 @@ export const useRetrieveInvestorQuery = <
     return useQuery<RetrieveInvestorQuery, TError, TData>(
       {
     queryKey: ['RetrieveInvestor', variables],
-    queryFn: fetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables),
+    queryFn: gqlFetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables),
     ...options
   }
     )};
@@ -936,7 +917,7 @@ export const useCreateCoolInvestorMutation = <
     return useMutation<CreateCoolInvestorMutation, TError, CreateCoolInvestorMutationVariables, TContext>(
       {
     mutationKey: ['CreateCoolInvestor'],
-    mutationFn: (variables?: CreateCoolInvestorMutationVariables) => fetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables)(),
+    mutationFn: (variables?: CreateCoolInvestorMutationVariables) => gqlFetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables)(),
     ...options
   }
     )};
@@ -957,7 +938,7 @@ export const useCreateTickerMutation = <
     return useMutation<CreateTickerMutation, TError, CreateTickerMutationVariables, TContext>(
       {
     mutationKey: ['CreateTicker'],
-    mutationFn: (variables?: CreateTickerMutationVariables) => fetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables)(),
+    mutationFn: (variables?: CreateTickerMutationVariables) => gqlFetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables)(),
     ...options
   }
     )};
@@ -978,7 +959,7 @@ export const useUpdateTicketMutation = <
     return useMutation<UpdateTicketMutation, TError, UpdateTicketMutationVariables, TContext>(
       {
     mutationKey: ['UpdateTicket'],
-    mutationFn: (variables?: UpdateTicketMutationVariables) => fetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables)(),
+    mutationFn: (variables?: UpdateTicketMutationVariables) => gqlFetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables)(),
     ...options
   }
     )};
@@ -1001,7 +982,7 @@ export const useSendTicketMessageMutation = <
     return useMutation<SendTicketMessageMutation, TError, SendTicketMessageMutationVariables, TContext>(
       {
     mutationKey: ['SendTicketMessage'],
-    mutationFn: (variables?: SendTicketMessageMutationVariables) => fetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables)(),
+    mutationFn: (variables?: SendTicketMessageMutationVariables) => gqlFetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables)(),
     ...options
   }
     )};
@@ -1025,7 +1006,7 @@ export const useListTickersQuery = <
     return useQuery<ListTickersQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['ListTickers'] : ['ListTickers', variables],
-    queryFn: fetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables),
+    queryFn: gqlFetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables),
     ...options
   }
     )};
@@ -1058,7 +1039,7 @@ export const useRetrieveTicketQuery = <
     return useQuery<RetrieveTicketQuery, TError, TData>(
       {
     queryKey: ['RetrieveTicket', variables],
-    queryFn: fetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables),
+    queryFn: gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables),
     ...options
   }
     )};
@@ -1086,7 +1067,7 @@ export const useListTransactionsQuery = <
     return useQuery<ListTransactionsQuery, TError, TData>(
       {
     queryKey: variables === undefined ? ['ListTransactions'] : ['ListTransactions', variables],
-    queryFn: fetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables),
+    queryFn: gqlFetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables),
     ...options
   }
     )};
@@ -1116,7 +1097,7 @@ export const useListUsersQuery = <
     return useQuery<ListUsersQuery, TError, TData>(
       {
     queryKey: ['ListUsers', variables],
-    queryFn: fetcher<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, variables),
+    queryFn: gqlFetcher<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, variables),
     ...options
   }
     )};
