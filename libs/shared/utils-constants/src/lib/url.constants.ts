@@ -1,7 +1,6 @@
-const isDevelopment = process.env.NODE_ENV === 'development';
-const isProduction = process.env.NODE_ENV === 'production';
-const isStaging =
-  process.env.APP_ENV === 'staging' && process.env.NODE_ENV === 'production';
+const isDevelopment = process.env['NODE_ENV'] == 'development';
+const isProduction = process.env['NODE_ENV'] == 'production';
+const isStaging = process.env['APP_ENV']?.toLowerCase() == 'staging';
 
 export const generateUrl = (params: {
   stagingUrl?: string;
@@ -17,6 +16,8 @@ export const generateUrl = (params: {
 
   return new URL(url);
 };
+
+export const DOMAIN_HOST = 'saber.dev';
 
 export const API_URL = generateUrl({
   developmentUrl: 'http://localhost:5000/graphql',
