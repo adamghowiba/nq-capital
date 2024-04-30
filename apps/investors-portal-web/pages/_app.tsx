@@ -1,10 +1,10 @@
+import { NextPage } from 'next';
 import { AppProps } from 'next/app';
-import Head from 'next/head';
-import RootLayout from '../lib/layouts/RootLayout';
-import '../styles/global.css';
+import { Inter } from 'next/font/google';
 import { ReactElement, ReactNode } from 'react';
 import DashboardLayout from '../lib/layouts/DashboardLayout';
-import { NextPage } from 'next';
+import RootLayout from '../lib/layouts/RootLayout';
+import '../styles/global.css';
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -14,6 +14,10 @@ export type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
+
+// If loading a variable font, you don't need to specify the font weight
+const inter = Inter({ subsets: ['latin'] })
+
 function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =
     Component.getLayout ??
@@ -21,7 +25,7 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
-      <main className="app">
+      <main className={`app ${inter.className}`}>
         <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
       </main>
     </>
