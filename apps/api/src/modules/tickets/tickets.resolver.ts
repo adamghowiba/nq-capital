@@ -23,7 +23,10 @@ import {
 } from '../auth/entities/session.entity';
 import { MessageEntity } from '../messages/entities/message.entity';
 import {
+  Body,
   Controller,
+  Param,
+  ParseIntPipe,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -33,6 +36,7 @@ import {
   FilesInterceptor,
 } from '@nestjs/platform-express';
 import { Multer } from 'multer';
+import { MessagesService } from '../messages/messages.service';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {
@@ -93,16 +97,33 @@ export class TicketsResolver {
 
 @Controller('tickets')
 export class TicketsController {
-  constructor(private readonly ticketsService: TicketsService) {}
+  constructor(
+    private readonly ticketsService: TicketsService,
+    private readonly messageService: MessagesService
+  ) {}
 
   @UseInterceptors(FilesInterceptor('files', 4))
-  @Post('message/upload')
-  sendMessage(@UploadedFiles() files: Array<Express.Multer.File>) {
-    return files.map((file) => ({
-      filename: file.filename,
-      path: file.path,
-      size: file.size,
-      mimetype: file.mimetype,
-    }));
+  @Post('messages/:id/upload')
+  async attachFileToMessage(
+    @Param('id', ParseIntPipe) messageId: number,
+    @UploadedFiles() files: Array<Express.Multer.File>
+  ) {
+    const firstFile = files[0];
+
+    const data = await this.messageService.attachFile({
+      message_id: 1,
+      file: {
+        body: firstFile.buffer,
+        fileName: firstFile.originalname,
+        contentType: firstFile.mimetype,
+        metaData: {
+          test: 'Some test value',
+          date: '2021-10-10',
+        },
+        key: 'assets',
+      },
+    });
+
+    return data;
   }
 }

@@ -275,11 +275,11 @@ type Query {
   transaction(id: Int!): TransactionEntity!
   tickets: [TicketEntity!]!
   ticket(id: Int!): TicketEntity!
+  messages: [MessageEntity!]!
+  message(id: Int!): MessageEntity!
   me: SessionEntity!
   meInvestor: InvestorEntity!
   meUser: UserEntity!
-  messages: [MessageEntity!]!
-  message(id: Int!): MessageEntity!
 }
 
 type Mutation {
@@ -301,11 +301,11 @@ type Mutation {
   sendTicketMessage(sendTicketMessageInput: SendTicketMessageInput!): MessageEntity!
   updateTicket(updateTicketInput: UpdateTicketInput!): TicketEntity!
   removeTicket(id: Int!): TicketEntity!
-  login(loginInput: LoginInput!): UserEntity!
-  logout: LogoutEntity!
   createMessage(createMessageInput: SendMessageInput!): MessageEntity!
   updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
   removeMessage(id: Int!): MessageEntity!
+  login(loginInput: LoginInput!): UserEntity!
+  logout: LogoutEntity!
 }
 
 input CreateUserInput {
@@ -476,16 +476,6 @@ input UpdateTicketInput {
   id: Int!
 }
 
-"""Login user input"""
-input LoginInput {
-  """Email of the user"""
-  email: String!
-
-  """Password of the user"""
-  password: String!
-  user_type: UserType!
-}
-
 input SendMessageInput {
   content: String!
   type: UserType!
@@ -495,4 +485,14 @@ input UpdateMessageInput {
   content: String
   type: UserType
   id: Int!
+}
+
+"""Login user input"""
+input LoginInput {
+  """Email of the user"""
+  email: String!
+
+  """Password of the user"""
+  password: String!
+  user_type: UserType!
 }

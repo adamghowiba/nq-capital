@@ -32,6 +32,7 @@ model User {
   fund_adjustments     FundAdjustment[]
   assigned_tickets     Ticket[]
   messages             Message[]
+  assets               Asset[]
 }
 
 enum InvestorAccountStatus {
@@ -70,6 +71,7 @@ model Investor {
   created_at      DateTime              @default(now())
   updated_at      DateTime              @updatedAt
   messages        Message[]
+  assets          Asset[]
 }
 
 model Note {
@@ -231,6 +233,7 @@ model Message {
   sent_by_user_id     Int?
   sent_by_investor    Investor? @relation(fields: [sent_by_investor_id], references: [id])
   sent_by_investor_id Int?
+  assets              Asset[]
   edit_count          Int       @default(0)
   updated_at          DateTime  @updatedAt
   created_at          DateTime  @default(now())
@@ -305,15 +308,25 @@ enum AssetType {
   IMAGE
   WORD
   EXCEL
+  CSV
   UNKNOWN
 }
 
 model Asset {
-  id         Int       @id @default(autoincrement())
-  uuid       String
-  url        String
-  asset_type AssetType @default(UNKNOWN)
-  mime_type  String
+  id            Int       @id @default(autoincrement())
+  original_name String    @default("Unknown")
+  key           String    @unique
+  url           String    @unique
+  mime_type     String
+  asset_type    AssetType @default(UNKNOWN)
+  user          User?      @relation(fields: [user_id], references: [id])
+  user_id       Int?
+  investor      Investor?  @relation(fields: [investor_id], references: [id])
+  investor_id   Int?
+  message       Message?  @relation(fields: [message_id], references: [id])
+  message_id    Int?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @default(now()) @updatedAt
 }
 
 model Session {

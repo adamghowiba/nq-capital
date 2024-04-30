@@ -20,6 +20,7 @@
       "@nq-capital/service-database": [
         "libs/api/service-database/src/index.ts"
       ],
+      "@nq-capital/utils": ["libs/shared/utils/src/index.ts"],
       "@nq-capital/utils-constants": [
         "libs/shared/utils-constants/src/index.ts"
       ]

@@ -2,10 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { UpdateMessageInput } from './dto/update-message.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { SendMessageInput } from './dto/create-message.input';
+import {
+  StorageService,
+  UploadFileInput,
+} from '../../common/services/storage/storage.service';
 
 @Injectable()
 export class MessagesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly storageService: StorageService
+  ) {}
 
   async create(createMessageInput: SendMessageInput) {
     const message = await this.prisma.message.create({
@@ -13,6 +20,28 @@ export class MessagesService {
     });
 
     return message;
+  }
+
+  async attachFile(attachFileInput: {
+    message_id: number;
+    file: UploadFileInput;
+  }) {
+    const data = await this.storageService.uploadFile({
+      ...attachFileInput.file,
+    });
+
+    const message = await this.prisma.message.update({
+      where: {
+        id: attachFileInput.message_id,
+      },
+      data: {
+        edit_count: {
+          increment: 0,
+        },
+      },
+    });
+
+    return data;
   }
 
   async list() {
