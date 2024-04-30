@@ -1,6 +1,7 @@
-const isDevelopment = process.env['NODE_ENV'] == 'development';
-const isProduction = process.env['NODE_ENV'] == 'production';
-const isStaging = process.env['APP_ENV']?.toLowerCase() == 'staging';
+export const isDevelopment = process.env.NODE_ENV === 'development';
+export const isProduction = process.env.NODE_ENV === 'production';
+export const isStaging =
+  process.env.APP_ENV === 'staging' && process.env.NODE_ENV === 'production';
 
 export const generateUrl = (params: {
   stagingUrl?: string;
