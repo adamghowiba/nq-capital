@@ -25,5 +25,5 @@ export const API_URL = generateUrl({
 
 export const INVESTORS_PORTAL_URL = generateUrl({
   developmentUrl: 'http://localhost:4200',
-  productionUrl: 'https://client.saber.dev',
+  productionUrl: 'https://saber.dev',
 });
