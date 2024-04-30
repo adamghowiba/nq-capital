@@ -782,9 +782,6 @@ export const useLoginMutation = <
   }
     )};
 
-
-useLoginMutation.fetcher = (variables: LoginMutationVariables, options?: RequestInit['headers']) => gqlFetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables, options);
-
 export const LogoutDocument = `
     mutation Logout {
   logout {
@@ -805,9 +802,6 @@ export const useLogoutMutation = <
     ...options
   }
     )};
-
-
-useLogoutMutation.fetcher = (variables?: LogoutMutationVariables, options?: RequestInit['headers']) => gqlFetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables, options);
 
 export const MeDocument = `
     query Me {
@@ -848,9 +842,6 @@ useMeQuery.document = MeDocument;
 
 useMeQuery.getKey = (variables?: MeQueryVariables) => variables === undefined ? ['Me'] : ['Me', variables];
 
-
-useMeQuery.fetcher = (variables?: MeQueryVariables, options?: RequestInit['headers']) => gqlFetcher<MeQuery, MeQueryVariables>(MeDocument, variables, options);
-
 export const MeInvestorDocument = `
     query MeInvestor {
   meInvestor {
@@ -878,9 +869,6 @@ export const useMeInvestorQuery = <
 useMeInvestorQuery.document = MeInvestorDocument;
 
 useMeInvestorQuery.getKey = (variables?: MeInvestorQueryVariables) => variables === undefined ? ['MeInvestor'] : ['MeInvestor', variables];
-
-
-useMeInvestorQuery.fetcher = (variables?: MeInvestorQueryVariables, options?: RequestInit['headers']) => gqlFetcher<MeInvestorQuery, MeInvestorQueryVariables>(MeInvestorDocument, variables, options);
 
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($investor_id: Int!) {
@@ -911,9 +899,6 @@ useRetrieveInvestorQuery.document = RetrieveInvestorDocument;
 
 useRetrieveInvestorQuery.getKey = (variables: RetrieveInvestorQueryVariables) => ['RetrieveInvestor', variables];
 
-
-useRetrieveInvestorQuery.fetcher = (variables: RetrieveInvestorQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables, options);
-
 export const CreateCoolInvestorDocument = `
     mutation CreateCoolInvestor($createInvestorInput: CreateInvestorInput!) {
   createInvestor(createInvestorInput: $createInvestorInput) {
@@ -937,9 +922,6 @@ export const useCreateCoolInvestorMutation = <
   }
     )};
 
-
-useCreateCoolInvestorMutation.fetcher = (variables: CreateCoolInvestorMutationVariables, options?: RequestInit['headers']) => gqlFetcher<CreateCoolInvestorMutation, CreateCoolInvestorMutationVariables>(CreateCoolInvestorDocument, variables, options);
-
 export const CreateTickerDocument = `
     mutation CreateTicker($createTicketInput: CreateTicketInput!) {
   createTicket(createTicketInput: $createTicketInput) {
@@ -961,9 +943,6 @@ export const useCreateTickerMutation = <
   }
     )};
 
-
-useCreateTickerMutation.fetcher = (variables: CreateTickerMutationVariables, options?: RequestInit['headers']) => gqlFetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables, options);
-
 export const UpdateTicketDocument = `
     mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
   updateTicket(updateTicketInput: $updateTicketInput) {
@@ -984,9 +963,6 @@ export const useUpdateTicketMutation = <
     ...options
   }
     )};
-
-
-useUpdateTicketMutation.fetcher = (variables: UpdateTicketMutationVariables, options?: RequestInit['headers']) => gqlFetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables, options);
 
 export const SendTicketMessageDocument = `
     mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
@@ -1010,9 +986,6 @@ export const useSendTicketMessageMutation = <
     ...options
   }
     )};
-
-
-useSendTicketMessageMutation.fetcher = (variables: SendTicketMessageMutationVariables, options?: RequestInit['headers']) => gqlFetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables, options);
 
 export const ListTickersDocument = `
     query ListTickers {
@@ -1041,9 +1014,6 @@ export const useListTickersQuery = <
 useListTickersQuery.document = ListTickersDocument;
 
 useListTickersQuery.getKey = (variables?: ListTickersQueryVariables) => variables === undefined ? ['ListTickers'] : ['ListTickers', variables];
-
-
-useListTickersQuery.fetcher = (variables?: ListTickersQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables, options);
 
 export const RetrieveTicketDocument = `
     query RetrieveTicket($id: Int!) {
@@ -1078,9 +1048,6 @@ useRetrieveTicketQuery.document = RetrieveTicketDocument;
 
 useRetrieveTicketQuery.getKey = (variables: RetrieveTicketQueryVariables) => ['RetrieveTicket', variables];
 
-
-useRetrieveTicketQuery.fetcher = (variables: RetrieveTicketQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables, options);
-
 export const ListTransactionsDocument = `
     query ListTransactions {
   transactions {
@@ -1108,9 +1075,6 @@ export const useListTransactionsQuery = <
 useListTransactionsQuery.document = ListTransactionsDocument;
 
 useListTransactionsQuery.getKey = (variables?: ListTransactionsQueryVariables) => variables === undefined ? ['ListTransactions'] : ['ListTransactions', variables];
-
-
-useListTransactionsQuery.fetcher = (variables?: ListTransactionsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables, options);
 
 export const ListUsersDocument = `
     query ListUsers($limit: Int!, $page: Int, $role: UserRole) {
@@ -1141,6 +1105,3 @@ export const useListUsersQuery = <
 useListUsersQuery.document = ListUsersDocument;
 
 useListUsersQuery.getKey = (variables: ListUsersQueryVariables) => ['ListUsers', variables];
-
-
-useListUsersQuery.fetcher = (variables: ListUsersQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListUsersQuery, ListUsersQueryVariables>(ListUsersDocument, variables, options);

@@ -3,14 +3,14 @@ import type { ReactQueryRawPluginConfig } from '@graphql-codegen/typescript-reac
 
 const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
   exposeQueryKeys: true,
-  exposeFetcher: true,
+  // exposeFetcher: true,
   dedupeFragments: true,
   exposeDocument: true,
   reactQueryVersion: 5,
   // allowEnumStringTypes: true,
   fetcher: {
     // TODO: use the URL from url constants
-    //endpoint: process.env.API_GQL_URL as string,
+    // endpoint: process.env.API_GQL_URL as string,
     func: './fetcher#gqlFetcher',
     fetchParams: {
       headers: {
