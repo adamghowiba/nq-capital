@@ -27,7 +27,7 @@ class GraphQLApiError extends Error {
 
 export const gqlFetcher = <TData, TVariables>(query: string, variables?: TVariables) => {
   return async (): Promise<TData> => {
-    const res = await fetch(API_URL, {
+    const res = await fetch(API_URL.href, {
       method: 'POST',
       ...{ headers: { 'Content-Type': 'application/json' }, credentials: 'include' },
       body: JSON.stringify({ query, variables }),
