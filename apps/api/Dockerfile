@@ -38,6 +38,6 @@ COPY --from=builder /app/dist ./dist
 RUN npm --prefix ./dist/apps/api --omit=dev --force install
 RUN (cd ./dist/apps/api && npx prisma generate)
 
-EXPOSE 5010
+EXPOSE 5000
 
 CMD ["node", "dist/apps/api/main.js"]
