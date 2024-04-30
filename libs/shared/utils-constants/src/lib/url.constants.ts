@@ -1,6 +1,5 @@
-export const isDevelopment = process.env.NODE_ENV?.toString() === 'development';
-export const isProduction = process.env.NODE_ENV?.toString() === 'production';
-export const isStaging = process.env.APP_ENV?.toString() === 'staging';
+const isDevelopment = process.env['NODE_ENV']?.toString() === 'development';
+const isProduction = process.env['NODE_ENV']?.toString() === 'production';
 
 export const generateUrl = (params: {
   stagingUrl?: string;
