@@ -10,7 +10,7 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
   // allowEnumStringTypes: true,
   fetcher: {
     // TODO: use the URL from url constants
-    // endpoint: process.env.API_GQL_URL as string,
+    //endpoint: process.env.API_GQL_URL as string,
     func: './fetcher#gqlFetcher',
     fetchParams: {
       headers: {
@@ -23,7 +23,7 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
 
 const config: CodegenConfig = {
   schema: '../../schema.gql',
-  documents: ['lib/api/**/*.gql'],
+  documents: ['./lib/api/**/*.gql'],
   generates: {
     './lib/gql/gql-client.ts': {
       plugins: [
