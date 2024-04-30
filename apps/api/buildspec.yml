@@ -1,0 +1,19 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Authenticating into AWS ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 040133161491.dkr.ecr.us-east-1.amazonaws.com
+
+  build:
+    commands:
+      - echo Building API Image
+      - docker build -t nq-api -f ./apps/api/Dockerfile .
+      - docker tag 040133161491.dkr.ecr.us-east-1.amazonaws.com/nq-api:latest
+  post_build:
+    commands:
+      - echo Pushing API image...
+      - docker push 040133161491.dkr.ecr.us-east-1.amazonaws.com/nq-api:latest
+artifacts:
+  files:
+    - apps/api/image-definitions.json

@@ -255,6 +255,19 @@ export type LogoutEntity = {
   status: Scalars['String']['output'];
 };
 
+export type MessageEntity = {
+  __typename?: 'MessageEntity';
+  content: Scalars['String']['output'];
+  created_at: Scalars['DateTime']['output'];
+  edit_count: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  sent_by_investor_id?: Maybe<Scalars['Int']['output']>;
+  sent_by_user_id?: Maybe<Scalars['Int']['output']>;
+  ticket_id?: Maybe<Scalars['Int']['output']>;
+  type: UserType;
+  updated_at: Scalars['DateTime']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addFundInvestors: FundEntity;
@@ -271,6 +284,7 @@ export type Mutation = {
   removeTicket: TicketEntity;
   removeTransaction: TransactionEntity;
   removeUser: UserEntity;
+  sendTicketMessage: MessageEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
   updateTicket: TicketEntity;
@@ -341,6 +355,11 @@ export type MutationRemoveTransactionArgs = {
 
 export type MutationRemoveUserArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type MutationSendTicketMessageArgs = {
+  sendTicketMessageInput: SendTicketMessageInput;
 };
 
 
@@ -450,6 +469,12 @@ export type QueryUsersArgs = {
   role?: InputMaybe<UserRole>;
 };
 
+export type SendTicketMessageInput = {
+  content: Scalars['String']['input'];
+  ticket_id: Scalars['Int']['input'];
+  type: UserType;
+};
+
 export type SessionEntity = {
   __typename?: 'SessionEntity';
   investor?: Maybe<InvestorEntity>;
@@ -463,6 +488,7 @@ export type TicketEntity = {
   data?: Maybe<Scalars['JSON']['output']>;
   id: Scalars['Int']['output'];
   investor_id: Scalars['Int']['output'];
+  messages: Array<MessageEntity>;
   priority: TicketPriority;
   status: TicketStatus;
   type: TicketType;
@@ -655,6 +681,13 @@ export type UpdateTicketMutationVariables = Exact<{
 
 export type UpdateTicketMutation = { __typename?: 'Mutation', updateTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
 
+export type SendTicketMessageMutationVariables = Exact<{
+  sendTicketMessageInput: SendTicketMessageInput;
+}>;
+
+
+export type SendTicketMessageMutation = { __typename?: 'Mutation', sendTicketMessage: { __typename?: 'MessageEntity', id: number, content: string, type: UserType } };
+
 export type ListTickersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -665,7 +698,7 @@ export type RetrieveTicketQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType }> } };
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
@@ -974,6 +1007,32 @@ export const useUpdateTicketMutation = <
 
 useUpdateTicketMutation.fetcher = (variables: UpdateTicketMutationVariables) => fetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables);
 
+export const SendTicketMessageDocument = `
+    mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
+  sendTicketMessage(sendTicketMessageInput: $sendTicketMessageInput) {
+    id
+    content
+    type
+  }
+}
+    `;
+
+export const useSendTicketMessageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SendTicketMessageMutation, TError, SendTicketMessageMutationVariables, TContext>) => {
+    
+    return useMutation<SendTicketMessageMutation, TError, SendTicketMessageMutationVariables, TContext>(
+      {
+    mutationKey: ['SendTicketMessage'],
+    mutationFn: (variables?: SendTicketMessageMutationVariables) => fetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useSendTicketMessageMutation.fetcher = (variables: SendTicketMessageMutationVariables) => fetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables);
+
 export const ListTickersDocument = `
     query ListTickers {
   tickets {
@@ -1008,6 +1067,11 @@ useListTickersQuery.fetcher = (variables?: ListTickersQueryVariables) => fetcher
 export const RetrieveTicketDocument = `
     query RetrieveTicket($id: Int!) {
   ticket(id: $id) {
+    messages {
+      id
+      content
+      type
+    }
     ...TicketsAllFragment
   }
 }

@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { TicketsService } from './tickets.service';
 import { TicketEntity } from './entities/ticket.entity';
 import { CreateTicketInput } from './dto/create-ticket.input';
@@ -8,8 +16,12 @@ import {
   InvestorSession,
 } from '../../common/decorators/auth/gql-user.decorator';
 import { InvestorEntity } from '../investors/entities/investor.entity';
-import { CreateTicketMessageInput } from './dto/create-ticket-message.input';
-import { SessionEntity } from '../auth/entities/session.entity';
+import { SendTicketMessageInput } from './dto/create-ticket-message.input';
+import {
+  ApplicationSessionEntity,
+  SessionEntity,
+} from '../auth/entities/session.entity';
+import { MessageEntity } from './entities/message.entity';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {
@@ -26,13 +38,18 @@ export class TicketsResolver {
     });
   }
 
-  @Mutation(() => TicketEntity, { name: 'createTicketMessage' })
-  message(
-    @Args('createTicketMessageInput')
-    createTicketMessageInput: CreateTicketMessageInput,
-    @GqlSession() session: SessionEntity
+  @Mutation(() => MessageEntity, { name: 'sendTicketMessage' })
+  sendMessage(
+    @Args('sendTicketMessageInput')
+    sendTickerMessageInput: SendTicketMessageInput,
+    @GqlSession() session: ApplicationSessionEntity
   ) {
-    return this.ticketsService.message({...createTicketMessageInput, });
+    return this.ticketsService.message(
+      {
+        ...sendTickerMessageInput,
+      },
+      session
+    );
   }
 
   @Query(() => [TicketEntity], { name: 'tickets' })
@@ -55,5 +72,10 @@ export class TicketsResolver {
   @Mutation(() => TicketEntity)
   removeTicket(@Args('id', { type: () => Int }) id: number) {
     return this.ticketsService.remove(id);
+  }
+
+  @ResolveField('messages', () => [MessageEntity])
+  getMessagesField(@Parent() ticket: TicketEntity) {
+    return this.ticketsService.getTickerMessagesField(ticket);
   }
 }

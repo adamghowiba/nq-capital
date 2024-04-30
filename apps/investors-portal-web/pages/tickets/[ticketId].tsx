@@ -12,7 +12,10 @@ import {
   HStack,
   VStack,
 } from 'apps/investors-portal-web/lib/components/Stack/Stack';
-import { useRetrieveTicketQuery } from 'apps/investors-portal-web/lib/gql/gql-client';
+import {
+  useRetrieveTicketQuery,
+  useSendTicketMessageMutation,
+} from 'apps/investors-portal-web/lib/gql/gql-client';
 import { formatISOForTable } from 'apps/investors-portal-web/lib/utils/date.utils';
 import { useRouter } from 'next/router';
 import React, { FC, ReactNode, useState } from 'react';
@@ -23,6 +26,7 @@ import send16FilledIcon from '@iconify/icons-fluent/send-16-filled';
 import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
 import { Icon } from '@iconify/react';
 import MessageCard from 'apps/investors-portal-web/lib/components/MessageCard/MessageCard';
+import { useMutation } from '@tanstack/react-query';
 
 const TickerDetailPage = ({ ...props }) => {
   const [messageInput, setMessageInput] = useState('');
@@ -60,10 +64,34 @@ const TickerDetailPage = ({ ...props }) => {
     },
   ];
 
+  const sendTickerMessageMutation = useSendTicketMessageMutation({});
+
+  const handleSendMessage = () => {
+    console.log('Send message');
+
+    sendTickerMessageMutation.mutate({
+      sendTicketMessageInput: {
+        content: messageInput,
+        ticket_id: ticketId,
+        type: 'INVESTOR',
+      },
+    });
+
+    setMessageInput('');
+  };
+
   if (!ticketId) {
     return (
       <Alert variant="filled" severity="error">
         <AlertTitle>Invalid ticket id</AlertTitle>
+      </Alert>
+    );
+  }
+
+  if (ticket.isError) {
+    return (
+      <Alert variant="filled" severity="error">
+        <AlertTitle>Error loading ticket</AlertTitle>
       </Alert>
     );
   }
@@ -141,7 +169,7 @@ const TickerDetailPage = ({ ...props }) => {
             </Box>
 
             <VStack p={2} gap={4}>
-              {Array.from({ length: 5 }).map((_, index) => (
+              {ticker.from({ length: 5 }).map((_, index) => (
                 <MessageCard
                   content="Hello, how can I help you today?"
                   date="2021-09-01T08:30:00Z"
@@ -177,7 +205,12 @@ const TickerDetailPage = ({ ...props }) => {
                 onChange={(event) => setMessageInput(event.target.value)}
                 InputProps={{
                   endAdornment: (
-                    <IconButton size="small" color="primary" sx={{alignSelf: "end"}}>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      sx={{ alignSelf: 'end' }}
+                      onClick={handleSendMessage}
+                    >
                       <Icon
                         icon={arrowCircleUp12Filled}
                         width={25}

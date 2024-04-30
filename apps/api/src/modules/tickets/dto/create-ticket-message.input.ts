@@ -4,7 +4,7 @@ import { Transform } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 @InputType()
-export class CreateMessageInput implements Prisma.MessageUncheckedCreateInput {
+export class SendMessageInput implements Prisma.MessageUncheckedCreateInput {
   @HideField()
   id?: number | undefined;
 
@@ -30,8 +30,8 @@ export class CreateMessageInput implements Prisma.MessageUncheckedCreateInput {
 }
 
 @InputType()
-export class CreateTicketMessageInput
-  extends CreateMessageInput
+export class SendTicketMessageInput
+  extends SendMessageInput
   implements Prisma.MessageCreateWithoutTicketInput
 {
   @Field(() => Number)

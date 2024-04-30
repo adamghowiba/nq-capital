@@ -9,3 +9,11 @@ mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
     ...TicketsAllFragment
   }
 }
+
+mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
+  sendTicketMessage(sendTicketMessageInput: $sendTicketMessageInput) {
+    id
+    content
+    type
+  }
+}

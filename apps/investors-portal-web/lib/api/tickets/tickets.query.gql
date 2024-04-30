@@ -6,6 +6,11 @@ query ListTickers {
 
 query RetrieveTicket($id: Int!) {
   ticket(id: $id) {
+    messages {
+      id
+      content
+      type
+    }
     ...TicketsAllFragment
   }
 }

@@ -10,3 +10,13 @@ export class SessionEntity {
   @Field(() => InvestorEntity, { nullable: true })
   investor: InvestorEntity | null = null;
 }
+
+export type Application = 'investors_portal' | 'admin_portal';
+
+/**
+ * Returns the session and the application that originated
+ * the request
+ */
+export class ApplicationSessionEntity extends SessionEntity {
+  application!: Application;
+}

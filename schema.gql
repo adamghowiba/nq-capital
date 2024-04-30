@@ -180,6 +180,7 @@ type TicketEntity {
   assigned_to_user_id: Int
   updated_at: DateTime!
   created_at: DateTime!
+  messages: [MessageEntity!]!
 }
 
 """
@@ -208,13 +209,31 @@ enum TicketStatus {
   UNDER_REVIEW
 }
 
-type LogoutEntity {
-  status: String!
-}
-
 type SessionEntity {
   user: UserEntity
   investor: InvestorEntity
+}
+
+type MessageEntity {
+  id: Int!
+  content: String!
+  type: UserType!
+  ticket_id: Int
+  sent_by_user_id: Int
+  sent_by_investor_id: Int
+  edit_count: Int!
+  updated_at: DateTime!
+  created_at: DateTime!
+}
+
+"""Type of user"""
+enum UserType {
+  INVESTOR
+  ADMIN
+}
+
+type LogoutEntity {
+  status: String!
 }
 
 """Prisma Decimal Scalar"""
@@ -275,6 +294,7 @@ type Mutation {
   updateTransaction(updateTransactionInput: UpdateTransactionInput!): TransactionEntity!
   removeTransaction(id: Int!): TransactionEntity!
   createTicket(createTicketInput: CreateTicketInput!): TicketEntity!
+  sendTicketMessage(sendTicketMessageInput: SendTicketMessageInput!): MessageEntity!
   updateTicket(updateTicketInput: UpdateTicketInput!): TicketEntity!
   removeTicket(id: Int!): TicketEntity!
   login(loginInput: LoginInput!): UserEntity!
@@ -433,6 +453,12 @@ input CreateTicketInput {
   status: TicketStatus = OPEN
 }
 
+input SendTicketMessageInput {
+  content: String!
+  type: UserType!
+  ticket_id: Int!
+}
+
 input UpdateTicketInput {
   data: JSON
   priority: TicketPriority = MEDIUM
@@ -451,10 +477,4 @@ input LoginInput {
   """Password of the user"""
   password: String!
   user_type: UserType!
-}
-
-"""Type of user"""
-enum UserType {
-  INVESTOR
-  ADMIN
 }

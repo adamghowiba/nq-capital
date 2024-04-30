@@ -24,6 +24,19 @@ services:
     volumes:
       - cache:/data
 
+  api:
+    container_name: api
+    hostname: api
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile
+    restart: no
+    env_file:
+      - .env
+      - ./apps/api/.env
+    ports:
+      - 5010:5000
+
 volumes:
   postgres:
     driver: local

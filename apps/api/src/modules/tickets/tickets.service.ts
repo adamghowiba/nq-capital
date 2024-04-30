@@ -3,7 +3,12 @@ import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { ApiError } from '../../common/exceptions/api.error';
-import { CreateTicketMessageInput } from './dto/create-ticket-message.input';
+import { SendTicketMessageInput } from './dto/create-ticket-message.input';
+import {
+  ApplicationSessionEntity,
+  SessionEntity,
+} from '../auth/entities/session.entity';
+import { TicketEntity } from './entities/ticket.entity';
 
 @Injectable()
 export class TicketsService {
@@ -20,9 +25,24 @@ export class TicketsService {
     return ticket;
   }
 
-  async message(tickerMessageInput: CreateTicketMessageInput & {}) {
+  async message(
+    sendMessageInput: SendTicketMessageInput,
+    params: ApplicationSessionEntity
+  ) {
+    console.log(sendMessageInput);
+
     const ticketMessage = await this.prisma.message.create({
-      data: { ...tickerMessageInput },
+      data: {
+        ...sendMessageInput,
+        sent_by_investor_id:
+          params.application === 'investors_portal' && params.investor?.id
+            ? params.investor.id
+            : undefined,
+        sent_by_user_id:
+          params.application === 'admin_portal' && params.user?.id
+            ? params.user.id
+            : undefined,
+      },
     });
 
     return ticketMessage;
@@ -53,5 +73,11 @@ export class TicketsService {
     const ticket = await this.prisma.ticket.delete({ where: { id } });
 
     return ticket;
+  }
+
+  getTickerMessagesField(ticket: TicketEntity) {
+    return this.prisma.ticket
+      .findUnique({ where: { id: ticket.id } })
+      .messages();
   }
 }
