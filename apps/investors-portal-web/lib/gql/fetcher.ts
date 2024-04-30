@@ -31,7 +31,7 @@ export const gqlFetcher = <TData, TVariables>(
   options?: RequestInit['headers']
 ) => {
   return async (): Promise<TData> => {
-    const res = await fetch(API_URL.href, {
+    const res = await fetch(process.env?.API_GQL_URL || 'http//api.newage.dev/graphql', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...options },
       credentials: 'include',
