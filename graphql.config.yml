@@ -1,5 +1,5 @@
 projects:
   investors-portal-web:
-    schema: http://localhost:5000/graphql
+    schema: "./schema.gql"
     documents: "apps/investors-portal-web/**/*.gql"
     exclude: "apps/investors-portal-web/.next/**/*"

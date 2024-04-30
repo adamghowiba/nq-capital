@@ -20,10 +20,10 @@ export const generateUrl = (params: {
 
 export const API_URL = generateUrl({
   developmentUrl: 'http://localhost:5000/graphql',
-  productionUrl: 'https://api.nqcapital.com/graphql',
+  productionUrl: 'https://api.saber.dev/graphql',
 });
 
 export const INVESTORS_PORTAL_URL = generateUrl({
   developmentUrl: 'http://localhost:4200',
-  productionUrl: 'https://investor.nqcapital.com',
+  productionUrl: 'https://saber.dev',
 });

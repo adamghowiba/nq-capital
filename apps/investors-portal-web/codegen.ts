@@ -9,7 +9,9 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
   reactQueryVersion: 5,
   // allowEnumStringTypes: true,
   fetcher: {
-    endpoint: process.env.API_GQL_URL as string,
+    // TODO: use the URL from url constants
+    // endpoint: process.env.API_GQL_URL as string,
+    func: './fetcher#gqlFetcher',
     fetchParams: {
       headers: {
         'Content-Type': 'application/json',
