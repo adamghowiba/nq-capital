@@ -22,9 +22,6 @@
       ],
       "@nq-capital/utils-constants": [
         "libs/shared/utils-constants/src/index.ts"
-      ],
-      "@nq-capital/utils-nest/nest-utils": [
-        "libs/utils-nest/nest-utils/src/index.ts"
       ]
     }
   },
