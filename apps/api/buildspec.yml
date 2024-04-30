@@ -9,7 +9,7 @@ phases:
     commands:
       - echo Building API Image
       - docker build -t nq-api -f ./apps/api/Dockerfile .
-      - docker tag 040133161491.dkr.ecr.us-east-1.amazonaws.com/nq-api:latest
+      - docker tag nq-api:040133161491.dkr.ecr.us-east-1.amazonaws.com/nq-api:latest
   post_build:
     commands:
       - echo Pushing API image...
