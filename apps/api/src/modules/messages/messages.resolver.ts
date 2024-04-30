@@ -26,12 +26,12 @@ export class MessagesResolver {
   }
 
   @Query(() => [MessageEntity], { name: 'messages' })
-  findAll() {
+  list() {
     return this.messagesService.list();
   }
 
   @Query(() => MessageEntity, { name: 'message' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.messagesService.retrieve(id);
   }
 

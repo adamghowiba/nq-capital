@@ -2,7 +2,9 @@
   "name": "@nq-capital/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build:investors": "nx build investors-portal-web --configuration production"
+  },
   "private": true,
   "prisma": {
     "seed": "npx ts-node ./prisma/seed/seed.ts"
@@ -10,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.9.6",
     "@apollo/server": "^4.10.0",
+    "@aws-sdk/client-s3": "^3.565.0",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
@@ -83,6 +86,7 @@
     "@types/express-session": "^1.18.0",
     "@types/jest": "^29.4.0",
     "@types/luxon": "^3.4.2",
+    "@types/multer": "^1.4.11",
     "@types/node": "^18.16.9",
     "@types/passport-local": "^1.0.38",
     "@types/react": "18.2.33",

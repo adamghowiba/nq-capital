@@ -22,6 +22,17 @@ import {
   SessionEntity,
 } from '../auth/entities/session.entity';
 import { MessageEntity } from '../messages/entities/message.entity';
+import {
+  Controller,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import {
+  FileFieldsInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
+import { Multer } from 'multer';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {
@@ -77,5 +88,21 @@ export class TicketsResolver {
   @ResolveField('messages', () => [MessageEntity])
   getMessagesField(@Parent() ticket: TicketEntity) {
     return this.ticketsService.getTickerMessagesField(ticket);
+  }
+}
+
+@Controller('tickets')
+export class TicketsController {
+  constructor(private readonly ticketsService: TicketsService) {}
+
+  @UseInterceptors(FilesInterceptor('files', 4))
+  @Post('message/upload')
+  sendMessage(@UploadedFiles() files: Array<Express.Multer.File>) {
+    return files.map((file) => ({
+      filename: file.filename,
+      path: file.path,
+      size: file.size,
+      mimetype: file.mimetype,
+    }));
   }
 }
