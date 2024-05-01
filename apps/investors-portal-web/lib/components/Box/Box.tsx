@@ -1,4 +1,4 @@
-import MUIBox, { BoxProps } from '@mui/material/Box';
+import {Box as MUIBox, BoxProps}from '@mui/material';
 import { CSSPseudoSelectorProps } from '@mui/system';
 import { forwardRef } from 'react';
 

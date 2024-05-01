@@ -2,15 +2,15 @@ import add from '@iconify/icons-fluent/add-24-filled';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useState } from 'react';
 import OneIcon from '../../../utils/OneIcon';
-import BankCard from './BankCard';
-import NewBankDialog, { NewBankData } from './BankMutationDialog';
+import BankCard from '../../../components/BankCard/BankCard';
+import BankCardMutationDialog, { BankSchema } from '../../../components/BankCardMutationDialog/BankMutationDialog';
 import StepHeader from './StepHeader';
 
 export interface FinancialInformationProps {
-  data: NewBankData[];
+  data: BankSchema[];
   isSubmitting: boolean;
-  onNext: (banks: NewBankData[]) => void;
-  onBack: (banks: NewBankData[]) => void;
+  onNext: (banks: BankSchema[]) => void;
+  onBack: (banks: BankSchema[]) => void;
 }
 export default function FinancialInformation({
   data,
@@ -21,10 +21,10 @@ export default function FinancialInformation({
   const [isNewBankDialogOpen, setIsNewBankDialogOpen] =
     useState<boolean>(false);
 
-  const [bankAccounts, setBankAccounts] = useState<NewBankData[]>(data);
-  const [editableBank, setEditableBank] = useState<NewBankData>();
+  const [bankAccounts, setBankAccounts] = useState<BankSchema[]>(data);
+  const [editableBank, setEditableBank] = useState<BankSchema>();
 
-  function handleAddBank(newBankAccount: NewBankData) {
+  function handleAddBank(newBankAccount: BankSchema) {
     setBankAccounts((prev) => {
       if (bankAccounts.length === 0)
         return [
@@ -34,7 +34,7 @@ export default function FinancialInformation({
     });
   }
 
-  function handleDeleteBank(bank: NewBankData) {
+  function handleDeleteBank(bank: BankSchema) {
     setBankAccounts((prev) => {
       const newBanks = prev.filter(({ temp_id }) => temp_id !== bank.temp_id);
       const defaultBank = newBanks.find(({ is_default }) => is_default);
@@ -46,7 +46,7 @@ export default function FinancialInformation({
     });
   }
 
-  function handleEditBank(bank: NewBankData) {
+  function handleEditBank(bank: BankSchema) {
     setBankAccounts((prev) => {
       return prev.map((nb) => {
         if (nb.temp_id === bank.temp_id) return bank;
@@ -55,7 +55,7 @@ export default function FinancialInformation({
     });
   }
 
-  function handleChangeDefault(newDefaultBank: NewBankData) {
+  function handleChangeDefault(newDefaultBank: BankSchema) {
     setBankAccounts((prev) => {
       return prev.map((bank) => {
         if (bank.temp_id === newDefaultBank.temp_id)
@@ -67,7 +67,7 @@ export default function FinancialInformation({
 
   return (
     <>
-      <NewBankDialog
+      <BankCardMutationDialog
         data={editableBank}
         isDialogOpen={isNewBankDialogOpen || !!editableBank}
         closeDialog={() => {

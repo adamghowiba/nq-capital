@@ -1,8 +1,7 @@
 import { Box, CssBaseline } from '@mui/material';
-import * as React from 'react';
 import { ReactNode } from 'react';
-import Topbar from '../components/Topbar/Topbar';
 import Navbar from '../components/Navbar/Navbar';
+import Topbar from '../components/Topbar/Topbar';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (

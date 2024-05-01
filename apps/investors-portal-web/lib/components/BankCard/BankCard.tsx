@@ -3,27 +3,31 @@ import dot from '@iconify/icons-fluent/circle-12-filled';
 import more from '@iconify/icons-fluent/more-horizontal-24-regular';
 import { Icon } from '@iconify/react';
 import { Avatar, Box, Typography } from '@mui/material';
-import { useState } from 'react';
-import { theme } from '../../../theme';
-import OneIcon from '../../../utils/OneIcon';
+import { FC, useState } from 'react';
+import { theme } from '../../theme';
+import OneIcon from '../../utils/OneIcon';
 import BankCardMenu from './BankCardMenu';
-import { NewBankData } from './BankMutationDialog';
+import { BankSchema } from '../BankCardMutationDialog/BankMutationDialog';
 
 export interface BankCardProps {
-  bank: NewBankData;
-  disabled?: boolean;
+  bankName: string;
+  accountNumber: string;
+  isDefault?: boolean;
+  isDisabled?: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onMakeDefault: () => void;
 }
 
-export default function BankCard({
-  bank: { bank_name, bank_account_number, is_default },
-  disabled = false,
+export const BankCard: FC<BankCardProps> = ({
+  bankName,
+  accountNumber,
+  isDefault = false,
+  isDisabled = false,
   onEdit,
   onDelete,
   onMakeDefault,
-}: BankCardProps) {
+}) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   return (
@@ -32,15 +36,16 @@ export default function BankCard({
         anchorEl={anchorEl}
         closeMenu={() => setAnchorEl(null)}
         isOpen={!!anchorEl}
-        isDefault={is_default}
+        isDefault={isDefault}
         onEdit={onEdit}
         onDelete={onDelete}
         onMakeDefault={onMakeDefault}
       />
+
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: is_default
+          gridTemplateColumns: isDefault
             ? 'auto 1fr auto auto'
             : 'auto 1fr auto',
           columnGap: 3,
@@ -52,7 +57,7 @@ export default function BankCard({
           <Icon icon={bank} fontSize={28} color="#8D8D8D" />
         </Avatar>
         <Box>
-          <Typography>{bank_name}</Typography>
+          <Typography>{bankName}</Typography>
           <Box
             sx={{
               display: 'grid',
@@ -75,11 +80,11 @@ export default function BankCard({
               ))}
             </Box>
             <Typography color="#8D8D8D" fontWeight={400}>
-              {bank_account_number.substring(bank_account_number.length - 4)}
+              {accountNumber.substring(accountNumber.length -4)}
             </Typography>
           </Box>
         </Box>
-        {is_default && (
+        {isDefault && (
           <Box
             sx={{
               padding: '0 6px',
@@ -97,10 +102,10 @@ export default function BankCard({
           title="More"
           fontSize={24}
           iconColor="#202020"
-          disabled={disabled}
+          disabled={isDisabled}
           onClick={(event) => setAnchorEl(event.currentTarget)}
         />
       </Box>
     </>
   );
-}
+};

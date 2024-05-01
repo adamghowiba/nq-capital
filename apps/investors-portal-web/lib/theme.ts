@@ -162,6 +162,11 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           fontSize: '16px',
           letterSpacing: '-0.42px',
         },
+        h6: {
+          fontWeight: 500,
+          fontSize: '14px',
+          letterSpacing: '-0.42px',
+        },
         body1: {
           fontSize: '14px',
           fontWeight: 500,
@@ -445,12 +450,9 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
       MuiDialog: {
         styleOverrides: {
-          root: ({ theme }) => ({
-            '& .MuiPaper-root': {
-              borderRadius: 0,
-              backgroundColor: theme.common.background,
-              maxWidth: '55vw',
-            },
+          paper: ({ theme }) => ({
+            borderRadius: 0,
+            backgroundColor: theme.common.background,
           }),
         },
       },
@@ -467,16 +469,10 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
       MuiDialogActions: {
         styleOverrides: {
-          root: ({ theme }) => ({
-            '&.MuiDialogActions-root': {
-              display: 'grid',
-              gridAutoFlow: 'column',
-              alignItems: 'center',
-              columnGap: '8px',
-              justifyContent: 'stretch',
-              padding: '8px 0',
-            },
-          }),
+          spacing: {
+            borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+            padding: '16px',
+          },
         },
       },
       MuiTableContainer: {

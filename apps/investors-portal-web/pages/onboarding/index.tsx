@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { NewBankData } from '../../lib/modules/onboarding/components/BankMutationDialog';
+import { BankSchema } from '../../lib/components/BankCardMutationDialog/BankMutationDialog';
 import FinancialInformation from '../../lib/modules/onboarding/components/FinancialInformation';
 import IdentityVerification, {
   IdentityVerificationData,
@@ -9,7 +9,7 @@ import IdentityVerification, {
 import PersonalInformation, {
   PersonalInformationData,
 } from '../../lib/modules/onboarding/components/PersonalInformation';
-import OnboardingTopbar from '../../lib/modules/onboarding/components/Topbar';
+import OnboardingTopbar from '../../lib/modules/onboarding/components/OnboardingTopbar';
 import { NextPageWithLayout } from '../_app';
 
 const FORM_STEPS = ['personal', 'identity', 'financial'] as const;
@@ -21,7 +21,7 @@ const Onboarding: NextPageWithLayout = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [personalData, setPersonalData] = useState<PersonalInformationData>();
   const [identityData, setIdentityData] = useState<IdentityVerificationData>();
-  const [financialData, setFinancialData] = useState<NewBankData[]>([]);
+  const [financialData, setFinancialData] = useState<BankSchema[]>([]);
 
   const currentStepIndex = FORM_STEPS.indexOf(currentStep);
 
@@ -41,7 +41,7 @@ const Onboarding: NextPageWithLayout = () => {
     setCurrentStep(FORM_STEPS[previousStepIndex]);
   }
 
-  const submitOnboarding = (data: NewBankData[]) => {
+  const submitOnboarding = (data: BankSchema[]) => {
     //TODO: call api here to submit onboarding data
     setIsSubmitting(true);
     setTimeout(() => {

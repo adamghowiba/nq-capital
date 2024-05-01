@@ -6,7 +6,7 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
   dedupeFragments: true,
   exposeDocument: true,
   reactQueryVersion: 5,
-  // exposeFetcher: true,
+  exposeFetcher: true,
   // allowEnumStringTypes: true,
   fetcher: {
     // TODO: use the URL from url constants

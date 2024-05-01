@@ -5,3 +5,9 @@ query ListUsers($limit: Int!, $page: Int, $role: UserRole) {
     }
   }
 }
+
+query RetrieveUser($id: Int!) {
+  user(id: $id) {
+    ...UserAllFragment
+  }
+}

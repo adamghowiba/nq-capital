@@ -1,14 +1,5 @@
-query RetrieveInvestor($investor_id: Int!) {
-  investor(id: $investor_id) {
-    id
-    company_name
-  }
-}
-
-mutation CreateCoolInvestor($createInvestorInput: CreateInvestorInput!) {
-  createInvestor(createInvestorInput: $createInvestorInput) {
-    id
-    company_name
-    company_tax_id
+query RetrieveInvestor($id: Int!) {
+  investor(id: $id) {
+    ...InvestorAllFragment
   }
 }

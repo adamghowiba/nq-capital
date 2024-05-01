@@ -59,8 +59,13 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "graphql-codegen --watch",
+        "command": "graphql-codegen",
         "cwd": "apps/investors-portal-web"
+      },
+      "configurations": {
+        "watch": {
+          "command": "graphql-codegen --watch"
+        }
       }
     },
     "test": {

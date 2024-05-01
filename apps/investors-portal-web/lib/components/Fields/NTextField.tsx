@@ -1,21 +1,12 @@
-import {
-  FormControl,
-  FormHelperText,
-  FormLabel,
-  TextField,
-  TextFieldProps,
-  TextareaAutosize,
-  useTheme,
-  useThemeProps,
-} from '@mui/material';
-import React, { FC, ReactNode } from 'react';
+import { FormControl, FormHelperText, FormLabel } from '@mui/material';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
+import { ReactNode } from 'react';
 import {
   Controller,
   ControllerProps,
   FieldPath,
   FieldValues,
 } from 'react-hook-form';
-import { theme } from '../../theme';
 
 // declare const Controller: <TFieldValues extends FieldValues = FieldValues, TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>>(props: ControllerProps<TFieldValues, TName>) => import("react").ReactElement<any, string | import("react").JSXElementConstructor<any>>;
 
@@ -23,7 +14,10 @@ export interface NTextFieldProps<
   TFieldValues extends FieldValues,
   TName extends FieldPath<TFieldValues>
 > extends Omit<ControllerProps<TFieldValues, TName>, 'render'>,
-    Pick<TextFieldProps, 'multiline' | 'rows' | 'minRows' | 'maxRows'> {
+    Pick<
+      TextFieldProps,
+      'multiline' | 'rows' | 'minRows' | 'maxRows' | 'fullWidth' | 'type' | "autoFocus"
+    > {
   helperText?: ReactNode;
   label?: string;
   placeholder?: string;
@@ -47,6 +41,7 @@ const NTextField = <
   disabled,
   rules,
   shouldUnregister,
+  fullWidth,
   ...props
 }: NTextFieldProps<TFieldValues, TName>) => {
   return (
@@ -56,7 +51,11 @@ const NTextField = <
         name={name}
         render={({ field, fieldState }) => {
           return (
-            <FormControl error={fieldState.invalid} required={isRequired}>
+            <FormControl
+              error={fieldState.invalid}
+              required={isRequired}
+              fullWidth={fullWidth}
+            >
               <FormLabel>{label}</FormLabel>
 
               <TextField placeholder={placeholder} {...field} {...props} />

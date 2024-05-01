@@ -1,12 +1,13 @@
-import Stack, { StackProps } from '@mui/material/Stack';
+import { Stack, StackProps } from '@mui/material';
 import { forwardRef } from 'react';
 import { LiteralUnion } from 'type-fest';
+import { CSSProperties } from 'react';
 
 export interface StackPropsExtended extends StackProps {
   w?: LiteralUnion<'full', string> | number;
   h?: LiteralUnion<'full', string> | number;
-  align?: StackProps['alignItems'];
-  justify?: StackProps['justifyContent'];
+  align?: CSSProperties['alignItems'];
+  justify?: CSSProperties['justifyContent'];
 }
 
 export const VStack = forwardRef<HTMLDivElement, StackPropsExtended>(

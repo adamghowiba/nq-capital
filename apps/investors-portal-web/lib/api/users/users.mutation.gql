@@ -1,0 +1,11 @@
+mutation UpdateUser($updateUserInput: UpdateUserInput!) {
+  updateUser(updateUserInput: $updateUserInput) {
+    ...UserAllFragment
+  }
+}
+
+mutation DeleteUser($id: Int!) {
+  removeUser(id: $id) {
+    ...UserAllFragment
+  }
+}

@@ -17,6 +17,6 @@ query Me {
 
 query MeInvestor {
   meInvestor {
-    ...InvestorAllFragment
+    ...InvestorBaseFragment
   }
 }

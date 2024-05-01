@@ -1,0 +1,5 @@
+mutation UpdateInvestor($updateInvestorInput: UpdateInvestorInput!) {
+  updateInvestor(updateInvestorInput: $updateInvestorInput) {
+    ...InvestorAllFragment
+  }
+}

@@ -43,8 +43,17 @@ export class UsersService {
     return user;
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    throw new GraphQLError('Not implemented');
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    const hashedPassword = updateUserInput.password
+      ? await hash(updateUserInput.password, 10)
+      : undefined;
+
+    const user = await this.prisma.user.update({
+      where: { id },
+      data: { ...updateUserInput, password: hashedPassword },
+    });
+
+    return user;
   }
 
   async remove(id: number) {
