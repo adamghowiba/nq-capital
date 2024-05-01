@@ -13,6 +13,7 @@ import { UpdateMessageInput } from './dto/update-message.input';
 import { SendMessageInput } from './dto/create-message.input';
 import { InvestorEntity } from '../investors/entities/investor.entity';
 import { UserEntity } from '../users/entities/user.entity';
+import { AssetEntity } from '../assets/entities/asset.entity';
 
 @Resolver(() => MessageEntity)
 export class MessagesResolver {
@@ -50,7 +51,10 @@ export class MessagesResolver {
     return this.messagesService.remove(id);
   }
 
-  @ResolveField(() => InvestorEntity, { name: 'sent_by_investor', nullable: true })
+  @ResolveField(() => InvestorEntity, {
+    name: 'sent_by_investor',
+    nullable: true,
+  })
   getSentByInvestorField(@Parent() message: MessageEntity) {
     return this.messagesService.getMessageSentByInvestorField(message.id);
   }
@@ -58,5 +62,10 @@ export class MessagesResolver {
   @ResolveField(() => UserEntity, { name: 'sent_by_user', nullable: true })
   getSentByUserField(@Parent() message: MessageEntity) {
     return this.messagesService.getMessageSentByUserField(message.id);
+  }
+
+  @ResolveField(() => [AssetEntity], { name: 'assets', nullable: true })
+  getAssetsField(@Parent() message: MessageEntity) {
+    return this.messagesService.getAssetsField(message.id);
   }
 }

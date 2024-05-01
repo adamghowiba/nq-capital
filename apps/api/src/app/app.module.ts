@@ -25,6 +25,8 @@ import { AuthModule } from '../modules/auth/auth.module';
 import { ExceptionFilterModule } from '../common/filters/filter.module';
 import { PassportModule } from '@nestjs/passport';
 import { MessagesModule } from '../modules/messages/messages.module';
+import { AssetsController } from '../modules/assets/assets.controller';
+import { AssetsModule } from '../modules/assets/assets.module';
 
 const APP_MODULES = [
   UsersModule,
@@ -34,7 +36,8 @@ const APP_MODULES = [
   TransactionsModule,
   TicketsModule,
   AuthModule,
-  MessagesModule
+  MessagesModule,
+  AssetsModule,
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];

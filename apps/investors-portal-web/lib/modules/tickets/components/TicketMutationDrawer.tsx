@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Button,
+  CircularProgress,
   Drawer,
   DrawerProps,
   FormControl,
@@ -21,7 +22,11 @@ import DrawerHeader from '../../../../lib/components/Drawer/DrawerHeader';
 import NTextField from '../../../../lib/components/Fields/NTextField';
 import { HStack } from '../../../../lib/components/Stack/Stack';
 import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
-import { useCreateTickerMutation } from '../../../../lib/gql/gql-client';
+import {
+  useCreateTickerMutation,
+  useListTickersQuery,
+} from '../../../../lib/gql/gql-client';
+import { useQueryClient } from '@tanstack/react-query';
 
 export interface TickerMutationDrawerProps extends DrawerProps {
   mode:
@@ -48,7 +53,15 @@ const TickerMutationDrawer: FC<TickerMutationDrawerProps> = ({
     resolver: zodResolver(supportTicketSchema),
   });
 
-  const createTicketMutation = useCreateTickerMutation({});
+  const queryClient = useQueryClient();
+
+  const createTicketMutation = useCreateTickerMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: useListTickersQuery.getKey() });
+
+      props.onClose?.({}, 'backdropClick');
+    },
+  });
 
   const handleValidSubmit: SubmitHandler<SupportTicketSchema> = (data) => {
     if (mode.type === 'create') {
@@ -151,6 +164,12 @@ const TickerMutationDrawer: FC<TickerMutationDrawerProps> = ({
               variant="contained"
               fullWidth
               onClick={form.handleSubmit(handleValidSubmit, console.error)}
+              startIcon={
+                createTicketMutation.isPending ? (
+                  <CircularProgress size={15} color="secondary" />
+                ) : undefined
+              }
+              disabled={createTicketMutation.isPending}
             >
               Create
             </Button>

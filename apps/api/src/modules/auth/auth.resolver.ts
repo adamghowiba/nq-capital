@@ -3,7 +3,7 @@ import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   GqlSession,
   InvestorSession,
-} from '../../common/decorators/auth/gql-user.decorator';
+} from '../../common/decorators/auth/session.decorator';
 import { UserEntity } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';

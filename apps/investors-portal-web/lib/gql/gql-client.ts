@@ -56,6 +56,29 @@ export type AdjustFundInput = {
   fund_id: Scalars['Int']['input'];
 };
 
+export type AssetEntity = {
+  __typename?: 'AssetEntity';
+  asset_type: AssetType;
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  investor_id?: Maybe<Scalars['Int']['output']>;
+  key: Scalars['String']['output'];
+  message_id?: Maybe<Scalars['Int']['output']>;
+  mime_type: Scalars['String']['output'];
+  original_name: Scalars['String']['output'];
+  updated_at: Scalars['DateTime']['output'];
+  url: Scalars['String']['output'];
+  user_id?: Maybe<Scalars['Int']['output']>;
+};
+
+export type AssetType =
+  | 'CSV'
+  | 'EXCEL'
+  | 'IMAGE'
+  | 'PDF'
+  | 'UNKNOWN'
+  | 'WORD';
+
 export type BankAccountEntity = {
   __typename?: 'BankAccountEntity';
   account_holder_name: Scalars['String']['output'];
@@ -238,6 +261,7 @@ export type LogoutEntity = {
 
 export type MessageEntity = {
   __typename?: 'MessageEntity';
+  assets?: Maybe<Array<AssetEntity>>;
   content: Scalars['String']['output'];
   created_at: Scalars['DateTime']['output'];
   edit_count: Scalars['Int']['output'];
@@ -263,6 +287,7 @@ export type Mutation = {
   createUser: UserEntity;
   login: UserEntity;
   logout: LogoutEntity;
+  removeAsset: AssetEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
   removeMessage: MessageEntity;
@@ -321,6 +346,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationLoginArgs = {
   loginInput: LoginInput;
+};
+
+
+export type MutationRemoveAssetArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -408,6 +438,8 @@ export type PaginatedUserEntity = {
 
 export type Query = {
   __typename?: 'Query';
+  asset: AssetEntity;
+  assets: Array<AssetEntity>;
   fund: FundEntity;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
@@ -425,6 +457,11 @@ export type Query = {
   transactions: Array<TransactionEntity>;
   user: UserEntity;
   users: PaginatedUserEntity;
+};
+
+
+export type QueryAssetArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -709,6 +746,13 @@ export type SendTicketMessageMutationVariables = Exact<{
 
 export type SendTicketMessageMutation = { __typename?: 'Mutation', sendTicketMessage: { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null } };
 
+export type DeleteTicketMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteTicketMutation = { __typename?: 'Mutation', removeTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
 export type ListTickersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -719,7 +763,7 @@ export type RetrieveTicketQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets?: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any }> | null, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
@@ -1050,6 +1094,27 @@ export const useSendTicketMessageMutation = <
   }
     )};
 
+export const DeleteTicketDocument = `
+    mutation DeleteTicket($id: Int!) {
+  removeTicket(id: $id) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useDeleteTicketMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteTicketMutation, TError, DeleteTicketMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteTicketMutation, TError, DeleteTicketMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteTicket'],
+    mutationFn: (variables?: DeleteTicketMutationVariables) => gqlFetcher<DeleteTicketMutation, DeleteTicketMutationVariables>(DeleteTicketDocument, variables)(),
+    ...options
+  }
+    )};
+
 export const ListTickersDocument = `
     query ListTickers {
   tickets {
@@ -1082,6 +1147,16 @@ export const RetrieveTicketDocument = `
     query RetrieveTicket($id: Int!) {
   ticket(id: $id) {
     messages {
+      assets {
+        id
+        original_name
+        key
+        url
+        mime_type
+        asset_type
+        created_at
+        updated_at
+      }
       ...MessageBaseFragment
     }
     ...TicketsAllFragment

@@ -7,6 +7,16 @@ query ListTickers {
 query RetrieveTicket($id: Int!) {
   ticket(id: $id) {
     messages {
+      assets {
+        id
+        original_name
+        key
+        url
+        mime_type
+        asset_type
+        created_at
+        updated_at
+      }
       ...MessageBaseFragment
     }
     ...TicketsAllFragment

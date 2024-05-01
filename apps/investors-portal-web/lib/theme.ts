@@ -287,6 +287,17 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         variants: [
           {
             props: {
+              size: 'small',
+            },
+            style: {
+              fontSize: '12px',
+              lineHeight: '1',
+              padding: '8px 12px',
+              height: '28px',
+            },
+          },
+          {
+            props: {
               size: 'medium',
             },
             style: {
@@ -301,16 +312,6 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             },
             style: {
               padding: '12px 20px',
-            },
-          },
-          {
-            props: {
-              size: 'small',
-            },
-            style: {
-              fontSize: '12px',
-              lineHeight: '12px',
-              padding: '12px',
             },
           },
         ],

@@ -170,6 +170,32 @@ enum TransactionStatus {
   FAILED
 }
 
+type SessionEntity {
+  user: UserEntity
+  investor: InvestorEntity
+}
+
+type MessageEntity {
+  id: Int!
+  content: String!
+  type: UserType!
+  ticket_id: Int
+  sent_by_user_id: Int
+  sent_by_investor_id: Int
+  edit_count: Int!
+  updated_at: DateTime!
+  created_at: DateTime!
+  sent_by_investor: InvestorEntity
+  sent_by_user: UserEntity
+  assets: [AssetEntity!]
+}
+
+"""Type of user"""
+enum UserType {
+  INVESTOR
+  ADMIN
+}
+
 type TicketEntity {
   id: Int!
   data: JSON
@@ -209,29 +235,27 @@ enum TicketStatus {
   UNDER_REVIEW
 }
 
-type SessionEntity {
-  user: UserEntity
-  investor: InvestorEntity
-}
-
-type MessageEntity {
+type AssetEntity {
   id: Int!
-  content: String!
-  type: UserType!
-  ticket_id: Int
-  sent_by_user_id: Int
-  sent_by_investor_id: Int
-  edit_count: Int!
-  updated_at: DateTime!
+  original_name: String!
+  key: String!
+  url: String!
+  mime_type: String!
+  asset_type: AssetType!
+  user_id: Int
+  investor_id: Int
+  message_id: Int
   created_at: DateTime!
-  sent_by_investor: InvestorEntity
-  sent_by_user: UserEntity
+  updated_at: DateTime!
 }
 
-"""Type of user"""
-enum UserType {
-  INVESTOR
-  ADMIN
+enum AssetType {
+  PDF
+  IMAGE
+  WORD
+  EXCEL
+  CSV
+  UNKNOWN
 }
 
 type LogoutEntity {
@@ -277,6 +301,8 @@ type Query {
   ticket(id: Int!): TicketEntity!
   messages: [MessageEntity!]!
   message(id: Int!): MessageEntity!
+  assets: [AssetEntity!]!
+  asset(id: Int!): AssetEntity!
   me: SessionEntity!
   meInvestor: InvestorEntity!
   meUser: UserEntity!
@@ -304,6 +330,7 @@ type Mutation {
   createMessage(createMessageInput: SendMessageInput!): MessageEntity!
   updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
   removeMessage(id: Int!): MessageEntity!
+  removeAsset(id: Int!): AssetEntity!
   login(loginInput: LoginInput!): UserEntity!
   logout: LogoutEntity!
 }

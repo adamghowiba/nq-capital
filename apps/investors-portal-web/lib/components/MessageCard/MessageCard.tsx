@@ -4,6 +4,9 @@ import { Avatar, Box, Tooltip, Typography } from '@mui/material';
 import { stringifyISODate } from '../../utils/date.utils';
 import { DateTime } from 'luxon';
 import CheckBadgeIcon from '../Icons/CheckBadgeIcon';
+import { AssetEntity } from '../../gql/gql-client';
+import FileChip from '../FileChip/FileChip';
+import { downloadFile } from '../../utils/download.utils';
 
 export interface MessageCardProps {
   displayName: string;
@@ -13,6 +16,10 @@ export interface MessageCardProps {
    * ISO date time for the message
    */
   date: string;
+  files?: Pick<
+    AssetEntity,
+    'original_name' | 'url' | 'asset_type' | 'mime_type'
+  >[];
 }
 
 const MessageCard: FC<MessageCardProps> = ({
@@ -20,6 +27,7 @@ const MessageCard: FC<MessageCardProps> = ({
   date,
   displayName,
   isVerified,
+  files,
   ...props
 }) => {
   const formattedFullDate = DateTime.fromISO(date).toLocaleString(
@@ -62,6 +70,21 @@ const MessageCard: FC<MessageCardProps> = ({
           </HStack>
 
           <Typography sx={{ color: '#646464' }}>{content}</Typography>
+
+          {!!files?.length && (
+            <HStack gap={1} overflow="auto" sx={{ scrollbarWidth: 'none' }}>
+              {files?.map((file) => (
+                <FileChip
+                  key={file.url}
+                  fileName={file.original_name}
+                  fileType={file.asset_type}
+                  onClick={() =>
+                    downloadFile(file.url, { filename: file.original_name })
+                  }
+                />
+              ))}
+            </HStack>
+          )}
         </VStack>
       </HStack>
     </>

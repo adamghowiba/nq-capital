@@ -9,10 +9,17 @@ import {
   SessionEntity,
 } from '../auth/entities/session.entity';
 import { TicketEntity } from './entities/ticket.entity';
+import { UploadTicketFileDto } from './dto/upload-ticket-file.dto';
+import { AssetsService } from '../assets/assets.service';
+import { FileBody, UploadAssetDto } from '../assets/dto/upload-asset.dto';
+import { MulterFile } from '../assets/entities/multer-file.entity';
 
 @Injectable()
 export class TicketsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly assetService: AssetsService
+  ) {}
 
   async create(createTicketInput: CreateTicketInput) {
     if (!createTicketInput.investor_id)
@@ -44,6 +51,55 @@ export class TicketsService {
     });
 
     return ticketMessage;
+  }
+
+  async uploadFile(
+    attachFileDto: UploadTicketFileDto & {
+      files: MulterFile[];
+      ticket_id: number;
+      investor_id?: number;
+      user_id?: number;
+    }
+  ) {
+    const {files, ...rest} = attachFileDto;
+
+    const upload = await this.assetService.batchUpload(
+      files.map((file) => {
+        return {
+          body: file.buffer,
+          file_name: file.originalname,
+          mime_type: file.mimetype,
+          meta_data: {
+            ticket_id: String(attachFileDto.ticket_id),
+            message_id: String(attachFileDto.message_id),
+          },
+          ...rest
+        };
+      })
+    );
+
+    // TODO Assets field on ticket itself
+    // const ticket = await this.prisma.ticket.update({
+    //   where: { id: attachFileDto.ticket_id },
+    //   data: {},
+    // });
+
+    // if (attachFileDto.message_id) {
+    //   const message = await this.prisma.message.update({
+    //     where: {
+    //       id: attachFileDto.message_id,
+    //     },
+    //     data: {
+    //       assets: {
+    //         connect: {
+    //           id: upload.asset.id,
+    //         },
+    //       },
+    //     },
+    //   });
+    // }
+
+    return upload;
   }
 
   async list() {

@@ -2,22 +2,27 @@ import {
   Alert,
   AlertTitle,
   Box,
+  Button,
+  ButtonGroup,
   Chip,
+  CircularProgress,
   IconButton,
   TextField,
   Typography,
+  styled,
 } from '@mui/material';
 import Screen from '../../lib/components/Screen/Screen';
 import { HStack, VStack } from '../../lib/components/Stack/Stack';
 import {
   MessageEntity,
   RetrieveTicketQuery,
+  useDeleteTicketMutation,
   useRetrieveTicketQuery,
   useSendTicketMessageMutation,
 } from '../../lib/gql/gql-client';
 import { formatISOForTable } from '../../lib/utils/date.utils';
 import { useRouter } from 'next/router';
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { Unstable_Grid2 as Grid } from '@mui/material';
 import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
 import add12Icon from '@iconify/icons-fluent/add-12-filled';
@@ -28,8 +33,24 @@ import MessageCard from '../../lib/components/MessageCard/MessageCard';
 import { useMutation } from '@tanstack/react-query';
 import { useInvestor } from 'apps/investors-portal-web/lib/hooks/use-investor';
 import { queryClient } from 'apps/investors-portal-web/lib/api/query-client';
+import { useFileUpload } from 'apps/investors-portal-web/lib/hooks/use-file-upload';
+import FileChip from 'apps/investors-portal-web/lib/components/FileChip/FileChip';
+import { nqRestApi } from 'apps/investors-portal-web/lib/api/rest-api';
+import { DateTime } from 'luxon';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
 const getMessageDisplayName = (
   message: TicketMessageQueryData,
@@ -53,9 +74,12 @@ const getMessageDisplayName = (
 };
 
 const TickerDetailPage = ({ ...props }) => {
-  const investor = useInvestor();
   const [messageInput, setMessageInput] = useState('');
 
+  const investor = useInvestor();
+  const fileUploader = useFileUpload({
+    maxFiles: 4,
+  });
   const router = useRouter();
   const ticketId = parseInt(router.query?.ticketId as string);
 
@@ -67,10 +91,10 @@ const TickerDetailPage = ({ ...props }) => {
   );
 
   const ticketData: { label: string; value: ReactNode }[] = [
-    // {
-    //   label: 'ID',
-    //   value: ticket.data?.id,
-    // },
+    {
+      label: 'ID',
+      value: ticket.data?.id,
+    },
     {
       label: 'Ticket Type',
       value: ticket.data?.type,
@@ -84,8 +108,18 @@ const TickerDetailPage = ({ ...props }) => {
       value: ticket.data?.priority,
     },
     {
+      label: 'Last Updated',
+      value: formatISOForTable(ticket.data?.updated_at),
+    },
+    {
       label: 'Days Open',
-      value: formatISOForTable(ticket.data?.created_at),
+      value: ticket.data?.created_at
+        ? Math.abs(
+            Math.ceil(
+              DateTime.fromISO(ticket.data?.created_at).diffNow('days')?.days
+            )
+          )
+        : '-',
     },
   ];
 
@@ -96,7 +130,7 @@ const TickerDetailPage = ({ ...props }) => {
           queryKey: useRetrieveTicketQuery.getKey({ id: ticketId }),
         },
         (oldData) => {
-          if (!oldData) return oldData;
+          if (!oldData || !Array.isArray(oldData)) return oldData;
 
           return [...oldData, data.sendTicketMessage];
         }
@@ -109,8 +143,33 @@ const TickerDetailPage = ({ ...props }) => {
     },
   });
 
-  const handleSendMessage = () => {
-    sendTickerMessageMutation.mutate({
+  const uploadFileMutation = useMutation({
+    mutationFn: nqRestApi.uploadTicketFile,
+    onSuccess: () => {
+      console.log('Success');
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: useRetrieveTicketQuery.getKey({ id: ticketId }),
+      });
+    },
+  });
+
+  const deleteTicketMutation = useDeleteTicketMutation({
+    onSuccess: () => {
+      router.push('/tickets');
+    },
+  });
+
+  const handleSendMessage = async () => {
+    const files = fileUploader.files;
+    fileUploader.clear();
+    setMessageInput('');
+
+    const message = await sendTickerMessageMutation.mutateAsync({
       sendTicketMessageInput: {
         content: messageInput,
         ticket_id: ticketId,
@@ -118,7 +177,17 @@ const TickerDetailPage = ({ ...props }) => {
       },
     });
 
-    setMessageInput('');
+    if (fileUploader.files?.length) {
+      uploadFileMutation.mutate({
+        files: files,
+        ticketId,
+        messageId: message?.sendTicketMessage?.id,
+      });
+    }
+  };
+
+  const handleDeleteTicket = () => {
+    deleteTicketMutation.mutate({ id: ticketId });
   };
 
   const handleKeydown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -151,19 +220,47 @@ const TickerDetailPage = ({ ...props }) => {
       <Grid container height="100%">
         <Grid mobile={8}>
           <Screen>
-            <VStack>
-              <HStack gap={1} alignItems="center">
-                <Typography variant="h2">Ticket Details</Typography>
-                <Chip
-                  label={ticket.data?.status}
+            <HStack>
+              <VStack>
+                <HStack gap={1} alignItems="center">
+                  <Typography variant="h2">Ticket Details</Typography>
+                  <Chip
+                    label={ticket.data?.status}
+                    size="small"
+                    variant="outlined"
+                  />
+                </HStack>
+                <Typography variant="subtitle2">
+                  {formatISOForTable(ticket.data?.created_at)}
+                </Typography>
+              </VStack>
+
+              <HStack ml="auto" alignSelf="start" gap={1}>
+                <Button
+                  color="secondary"
+                  variant="contained"
                   size="small"
-                  variant="outlined"
-                />
+                  onClick={handleDeleteTicket}
+                  startIcon={
+                    deleteTicketMutation.isPending ? (
+                      <CircularProgress size={13} />
+                    ) : undefined
+                  }
+                  disabled={deleteTicketMutation.isPending}
+                >
+                  Delete
+                </Button>
+
+                <Button
+                  color="secondary"
+                  variant="contained"
+                  size="small"
+                  disabled
+                >
+                  Edit
+                </Button>
               </HStack>
-              <Typography variant="subtitle2">
-                {formatISOForTable(ticket.data?.created_at)}
-              </Typography>
-            </VStack>
+            </HStack>
 
             <Grid
               container
@@ -212,13 +309,17 @@ const TickerDetailPage = ({ ...props }) => {
           </Screen>
         </Grid>
 
-        <Grid mobile={4}>
-          <VStack borderLeft="1px solid #EBEBEB" height="100%">
+        <Grid mobile={4} height="calc(100vh - 108px)">
+          <VStack
+            borderLeft="1px solid #EBEBEB"
+            height="100%"
+            sx={{ overflow: 'auto' }}
+          >
             <Box p={2} borderBottom="1px solid #EBEBEB">
               <Typography>Conversation</Typography>
             </Box>
 
-            <VStack p={2} gap={4}>
+            <VStack p={2} gap={4} sx={{ overflow: 'auto' }}>
               {ticket.data?.messages.map((message, index) => (
                 <MessageCard
                   key={message.id}
@@ -229,52 +330,83 @@ const TickerDetailPage = ({ ...props }) => {
                     investor.data?.id
                   )}
                   isVerified={!!message.sent_by_user_id}
+                  files={message?.assets || []}
                 />
               ))}
             </VStack>
 
-            <HStack p={2} borderTop="1px solid #EBEBEB" mt="auto" gap={1.5}>
-              <IconButton sx={{ bgcolor: '#F1F1F1' }}>
-                <Icon icon={add12Icon} width={16} height={16} />
-              </IconButton>
+            {/*  */}
 
-              <TextField
-                placeholder="Comment.."
-                variant="outlined"
-                multiline
-                fullWidth
-                size="medium"
-                onKeyDown={handleKeydown}
-                sx={{
-                  '& .MuiInputBase-root.MuiOutlinedInput-root': {
-                    py: 0.5,
-                    pr: 0,
-                  },
-                  '& .MuiInputBase-root': {
-                    bgcolor: 'transparent',
-                  },
-                }}
-                maxRows={13}
-                value={messageInput}
-                onChange={(event) => setMessageInput(event.target.value)}
-                InputProps={{
-                  endAdornment: (
-                    <IconButton
-                      size="small"
-                      color={messageInput.trim() ? 'primary' : 'secondary'}
-                      sx={{ alignSelf: 'end', transition: 'color 0.15s ease' }}
-                      onClick={handleSendMessage}
-                    >
-                      <Icon
-                        icon={arrowCircleUp12Filled}
-                        width={25}
-                        height={25}
-                      />
-                    </IconButton>
-                  ),
-                }}
-              />
-            </HStack>
+            <VStack p={2} gap={1} borderTop="1px solid #EBEBEB" mt="auto">
+              {!!fileUploader.files.length && (
+                <HStack gap={1} overflow="auto" sx={{ scrollbarWidth: 'none' }}>
+                  {fileUploader.files.map((file, index) => (
+                    <FileChip
+                      key={index}
+                      fileName={file.name}
+                      fileType={'PDF'}
+                      onDelete={() => fileUploader.removeFile(file)}
+                    />
+                  ))}
+                </HStack>
+              )}
+
+              <HStack gap={1.5}>
+                <IconButton
+                  sx={{ bgcolor: '#F1F1F1' }}
+                  role={undefined}
+                  component="label"
+                >
+                  <VisuallyHiddenInput
+                    type="file"
+                    multiple
+                    accept=".xlsx,.xls,.pdf,.txt,.json,.png,.jpg"
+                    onChange={fileUploader.onFileChange}
+                  />
+                  <Icon icon={add12Icon} width={16} height={16} />
+                </IconButton>
+
+                <TextField
+                  placeholder="Comment.."
+                  variant="outlined"
+                  multiline
+                  fullWidth
+                  size="medium"
+                  onKeyDown={handleKeydown}
+                  sx={{
+                    '& .MuiInputBase-root.MuiOutlinedInput-root': {
+                      py: 0.5,
+                      pr: 0,
+                    },
+                    '& .MuiInputBase-root': {
+                      bgcolor: 'transparent',
+                    },
+                  }}
+                  maxRows={13}
+                  value={messageInput}
+                  onChange={(event) => setMessageInput(event.target.value)}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton
+                        size="small"
+                        color={messageInput.trim() ? 'primary' : 'secondary'}
+                        sx={{
+                          alignSelf: 'end',
+                          transition: 'color 0.15s ease',
+                        }}
+                        onClick={handleSendMessage}
+                      >
+                        <Icon
+                          icon={arrowCircleUp12Filled}
+                          width={25}
+                          height={25}
+                        />
+                      </IconButton>
+                    ),
+                  }}
+                />
+              </HStack>
+            </VStack>
           </VStack>
         </Grid>
       </Grid>
