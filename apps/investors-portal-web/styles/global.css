@@ -5,10 +5,10 @@
   min-width: 0;
 }
 
-#app,
 html,
-body {
-  height: 100%;
+body,
+#__next {
+  height: 100svh;
   width: 100%;
 }
 
@@ -25,5 +25,5 @@ a {
 
 .Mui-dg-header {
   background-color: transparent;
-  color: #8D8D8D;
+  color: #8d8d8d;
 }

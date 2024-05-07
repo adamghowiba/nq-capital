@@ -30,7 +30,7 @@ export const GqlSession = createParamDecorator(
 
 export const InvestorSession = createParamDecorator(
   (data: { throwOnNotFound?: boolean }, ctx: ExecutionContext) => {
-    const throwOnNotFound = data.throwOnNotFound ?? true;
+    const throwOnNotFound = data?.throwOnNotFound ?? true;
     const context = GqlExecutionContext.create(ctx);
     const gqlContext = context.getContext<{ req: Request; headers: Headers }>();
 

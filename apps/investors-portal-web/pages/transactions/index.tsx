@@ -1,29 +1,27 @@
 import caretDown12Filled from '@iconify/icons-fluent/caret-down-12-filled';
 import { Icon } from '@iconify/react';
 import { Button } from '@mui/material';
-import {
-  GridToolbarContainer,
-  useGridApiContext
-} from '@mui/x-data-grid';
-import {
-  ButtonTab,
-  ButtonTabs,
-} from 'apps/investors-portal-web/lib/components/Tabs/ButtonTabs';
+import { GridToolbarContainer, useGridApiContext } from '@mui/x-data-grid';
 import { FC, useState } from 'react';
 import Box from '../../lib/components/Box/Box';
 import NLink from '../../lib/components/Link/Link';
+import {
+  MenuButton,
+  MenuList,
+  NMenu,
+  NMenuItem,
+} from '../../lib/components/Menu/NMenu';
 import PageHeader from '../../lib/components/PageHeader/PageHeader';
 import Screen from '../../lib/components/Screen/Screen';
 import { HStack } from '../../lib/components/Stack/Stack';
 import CustomDataGrid from '../../lib/components/StyledDataGrid/CustomDataGrid';
+import { ButtonTab, ButtonTabs } from '../../lib/components/Tabs/ButtonTabs';
 import TransactionTypeChip from '../../lib/components/TransactionTypeBadge/TransactionTypeBadge';
 import {
   TransactionType,
   useListTransactionsQuery,
 } from '../../lib/gql/gql-client';
-import {
-  EmptyTransactions
-} from '../../lib/modules/transactions/components/EmpyTransactions';
+import { EmptyTransactions } from '../../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../../lib/utils/currency.utils';
 import { formatISOForTable } from '../../lib/utils/date.utils';
 
@@ -93,13 +91,23 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
           Export
         </Button>
 
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<Icon icon={caretDown12Filled} width={15} height={15} />}
-        >
-          Create New
-        </Button>
+        <NMenu>
+          <MenuButton>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<Icon icon={caretDown12Filled} width={15} height={15} />}
+            >
+              Create New
+            </Button>
+          </MenuButton>
+
+          <MenuList>
+            <NMenuItem>Withdrawal</NMenuItem>
+            <NMenuItem>Investment</NMenuItem>
+            <NMenuItem>Support</NMenuItem>
+          </MenuList>
+        </NMenu>
       </HStack>
     </GridToolbarContainer>
   );

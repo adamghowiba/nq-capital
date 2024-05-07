@@ -6,7 +6,7 @@ import {
 } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
-import { AddFundInvestorsInput } from '../investor-funds/dto/update-fund-investors.input';
+import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { AdjustFundInput } from './dto/adjust-fund.input';
 import { GraphQLError } from 'graphql';
 
@@ -71,30 +71,46 @@ export class FundsService {
       },
     });
 
-    return fund
+    return fund;
   }
 
-  async addInvestor(addFundInvestorInput: AddFundInvestorsInput) {
+  async addInvestment(addFundInvestorInput: AddInvestmentInput) {
     // TODO: Needs to be transaction
     const fund = await this.prisma.fund.update({
-      where: { id: addFundInvestorInput.id },
+      where: { id: addFundInvestorInput.fund_id },
       data: {
         balance: {
-          increment: addFundInvestorInput.initial_investment,
+          increment: addFundInvestorInput.amount,
         },
         investors: {
-          create: {
-            stake_percentage: 0,
-            investor_id: addFundInvestorInput.investor_id,
-            initial_investment: addFundInvestorInput.initial_investment,
-            invested_amount: addFundInvestorInput.initial_investment,
+          upsert: {
+            where: {
+              investor_id_fund_id: {
+                fund_id: addFundInvestorInput.fund_id,
+                investor_id: addFundInvestorInput.investor_id,
+              },
+            },
+            update: {
+              balance: {
+                increment: addFundInvestorInput.amount,
+              },
+              invested_amount: {
+                increment: addFundInvestorInput.amount,
+              },
+            },
+            create: {
+              stake_percentage: 0,
+              investor_id: addFundInvestorInput.investor_id,
+              initial_investment: addFundInvestorInput.amount,
+              invested_amount: addFundInvestorInput.amount,
+            },
           },
         },
       },
     });
 
     const updatedFund = await this.recalculateInvestorStakes({
-      fundId: addFundInvestorInput.id,
+      fundId: addFundInvestorInput.fund_id,
     });
 
     return updatedFund;

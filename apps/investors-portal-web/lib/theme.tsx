@@ -385,6 +385,11 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
                 padding: '0px 12px',
                 height: '36px',
               },
+              '& .MuiInputBase-multiline.MuiOutlinedInput-root': {
+                height: 'auto',
+                padding: '8px 12px',
+                minHeight: '36px',
+              },
               '& .MuiInputBase-input': {
                 padding: 0,
               },

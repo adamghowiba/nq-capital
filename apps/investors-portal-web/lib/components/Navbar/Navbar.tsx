@@ -34,10 +34,6 @@ const Navbar: FC<NavbarProps> = ({ ...props }) => {
       name: 'Transactions',
       href: '/transactions',
     },
-    {
-      name: 'Accounts',
-      href: '/accounts',
-    },
   ];
 
   const getActiveItem = () => {

@@ -1,10 +1,12 @@
 import left from '@iconify/icons-fluent/chevron-left-16-regular';
 import right from '@iconify/icons-fluent/chevron-right-16-regular';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Divider, IconButton, Typography } from '@mui/material';
 import DContainer from '../../../components/DContainer/DContainer';
 import Logo from '../../../components/Logo/logo';
 import { HStack } from '../../../components/Stack/Stack';
 import OneIcon from '../../../utils/OneIcon';
+import dismissIcon from '@iconify/icons-fluent/dismiss-24-filled';
+import { Icon } from '@iconify/react';
 
 export interface OnboardingTopbarProps {
   /**
@@ -14,12 +16,16 @@ export interface OnboardingTopbarProps {
   totalSteps: number;
   onBack: () => void;
   onNext: () => void;
+  onClose?: () => void;
+  isDisabled?: boolean;
 }
 export default function OnboardingTopbar({
   onBack,
   onNext,
+  onClose,
   currentStep,
   totalSteps,
+  isDisabled,
 }: OnboardingTopbarProps) {
   return (
     <Box
@@ -38,6 +44,12 @@ export default function OnboardingTopbar({
         <HStack height="100%" alignItems="center" gap={2}>
           <Logo />
 
+          {!!onClose && (
+            <IconButton size="small" onClick={onClose}>
+              <Icon icon={dismissIcon} color="#BBBBBB" />
+            </IconButton>
+          )}
+
           <Divider
             orientation="vertical"
             sx={{ height: '60%', flexGrow: '1' }}
@@ -51,7 +63,7 @@ export default function OnboardingTopbar({
               iconColor="#BBBBBB"
               size="small"
               onClick={onBack}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || isDisabled}
             />
 
             <OneIcon
@@ -61,7 +73,7 @@ export default function OnboardingTopbar({
               iconColor="#BBBBBB"
               size="small"
               onClick={onNext}
-              disabled={currentStep + 1 >= totalSteps}
+              disabled={currentStep + 1 >= totalSteps || isDisabled}
             />
           </HStack>
         </HStack>

@@ -8,6 +8,7 @@ import {
   Popover,
   Popper,
 } from '@mui/material';
+import Link from 'next/link';
 import React, {
   Children,
   FC,
@@ -69,7 +70,21 @@ export const NMenu: FC<NMenuProps> = ({ children, ...props }) => {
           >
             {MenuButtonComponent}
 
-            <Popper open={isOpen} anchorEl={anchorEl} placement="bottom-start">
+            <Popper
+              open={isOpen}
+              anchorEl={anchorEl}
+              placement="bottom-start"
+              popperOptions={{
+                modifiers: [
+                  {
+                    name: 'offset',
+                    options: {
+                      offset: [0, 2],
+                    },
+                  },
+                ],
+              }}
+            >
               {MenuListComponent}
             </Popper>
           </MenuContext.Provider>
@@ -157,18 +172,22 @@ export const MenuList: FC<MenuListProps> = ({ children }) => {
 
 export interface NMenuItemProps extends PropsWithChildren, MenuItemProps {
   leftIcon?: ReactNode;
+  href?: string;
 }
 
 export const NMenuItem: FC<NMenuItemProps> = ({
   leftIcon,
   children,
   color,
+  href,
   ...props
 }) => {
   return (
     <MenuItem
       {...props}
       sx={{ '&.MuiMenuItem-root': { color: color }, ...props.sx }}
+      component={href ? Link : 'li'}
+      href={href}
     >
       {leftIcon && (
         <ListItemIcon
@@ -201,9 +220,7 @@ export const MenuContext = createContext<MenuContextProps>({
   closeMenu: function (): void {
     throw new Error('Function not implemented.');
   },
-  openMenu: function (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ): void {
+  openMenu: function (): void {
     throw new Error('Function not implemented.');
   },
   toggle: function (): void {

@@ -15,3 +15,13 @@ mutation UpdateBankAccount($updateBankAccountInput: UpdateBankAccountInput!) {
     ...BankAccountAllFragment
   }
 }
+
+mutation AddInvestment($addInvestmentInput: AddInvestmentInput!) {
+  addInvestment(addInvestmentInput: $addInvestmentInput) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}

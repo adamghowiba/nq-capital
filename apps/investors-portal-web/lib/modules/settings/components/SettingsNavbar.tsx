@@ -50,10 +50,12 @@ const SettingsNavbar: FC<SettingsNavbarProps> = ({
         {...ContainerProps}
       >
         <DContainer width="100%" maxWidth={maxWidth} mx={'auto'}>
-          <HStack mb={4}>
+          <HStack mb={4} mt={0.5}>
             <Button
               variant="text"
               startIcon={<Icon icon={arrowLeftIcon} width={15} height={15} />}
+              LinkComponent={Link}
+              href="/"
             >
               Back
             </Button>

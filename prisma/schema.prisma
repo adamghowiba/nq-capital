@@ -159,6 +159,8 @@ model InvestorFund {
   fund_id            Int
   created_at         DateTime @default(now())
   updated_at         DateTime @updatedAt
+
+  @@unique([investor_id, fund_id])
 }
 
 enum InvitationStatus {
@@ -319,9 +321,9 @@ model Asset {
   url           String    @unique
   mime_type     String
   asset_type    AssetType @default(UNKNOWN)
-  user          User?      @relation(fields: [user_id], references: [id])
+  user          User?     @relation(fields: [user_id], references: [id])
   user_id       Int?
-  investor      Investor?  @relation(fields: [investor_id], references: [id])
+  investor      Investor? @relation(fields: [investor_id], references: [id])
   investor_id   Int?
   message       Message?  @relation(fields: [message_id], references: [id])
   message_id    Int?

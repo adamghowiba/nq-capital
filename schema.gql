@@ -318,9 +318,9 @@ type Mutation {
   updateInvestor(updateInvestorInput: UpdateInvestorInput!): InvestorEntity!
   removeInvestor(id: Int!): InvestorEntity!
   createFund(createFundInput: CreateFundInput!): FundEntity!
+  addInvestment(addInvestmentInput: AddInvestmentInput!): FundEntity!
   updateFund(updateFundInput: UpdateFundInput!): FundEntity!
   adjustFund(adjustFundInput: AdjustFundInput!): FundEntity!
-  addFundInvestors(addFundInvestorsInput: AddFundInvestorsInput!): FundEntity!
   removeFund(id: Int!): FundEntity!
   createTransaction(createTransactionInput: CreateTransactionInput!): TransactionEntity!
   updateTransaction(updateTransactionInput: UpdateTransactionInput!): TransactionEntity!
@@ -442,6 +442,12 @@ input CreateNestedInvestorFundWithoutFundInput {
   investor_id: Int!
 }
 
+input AddInvestmentInput {
+  fund_id: Int!
+  investor_id: Int!
+  amount: Float!
+}
+
 input UpdateFundInput {
   name: String
   id: Int!
@@ -453,12 +459,6 @@ input AdjustFundInput {
   fund_id: Int!
   adjusted_by_user_id: Int!
   description: String
-}
-
-input AddFundInvestorsInput {
-  id: Int!
-  investor_id: Int!
-  initial_investment: Float!
 }
 
 input CreateTransactionInput {

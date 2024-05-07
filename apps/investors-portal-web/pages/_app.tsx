@@ -14,9 +14,8 @@ export type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-
 // If loading a variable font, you don't need to specify the font weight
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'] });
 
 function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =
@@ -25,7 +24,13 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
-      <main className={`app ${inter.className}`}>
+      <main
+        className={`${inter.className}`}
+        style={{
+          height: '100vh',
+          width: '100%',
+        }}
+      >
         <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
       </main>
     </>

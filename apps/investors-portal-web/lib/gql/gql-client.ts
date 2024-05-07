@@ -22,9 +22,9 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
-export type AddFundInvestorsInput = {
-  id: Scalars['Int']['input'];
-  initial_investment: Scalars['Float']['input'];
+export type AddInvestmentInput = {
+  amount: Scalars['Float']['input'];
+  fund_id: Scalars['Int']['input'];
   investor_id: Scalars['Int']['input'];
 };
 
@@ -296,7 +296,7 @@ export type MessageEntity = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  addFundInvestors: FundEntity;
+  addInvestment: FundEntity;
   adjustFund: FundEntity;
   createBankAccount: BankAccountEntity;
   createFund: FundEntity;
@@ -327,8 +327,8 @@ export type Mutation = {
 };
 
 
-export type MutationAddFundInvestorsArgs = {
-  addFundInvestorsInput: AddFundInvestorsInput;
+export type MutationAddInvestmentArgs = {
+  addInvestmentInput: AddInvestmentInput;
 };
 
 
@@ -820,6 +820,13 @@ export type UpdateBankAccountMutationVariables = Exact<{
 
 
 export type UpdateBankAccountMutation = { __typename?: 'Mutation', updateBankAccount: { __typename?: 'BankAccountEntity', id: number, iban?: string | null, sort_code?: string | null, bsb_number?: string | null, bank_code?: string | null, branch_code?: string | null, branch_address?: string | null, is_primary: boolean, investor_id: number, created_at: any, updated_at: any, nickname?: string | null, bank_name: string, account_number: string, account_holder_name: string, type?: BankAccountType | null, bank_country: string, currency: string, routing_number?: string | null, swift_code?: string | null } };
+
+export type AddInvestmentMutationVariables = Exact<{
+  addInvestmentInput: AddInvestmentInput;
+}>;
+
+
+export type AddInvestmentMutation = { __typename?: 'Mutation', addInvestment: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
 
 export type MessageBaseFragmentFragment = { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null };
 
@@ -1325,6 +1332,34 @@ export const useUpdateBankAccountMutation = <
 
 
 useUpdateBankAccountMutation.fetcher = (variables: UpdateBankAccountMutationVariables, options?: RequestInit['headers']) => gqlFetcher<UpdateBankAccountMutation, UpdateBankAccountMutationVariables>(UpdateBankAccountDocument, variables, options);
+
+export const AddInvestmentDocument = `
+    mutation AddInvestment($addInvestmentInput: AddInvestmentInput!) {
+  addInvestment(addInvestmentInput: $addInvestmentInput) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useAddInvestmentMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<AddInvestmentMutation, TError, AddInvestmentMutationVariables, TContext>) => {
+    
+    return useMutation<AddInvestmentMutation, TError, AddInvestmentMutationVariables, TContext>(
+      {
+    mutationKey: ['AddInvestment'],
+    mutationFn: (variables?: AddInvestmentMutationVariables) => gqlFetcher<AddInvestmentMutation, AddInvestmentMutationVariables>(AddInvestmentDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useAddInvestmentMutation.fetcher = (variables: AddInvestmentMutationVariables, options?: RequestInit['headers']) => gqlFetcher<AddInvestmentMutation, AddInvestmentMutationVariables>(AddInvestmentDocument, variables, options);
 
 export const CreateTickerDocument = `
     mutation CreateTicker($createTicketInput: CreateTicketInput!) {
