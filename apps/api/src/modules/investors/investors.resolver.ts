@@ -18,7 +18,7 @@ import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { PrismaService } from '@nq-capital/service-database';
-import { BankAccountEntity } from './entities/bank-account.entity';
+import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {

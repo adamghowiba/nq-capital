@@ -306,6 +306,8 @@ type Query {
   me: SessionEntity!
   meInvestor: InvestorEntity!
   meUser: UserEntity!
+  bankAccounts: [BankAccountEntity!]!
+  bankAccount(id: Int!): BankAccountEntity!
 }
 
 type Mutation {
@@ -334,6 +336,9 @@ type Mutation {
   login(loginInput: LoginInput!): UserEntity!
   investorLogin(loginInput: LoginInput!): InvestorEntity!
   logout: LogoutEntity!
+  createBankAccount(createBankAccountInput: CreateBankAccountInput!): BankAccountEntity!
+  updateBankAccount(updateBankAccountInput: UpdateBankAccountInput!): BankAccountEntity!
+  removeBankAccount(id: Int!): BankAccountEntity!
 }
 
 input CreateUserInput {
@@ -523,4 +528,43 @@ input LoginInput {
   """Password of the user"""
   password: String!
   user_type: UserType!
+}
+
+input CreateBankAccountInput {
+  nickname: String
+  bank_name: String!
+  account_number: String!
+  account_holder_name: String!
+  type: BankAccountType
+  bank_country: String!
+  currency: String!
+  routing_number: String
+  swift_code: String
+  iban: String
+  sort_code: String
+  bsb_number: String
+  bank_code: String
+  branch_code: String
+  branch_address: String
+  is_primary: Boolean
+}
+
+input UpdateBankAccountInput {
+  nickname: String
+  bank_name: String
+  account_number: String
+  account_holder_name: String
+  type: BankAccountType
+  bank_country: String
+  currency: String
+  routing_number: String
+  swift_code: String
+  iban: String
+  sort_code: String
+  bsb_number: String
+  bank_code: String
+  branch_code: String
+  branch_address: String
+  is_primary: Boolean
+  id: Int!
 }

@@ -3,10 +3,10 @@ import { z } from "zod";
 
 export const bankAccountSchema = z.object({
   nickname: z.string().optional(),
-  bank_name: z.string().optional(),
+  bank_name: z.string(),
   account_number: z.string(),
   account_holder_name: z.string(),
-  account_type: z.string(),
+  account_type: z.nativeEnum(BankAccountType),
   bank_country: z.string(),
   currency: z.string(),
   routing_number: z.string().optional(),

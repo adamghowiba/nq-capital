@@ -1,29 +1,27 @@
-import { zodResolver } from '@hookform/resolvers/zod';
 import add12FilledIcon from '@iconify/icons-fluent/add-12-filled';
 import { Icon } from '@iconify/react';
-import { LoadingButton } from '@mui/lab';
 import { IconButton, Typography } from '@mui/material';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useState } from 'react';
 import { BankCard } from '../../lib/components/BankCard/BankCard';
 import {
   BankCardMutationDialog,
   BankMutationDialogProps,
 } from '../../lib/components/BankCardMutationDialog/BankMutationDialog';
 import { HStack, VStack } from '../../lib/components/Stack/Stack';
-import { useUpdateInvestorMutation } from '../../lib/gql/gql-client';
+import {
+  CreateBankAccountInput,
+  useCreateBankAccountMutation,
+  useDeleteBankAccountMutation,
+  useListBankAccountsQuery,
+  useUpdateBankAccountMutation
+} from '../../lib/gql/gql-client';
 import SettingsLayout from '../../lib/layouts/SettingsLayout';
 import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
 import {
   InferGetInvestorSSP,
   getInvestorSSP,
 } from '../../lib/modules/settings/get-investor-ssr';
-import {
-  SecuritySettingsSchema,
-  securitySettingsSchema,
-} from '../../lib/modules/settings/settings.schema';
 import { NextPageWithLayout } from '../_app';
-import { BankAccountSchema } from 'apps/investors-portal-web/lib/modules/payment-source/payment-source.schema';
-import { useState } from 'react';
 
 const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
   investor,
@@ -33,31 +31,67 @@ const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
     BankMutationDialogProps['mode'] | undefined
   >(undefined);
 
-  const form = useForm<SecuritySettingsSchema>({
-    defaultValues: {
-      current_password: '',
-      new_password: '',
+  // TODO: Make sure listing is only for investor
+  const bankAccountsQuery = useListBankAccountsQuery(
+    {},
+    { select: (data) => data.bankAccounts }
+  );
+
+  const deleteBankAccountMutation = useDeleteBankAccountMutation({
+    onSuccess: () => {
+      bankAccountsQuery.refetch();
     },
-    mode: 'all',
-    reValidateMode: 'onChange',
-    resolver: zodResolver(securitySettingsSchema),
+  });
+  const createBankAccountMutation = useCreateBankAccountMutation({
+    onSuccess: () => {
+      bankAccountsQuery.refetch();
+    },
   });
 
-  const investorMutation = useUpdateInvestorMutation();
+  const updateBankAccountMutation = useUpdateBankAccountMutation({
+    onSuccess: () => {
+      setBankAccountState(undefined);
 
-  const handleValidSubmit: SubmitHandler<SecuritySettingsSchema> = (data) => {
-    investorMutation.mutate({
-      updateInvestorInput: {
-        id: investor.id,
-        password: data.new_password,
-      },
-    });
-  };
+      bankAccountsQuery.refetch();
+    },
+  });
 
-  const handleAddBank: BankMutationDialogProps['onSave'] = (type, bank) => {
+  const handleBankSave: BankMutationDialogProps['onSave'] = (type, bank) => {
+    const preparedData: CreateBankAccountInput = {
+      account_holder_name: bank.account_holder_name,
+      account_number: bank.account_number,
+      bank_country: bank.bank_country,
+      bank_name: bank.bank_name || 'Unknown',
+      currency: bank.currency,
+      bank_code: bank.bank_code,
+      branch_address: bank.branch_address,
+      branch_code: bank.branch_code,
+      bsb_number: bank.bsb_number,
+      iban: bank.iban,
+      is_primary: bank.is_primary,
+      nickname: bank.nickname,
+      routing_number: bank.routing_number,
+      sort_code: bank.sort_code,
+      swift_code: bank.swift_code,
+      type: bank.account_type,
+    };
+
     if (type === 'create') {
-
+      createBankAccountMutation.mutate({
+        createBankAccountInput: preparedData,
+      });
     }
+
+    if (
+      bankAccountDialogState?.type === 'edit' &&
+      bankAccountDialogState.data.id
+    )
+      updateBankAccountMutation.mutate({
+        updateBankAccountInput: {
+          id: bankAccountDialogState.data.id,
+          ...preparedData,
+        },
+      });
   };
 
   return (
@@ -72,31 +106,36 @@ const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
         </HStack>
 
         <VStack gap={3}>
-          <BankCard
-            accountNumber={'1234567890'}
-            bankName={'First Bank'}
-            isDefault={true}
-            onDelete={() => ''}
-            onEdit={() => ''}
-            onMakeDefault={() => ''}
-          />
-
-          <LoadingButton
-            loading={investorMutation.isPending}
-            variant="contained"
-            color="primary"
-            sx={{ mr: 'auto' }}
-            onClick={form.handleSubmit(handleValidSubmit, console.error)}
-          >
-            Submit
-          </LoadingButton>
+          {bankAccountsQuery.data?.map((bank) => {
+            return (
+              <BankCard
+                key={bank.id}
+                accountNumber={bank.account_number}
+                bankName={bank.bank_name}
+                isDefault={bank.is_primary}
+                onDelete={() =>
+                  deleteBankAccountMutation.mutate({ id: bank.id })
+                }
+                onEdit={() => setBankAccountState({ type: 'edit', data: bank })}
+                onMakeDefault={() =>
+                  updateBankAccountMutation.mutate({
+                    updateBankAccountInput: {
+                      id: bank.id,
+                      is_primary: true,
+                    },
+                  })
+                }
+              />
+            );
+          })}
         </VStack>
       </SettingsFieldGroup>
 
       <BankCardMutationDialog
         open={!!bankAccountDialogState}
         mode={bankAccountDialogState}
-        onSave={handleAddBank}
+        onSave={handleBankSave}
+        onClose={() => setBankAccountState(undefined)}
       />
     </>
   );

@@ -206,22 +206,6 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
     },
     components: {
-      MuiPopover: {
-        styleOverrides: {
-          root: () => ({
-            '& .MuiPopover-paper': {
-              backgroundColor: '#202020',
-              padding: '4px',
-            },
-            '& .MuiPaper-root': {
-              borderRadius: '12px !important',
-            },
-            '& .MuiBackdrop-root': {
-              background: 'transparent !important',
-            },
-          }),
-        },
-      },
       MuiCard: {
         variants: [
           {
@@ -490,6 +474,22 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           root: ({ theme }) => ({
             borderRadius: '8px',
             border: `1px solid ${theme.common.line}`,
+          }),
+        },
+      },
+      MuiPopover: {
+        styleOverrides: {
+          root: () => ({
+            // '& .MuiPopover-paper': {
+            //   backgroundColor: '#202020',
+            //   padding: '4px',
+            // },
+            // '& .MuiPaper-root': {
+            //   borderRadius: '12px !important',
+            // },
+            // '& .MuiBackdrop-root': {
+            //   background: 'transparent !important',
+            // },
           }),
         },
       },

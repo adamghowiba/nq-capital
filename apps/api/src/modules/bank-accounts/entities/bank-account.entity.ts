@@ -1,16 +1,17 @@
 import {
   Field,
   GraphQLISODateTime,
+  Int,
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql';
-import { $Enums, BankAccount, BankAccountType } from '@prisma/client';
+import { BankAccount, BankAccountType } from '@prisma/client';
 
 registerEnumType(BankAccountType, { name: 'BankAccountType' });
 
 @ObjectType()
 export class BankAccountEntity implements BankAccount {
-  @Field(() => Number)
+  @Field(() => Int)
   id!: number;
 
   @Field(() => String, { nullable: true })
@@ -61,7 +62,7 @@ export class BankAccountEntity implements BankAccount {
   @Field(() => Boolean)
   is_primary!: boolean;
 
-  @Field(() => Number)
+  @Field(() => Int)
   investor_id!: number;
 
   @Field(() => GraphQLISODateTime)

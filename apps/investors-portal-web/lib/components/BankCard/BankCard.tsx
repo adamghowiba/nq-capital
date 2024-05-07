@@ -1,13 +1,23 @@
 import bank from '@iconify/icons-fluent/building-bank-48-regular';
 import dot from '@iconify/icons-fluent/circle-12-filled';
 import more from '@iconify/icons-fluent/more-horizontal-24-regular';
+import editIcon from '@iconify/icons-fluent/edit-12-filled';
+import deleteIcon from '@iconify/icons-fluent/delete-12-filled';
+import bookmarkIcon from '@iconify/icons-fluent/bookmark-16-filled';
 import { Icon } from '@iconify/react';
-import { Avatar, Box, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Typography,
+} from '@mui/material';
 import { FC, useState } from 'react';
 import { theme } from '../../theme';
 import OneIcon from '../../utils/OneIcon';
 import BankCardMenu from './BankCardMenu';
-import { BankSchema } from '../BankCardMutationDialog/BankMutationDialog';
+import { MenuButton, MenuList, NMenu, NMenuItem } from '../Menu/NMenu';
 
 export interface BankCardProps {
   bankName: string;
@@ -28,20 +38,9 @@ export const BankCard: FC<BankCardProps> = ({
   onDelete,
   onMakeDefault,
 }) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   return (
     <>
-      <BankCardMenu
-        anchorEl={anchorEl}
-        closeMenu={() => setAnchorEl(null)}
-        isOpen={!!anchorEl}
-        isDefault={isDefault}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onMakeDefault={onMakeDefault}
-      />
-
       <Box
         sx={{
           display: 'grid',
@@ -56,6 +55,7 @@ export const BankCard: FC<BankCardProps> = ({
         <Avatar sx={{ backgroundColor: '#E4E4E4' }}>
           <Icon icon={bank} fontSize={28} color="#8D8D8D" />
         </Avatar>
+
         <Box>
           <Typography>{bankName}</Typography>
           <Box
@@ -79,11 +79,13 @@ export const BankCard: FC<BankCardProps> = ({
                 />
               ))}
             </Box>
+
             <Typography color="#8D8D8D" fontWeight={400}>
-              {accountNumber.substring(accountNumber.length -4)}
+              {accountNumber.substring(accountNumber.length - 4)}
             </Typography>
           </Box>
         </Box>
+
         {isDefault && (
           <Box
             sx={{
@@ -97,15 +99,52 @@ export const BankCard: FC<BankCardProps> = ({
             </Typography>
           </Box>
         )}
-        <OneIcon
-          icon={more}
-          title="More"
-          fontSize={24}
-          iconColor="#202020"
-          disabled={isDisabled}
-          onClick={(event) => setAnchorEl(event.currentTarget)}
-        />
+
+        <NMenu>
+          <MenuButton>
+            <OneIcon
+              icon={more}
+              title="More"
+              fontSize={24}
+              iconColor="#202020"
+              disabled={isDisabled}
+            />
+          </MenuButton>
+
+          <MenuList>
+            <NMenuItem leftIcon={<Icon icon={editIcon} />} onClick={onEdit}>
+              Edit
+            </NMenuItem>
+
+            {!isDefault && (
+              <NMenuItem
+                leftIcon={<Icon icon={bookmarkIcon} />}
+                onClick={onMakeDefault}
+              >
+                Make primary
+              </NMenuItem>
+            )}
+
+            <NMenuItem
+              leftIcon={<Icon icon={deleteIcon} />}
+              color="#E5484D"
+              onClick={onDelete}
+            >
+              Delete
+            </NMenuItem>
+          </MenuList>
+        </NMenu>
       </Box>
+
+      {/* <BankCardMenu
+        anchorEl={anchorEl}
+        closeMenu={() => setAnchorEl(null)}
+        isOpen={!!anchorEl}
+        isDefault={isDefault}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onMakeDefault={onMakeDefault}
+      /> */}
     </>
   );
 };

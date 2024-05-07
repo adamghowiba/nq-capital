@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Autocomplete,
   Box,
@@ -7,34 +8,28 @@ import {
   DialogContent,
   DialogProps,
   FormControl,
-  FormHelperText,
   FormLabel,
-  Input,
-  MenuItem,
   TextField,
   Typography,
-  autocompleteClasses,
 } from '@mui/material';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { NATIONALITIES } from '../../constants/nationalities.constants';
-import { OneTextField } from '../../utils/OneTextField';
-import { BANK_ACCOUNT_TYPES } from '../../constants/bank.constants';
 import { FC } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { BANK_ACCOUNT_TYPES } from '../../constants/bank.constants';
+import { NATIONALITIES } from '../../constants/nationalities.constants';
 import {
   BankAccountSchema,
   bankAccountSchema,
 } from '../../modules/payment-source/payment-source.schema';
-import NTextField from '../Fields/NTextField';
 import DialogHeader from '../Dialog/DialogHeader';
+import NTextField from '../Fields/NTextField';
 import { HStack } from '../Stack/Stack';
-import { ArrowDropDownIcon } from '@mui/x-date-pickers';
+import { BankAccountAllFragmentFragment } from '../../gql/gql-client';
 
 export interface BankMutationDialogProps extends DialogProps {
   onSave: (type: 'edit' | 'create', bank: BankAccountSchema) => void;
-  mode?: { type: 'create' } | { type: 'edit'; data: BankAccountSchema };
+  mode?:
+    | { type: 'create' }
+    | { type: 'edit'; data: BankAccountAllFragmentFragment };
 }
 
 export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
@@ -43,25 +38,28 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
   onSave,
   ...props
 }) => {
+  const modeData = mode?.type === 'edit' ? mode?.data : undefined;
+
   const form = useForm<BankAccountSchema>({
     defaultValues: {
-      nickname: '',
-      bank_name: '',
-      account_number: '',
-      account_holder_name: '',
-      account_type: '',
-      bank_country: '',
-      currency: '',
-      routing_number: '',
-      swift_code: '',
-      iban: '',
-      sort_code: '',
-      bsb_number: '',
-      bank_code: '',
-      branch_code: '',
-      branch_address: '',
-      is_primary: false,
+      nickname: modeData?.nickname || '',
+      bank_name: modeData?.bank_name || '',
+      account_number: modeData?.account_number || '',
+      account_holder_name: modeData?.account_holder_name || '',
+      account_type: modeData?.type || 'CHECKING',
+      bank_country: modeData?.bank_country || '',
+      currency: modeData?.currency || '',
+      routing_number: modeData?.routing_number || '',
+      swift_code: modeData?.swift_code || '',
+      iban: modeData?.iban || '',
+      sort_code: modeData?.sort_code || '',
+      bsb_number: modeData?.bsb_number || '',
+      bank_code: modeData?.bank_code || '',
+      branch_code: modeData?.branch_code || '',
+      branch_address: modeData?.branch_address || '',
+      is_primary: modeData?.is_primary || false,
     },
+    shouldUnregister: true,
     resolver: zodResolver(bankAccountSchema),
   });
 
@@ -81,6 +79,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
           borderRadius: 2,
         },
       }}
+      onClose={onClose}
       {...props}
     >
       <DialogHeader>
@@ -154,7 +153,8 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
             />
           </HStack>
 
-          <Controller
+          {/* FIX: add back */}
+          {/* <Controller
             control={form.control}
             name="account_type"
             render={({ field, fieldState }) => {
@@ -188,7 +188,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
                 </FormControl>
               );
             }}
-          />
+          /> */}
 
           <NTextField
             control={form.control}

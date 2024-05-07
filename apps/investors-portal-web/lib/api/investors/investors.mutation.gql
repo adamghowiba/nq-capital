@@ -3,3 +3,15 @@ mutation UpdateInvestor($updateInvestorInput: UpdateInvestorInput!) {
     ...InvestorAllFragment
   }
 }
+
+mutation CreateBankAccount($createBankAccountInput: CreateBankAccountInput!) {
+  createBankAccount(createBankAccountInput: $createBankAccountInput) {
+    ...BankAccountAllFragment
+  }
+}
+
+mutation UpdateBankAccount($updateBankAccountInput: UpdateBankAccountInput!) {
+  updateBankAccount(updateBankAccountInput: $updateBankAccountInput) {
+    ...BankAccountAllFragment
+  }
+}

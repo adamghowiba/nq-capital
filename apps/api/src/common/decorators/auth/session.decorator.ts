@@ -1,8 +1,13 @@
-import { ExecutionContext, createParamDecorator } from '@nestjs/common';
+import {
+  ExecutionContext,
+  HttpStatus,
+  createParamDecorator,
+} from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { INVESTORS_PORTAL_URL } from '@nq-capital/utils-constants';
 import { Application } from '../../../modules/auth/entities/session.entity';
 import { Request } from 'express';
+import { ApiError } from '../../exceptions/api.error';
 
 export const GqlSession = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
@@ -24,9 +29,15 @@ export const GqlSession = createParamDecorator(
 );
 
 export const InvestorSession = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
+  (data: { throwOnNotFound?: boolean }, ctx: ExecutionContext) => {
+    const throwOnNotFound = data.throwOnNotFound ?? true;
     const context = GqlExecutionContext.create(ctx);
     const gqlContext = context.getContext<{ req: Request; headers: Headers }>();
+
+    if (throwOnNotFound && !gqlContext.req?.user?.investor)
+      throw new ApiError('You must be logged into to preform this action', {
+        statusCode: HttpStatus.FORBIDDEN,
+      });
 
     return gqlContext.req?.user?.investor;
   }

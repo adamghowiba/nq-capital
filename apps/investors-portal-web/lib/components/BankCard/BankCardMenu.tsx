@@ -33,6 +33,13 @@ export default function BankCardMenu({
       }}
       open={isOpen}
       onClose={closeMenu}
+      slotProps={{
+        paper: {
+          sx: {
+            bgcolor: 'red'
+          }
+        }
+      }}
     >
       {[
         ...(isDefault
