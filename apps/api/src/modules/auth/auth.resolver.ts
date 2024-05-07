@@ -26,6 +26,14 @@ export class AuthResolver {
     return user;
   }
 
+  @UseGuards(GqlAuthGuard, LocalAuthGuard)
+  @Mutation(() => InvestorEntity)
+  async investorLogin(@Args('loginInput') loginInput: LoginInput) {
+    const investor = await this.authService.loginInvestor(loginInput);
+
+    return investor;
+  }
+
   @Mutation(() => LogoutEntity)
   async logout(@Context('req') request: Request) {
     request.session.destroy(console.error);

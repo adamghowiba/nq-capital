@@ -14,6 +14,7 @@ import Logo from '../Logo/logo';
 import { FC } from 'react';
 import { useInvestor } from '../../hooks/use-investor';
 import Link from 'next/link';
+import { HStack } from '../Stack/Stack';
 
 const Topbar: FC<any> = () => {
   const investor = useInvestor();
@@ -22,6 +23,7 @@ const Topbar: FC<any> = () => {
     title: string;
     icon: IconifyIcon;
     onClick?: () => void;
+    href?: string;
   }[] = [
     {
       icon: questionCircle,
@@ -34,6 +36,7 @@ const Topbar: FC<any> = () => {
     {
       icon: settings,
       title: 'Settings',
+      href: '/settings',
     },
     {
       icon: person,
@@ -109,24 +112,20 @@ const Topbar: FC<any> = () => {
 
             <TopbarSearch />
 
-            <Box
-              sx={{
-                display: 'grid',
-                alignItems: 'center',
-                gridAutoFlow: 'column',
-                columnGap: 2,
-              }}
-            >
-              {rightIcons.map(({ icon, title, onClick }, index) => (
+            <HStack gap={2} align="center">
+              {rightIcons.map(({ icon, title, onClick, href }, index) => (
                 <OneIcon
                   key={index}
                   title={title}
                   icon={icon}
                   onClick={onClick}
                   fontSize={20}
+                  LinkComponent={href ? Link : undefined}
+                  // @ts-expect-error MUI doesn't accept slot href
+                  href={href}
                 />
               ))}
-            </Box>
+            </HStack>
           </Box>
         </DContainer>
       </Box>

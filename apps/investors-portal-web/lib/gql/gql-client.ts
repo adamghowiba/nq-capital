@@ -285,7 +285,7 @@ export type Mutation = {
   createTicket: TicketEntity;
   createTransaction: TransactionEntity;
   createUser: UserEntity;
-  login: UserEntity;
+  investorLogin: InvestorEntity;
   logout: LogoutEntity;
   removeAsset: AssetEntity;
   removeFund: FundEntity;
@@ -344,7 +344,7 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationLoginArgs = {
+export type MutationInvestorLoginArgs = {
   loginInput: LoginInput;
 };
 
@@ -688,7 +688,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, email: string } };
+export type LoginMutation = { __typename?: 'Mutation', investorLogin: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -915,11 +915,16 @@ export const UserAllFragmentFragmentDoc = `
     `;
 export const LoginDocument = `
     mutation Login($loginInput: LoginInput!) {
-  login(loginInput: $loginInput) {
+  investorLogin(loginInput: $loginInput) {
     id
     first_name
     last_name
     email
+    company_name
+    is_accredited
+    mobile_number
+    account_status
+    created_at
   }
 }
     `;

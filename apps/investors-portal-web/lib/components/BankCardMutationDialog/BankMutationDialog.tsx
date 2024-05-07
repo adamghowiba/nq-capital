@@ -6,8 +6,14 @@ import {
   DialogActions,
   DialogContent,
   DialogProps,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  Input,
+  MenuItem,
   TextField,
   Typography,
+  autocompleteClasses,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -24,32 +30,17 @@ import {
 import NTextField from '../Fields/NTextField';
 import DialogHeader from '../Dialog/DialogHeader';
 import { HStack } from '../Stack/Stack';
+import { ArrowDropDownIcon } from '@mui/x-date-pickers';
 
 export interface BankMutationDialogProps extends DialogProps {
-  handleAddBank: (newBank: BankSchema) => void;
-  handleEditBank: (bank: BankSchema) => void;
-  data?: BankSchema;
-}
-
-export interface BankSchema {
-  temp_id: string;
-  bank_name: string;
-  account_type: string;
-  bank_account_number: string;
-  bank_routing_number: string;
-  swift_code: string;
-  IBAN: string;
-  bank_country: string;
-  bank_address: string;
-  account_holder_name: string;
-  is_default: boolean;
+  onSave: (type: 'edit' | 'create', bank: BankAccountSchema) => void;
+  mode?: { type: 'create' } | { type: 'edit'; data: BankAccountSchema };
 }
 
 export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
   onClose,
-  handleAddBank,
-  handleEditBank,
-  data,
+  mode,
+  onSave,
   ...props
 }) => {
   const form = useForm<BankAccountSchema>({
@@ -75,7 +66,12 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
   });
 
   const handleValidSubmit: SubmitHandler<BankAccountSchema> = (data) => {
-    // TODO: Mutation
+    if (mode?.type === 'edit') {
+      onSave('edit', data);
+      return;
+    }
+
+    onSave('create', data);
   };
 
   return (
@@ -89,7 +85,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
     >
       <DialogHeader>
         <Typography variant="h5">
-          {`${data ? 'Edit' : 'Add'} Bank Details`}
+          {`${mode?.type === 'edit' ? 'Edit' : 'Add'} Bank Details`}
         </Typography>
       </DialogHeader>
 
@@ -113,30 +109,29 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
             name="bank_country"
             render={({ field, fieldState }) => {
               return (
-                <Autocomplete
-                  options={NATIONALITIES}
-                  autoHighlight
-                  getOptionLabel={(option) => option.country}
-                  onChange={(_, selectedCountry) =>
-                    selectedCountry?.code
-                      ? field.onChange(selectedCountry?.code)
-                      : undefined
-                  }
-                  value={NATIONALITIES.find(
-                    (nationality) => nationality.code === field.value
-                  )}
-                  renderOption={(props, option) => (
-                    <Box component="li" {...props}>
-                      {option.country} ({option.code})
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      placeholder="Select your bank's country"
-                      {...params}
-                    />
-                  )}
-                />
+                <FormControl required>
+                  <FormLabel>Bank Country</FormLabel>
+                  <Autocomplete
+                    options={NATIONALITIES}
+                    autoHighlight
+                    getOptionLabel={(option) => option.country}
+                    onChange={(_, selectedCountry) =>
+                      selectedCountry?.code
+                        ? field.onChange(selectedCountry?.code)
+                        : undefined
+                    }
+                    value={NATIONALITIES.find(
+                      (nationality) => nationality.code === field.value
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        placeholder="Select your bank's country"
+                        {...params}
+                        size="medium"
+                      />
+                    )}
+                  />
+                </FormControl>
               );
             }}
           />
@@ -159,44 +154,41 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
             />
           </HStack>
 
-          {/* <Autocomplete
-              options={BANK_ACCOUNT_TYPES.sort((a, b) => (a > b ? 1 : -1))}
-              autoHighlight
-              value={
-                formik.values.account_type
-                  ? BANK_ACCOUNT_TYPES.find(
-                      (accountType) =>
-                        accountType === formik.values.account_type
-                    )
-                  : null
-              }
-              onChange={(_, selectedAccountType) =>
-                formik.setFieldValue('account_type', selectedAccountType ?? '')
-              }
-              renderOption={(props, accountType) => (
-                <Box component="li" {...props}>
-                  {accountType}
-                </Box>
-              )}
-              renderInput={(params) => (
-                <OneTextField
-                  OneLabel="Account Type"
-                  placeholder="Select your account type"
-                  error={
-                    formik.touched.account_type &&
-                    Boolean(formik.errors.account_type)
-                  }
-                  helperText={
-                    formik.touched.account_type && formik.errors.account_type
-                  }
-                  {...formik.getFieldProps('account_type')}
-                  {...params}
-                  inputProps={{
-                    ...params.inputProps,
-                  }}
-                />
-              )}
-            /> */}
+          <Controller
+            control={form.control}
+            name="account_type"
+            render={({ field, fieldState }) => {
+              return (
+                <FormControl required>
+                  <FormLabel>Account type</FormLabel>
+                  <Autocomplete
+                    options={BANK_ACCOUNT_TYPES.sort((a, b) =>
+                      a > b ? 1 : -1
+                    )}
+                    autoHighlight
+                    onChange={(_, bankAccountType) =>
+                      field.onChange(bankAccountType || '')
+                    }
+                    value={BANK_ACCOUNT_TYPES.find(
+                      (accountType) => accountType === field.value
+                    )}
+                    renderOption={(props, accountType) => (
+                      <Box component="li" {...props}>
+                        {accountType}
+                      </Box>
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        placeholder="Select account type"
+                        {...params}
+                        size="medium"
+                      />
+                    )}
+                  />
+                </FormControl>
+              );
+            }}
+          />
 
           <NTextField
             control={form.control}
@@ -224,12 +216,22 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
       </DialogContent>
 
       <DialogActions>
-        <Button type="submit" variant="contained" color="secondary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="secondary"
+          onClick={() => onClose?.({}, 'escapeKeyDown')}
+        >
           Cancel
         </Button>
 
-        <Button type="submit" variant="contained" color="primary">
-          {data ? 'Save Changes' : 'Add Bank'}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={form.handleSubmit(handleValidSubmit, console.error)}
+        >
+          {mode?.type === 'edit' ? 'Save Changes' : 'Add Bank'}
         </Button>
       </DialogActions>
     </Dialog>

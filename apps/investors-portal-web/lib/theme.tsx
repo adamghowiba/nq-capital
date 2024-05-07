@@ -1,3 +1,4 @@
+import { Box, autocompleteClasses } from '@mui/material';
 import { Theme, ThemeOptions, createTheme } from '@mui/material/styles';
 import React from 'react';
 
@@ -221,23 +222,6 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           }),
         },
       },
-      MuiMenuItem: {
-        styleOverrides: {
-          root: () => ({
-            color: '#F1F1F1',
-            borderRadius: '8px',
-            fontSize: '13px',
-            lineHeight: '16px',
-            padding: '8px',
-            minWidth: '140px',
-            boxShadow:
-              '0px 16px 32px -12px #20202040, 0px 1px 2px 0px #2020200A, 0px 0px 0px 1px #20202014',
-            '&:hover': {
-              backgroundColor: '#FFFFFF1B',
-            },
-          }),
-        },
-      },
       MuiCard: {
         variants: [
           {
@@ -340,6 +324,31 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           }),
         },
       },
+      MuiAutocomplete: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '.MuiOutlinedInput-root .MuiAutocomplete-input': {
+              padding: '0px',
+            },
+          }),
+        },
+        defaultProps: {
+          renderOption: (props, option, state, ownerState) => (
+            <Box
+              sx={{
+                [`&.${autocompleteClasses.option}`]: {
+                  height: '35px',
+                  minHeight: '35px',
+                },
+              }}
+              component="li"
+              {...props}
+            >
+              {ownerState.getOptionLabel(option)}
+            </Box>
+          ),
+        },
+      },
       MuiTextField: {
         defaultProps: {
           size: 'medium',
@@ -389,7 +398,8 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             },
             style: {
               '& .MuiInputBase-root.MuiOutlinedInput-root': {
-                padding: '8px 12px',
+                padding: '0px 12px',
+                height: '36px',
               },
               '& .MuiInputBase-input': {
                 padding: 0,

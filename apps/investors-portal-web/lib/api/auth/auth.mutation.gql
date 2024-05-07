@@ -1,9 +1,14 @@
 mutation Login($loginInput: LoginInput!) {
-  login(loginInput: $loginInput) {
+  investorLogin(loginInput: $loginInput) {
     id
     first_name
     last_name
     email
+    company_name
+    is_accredited
+    mobile_number
+    account_status
+    created_at
   }
 }
 

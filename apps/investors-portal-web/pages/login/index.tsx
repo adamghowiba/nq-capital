@@ -13,6 +13,7 @@ import {
 import { queryClient } from '../../lib/api/query-client';
 import {
   useLoginMutation,
+  useMeInvestorQuery,
   useMeQuery,
 } from '../../lib/gql/gql-client';
 import Link from 'next/link';
@@ -20,6 +21,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import AuthHeader from '../../lib/modules/auth/components/AuthHeader';
 import { NextPageWithLayout } from '../_app';
+import { useRouter } from 'next/router';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -29,6 +31,8 @@ const loginSchema = z.object({
 type LoginSchema = z.infer<typeof loginSchema>;
 
 const Login: NextPageWithLayout = () => {
+  const router = useRouter();
+
   const form = useForm({
     defaultValues: {
       email: '',
@@ -41,10 +45,12 @@ const Login: NextPageWithLayout = () => {
     onSuccess: (data, variables, context) => {
       queryClient.setQueriesData(
         {
-          queryKey: useMeQuery.getKey(),
+          queryKey: useMeInvestorQuery.getKey(),
         },
         data
       );
+
+      router.push('/');
     },
   });
 

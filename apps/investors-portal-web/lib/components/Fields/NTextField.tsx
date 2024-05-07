@@ -16,7 +16,7 @@ export interface NTextFieldProps<
 > extends Omit<ControllerProps<TFieldValues, TName>, 'render'>,
     Pick<
       TextFieldProps,
-      'multiline' | 'rows' | 'minRows' | 'maxRows' | 'fullWidth' | 'type' | "autoFocus"
+      'multiline' | 'rows' | 'minRows' | 'maxRows' | 'fullWidth' | 'type' | "autoFocus" | "InputProps"
     > {
   helperText?: ReactNode;
   label?: string;

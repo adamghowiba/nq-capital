@@ -1,30 +1,38 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import add12FilledIcon from '@iconify/icons-fluent/add-12-filled';
+import { Icon } from '@iconify/react';
 import { LoadingButton } from '@mui/lab';
-import NTextField from '../../lib/components/Fields/NTextField';
+import { IconButton, Typography } from '@mui/material';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { BankCard } from '../../lib/components/BankCard/BankCard';
+import {
+  BankCardMutationDialog,
+  BankMutationDialogProps,
+} from '../../lib/components/BankCardMutationDialog/BankMutationDialog';
 import { HStack, VStack } from '../../lib/components/Stack/Stack';
 import { useUpdateInvestorMutation } from '../../lib/gql/gql-client';
+import SettingsLayout from '../../lib/layouts/SettingsLayout';
+import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
 import {
   InferGetInvestorSSP,
   getInvestorSSP,
 } from '../../lib/modules/settings/get-investor-ssr';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import SettingsLayout from '../../lib/layouts/SettingsLayout';
-import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
 import {
   SecuritySettingsSchema,
   securitySettingsSchema,
 } from '../../lib/modules/settings/settings.schema';
 import { NextPageWithLayout } from '../_app';
-import { IconButton, Typography } from '@mui/material';
-import add12FilledIcon from '@iconify/icons-fluent/add-12-filled';
-import { Icon } from '@iconify/react';
-import { BankCard } from '../../lib/components/BankCard/BankCard';
-import { BankCardMutationDialog } from 'apps/investors-portal-web/lib/components/BankCardMutationDialog/BankMutationDialog';
+import { BankAccountSchema } from 'apps/investors-portal-web/lib/modules/payment-source/payment-source.schema';
+import { useState } from 'react';
 
 const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
   investor,
   ...props
 }) => {
+  const [bankAccountDialogState, setBankAccountState] = useState<
+    BankMutationDialogProps['mode'] | undefined
+  >(undefined);
+
   const form = useForm<SecuritySettingsSchema>({
     defaultValues: {
       current_password: '',
@@ -46,13 +54,19 @@ const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
     });
   };
 
+  const handleAddBank: BankMutationDialogProps['onSave'] = (type, bank) => {
+    if (type === 'create') {
+
+    }
+  };
+
   return (
     <>
       <SettingsFieldGroup component="form">
         <HStack justify="space-between" align="center">
           <Typography>Bank Details</Typography>
 
-          <IconButton>
+          <IconButton onClick={() => setBankAccountState({ type: 'create' })}>
             <Icon icon={add12FilledIcon} width={18} height={18} />
           </IconButton>
         </HStack>
@@ -80,9 +94,9 @@ const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
       </SettingsFieldGroup>
 
       <BankCardMutationDialog
-        open={true}
-        handleAddBank={() => ''}
-        handleEditBank={() => ''}
+        open={!!bankAccountDialogState}
+        mode={bankAccountDialogState}
+        onSave={handleAddBank}
       />
     </>
   );

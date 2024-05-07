@@ -39,6 +39,18 @@ export class AuthService {
     return user;
   }
 
+  async loginInvestor(loginInput: Omit<LoginInput, 'user_type'>) {
+    const loginResponse = await this.login({
+      ...loginInput,
+      user_type: 'INVESTOR',
+    });
+
+    if (loginResponse.type !== 'INVESTOR')
+      throw new ApiError('Attempted non-investor login', { statusCode: 500 });
+
+    return loginResponse.investor;
+  }
+
   /**
    * Shared login method for both investors and admins
    */

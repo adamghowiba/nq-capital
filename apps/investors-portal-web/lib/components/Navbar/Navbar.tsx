@@ -59,26 +59,25 @@ const Navbar: FC<NavbarProps> = ({ ...props }) => {
         <DContainer>
           <Stack direction="row" height="100%">
             {NAVBAR_ITEMS.map((item) => (
-              <Stack
-                key={item.name}
-                height="100%"
-                borderBottom="2px solid"
-                borderColor={
-                  item.name === activeItem?.name ? 'black' : 'transparent'
-                }
-                alignItems="center"
-                justifyContent="center"
-                px={2}
-                color={item.name === activeItem?.name ? '#202020' : '#8D8D8D'}
-                sx={{
-                  transition: 'color 0.1s linear',
-                  '&:hover': {
-                    color: 'black',
-                  },
-                  cursor: 'pointer',
-                }}
-              >
-                <Link key={item.name} href={item.href}>
+              <Link key={item.name} href={item.href}>
+                <Stack
+                  height="100%"
+                  borderBottom="2px solid"
+                  borderColor={
+                    item.name === activeItem?.name ? 'black' : 'transparent'
+                  }
+                  alignItems="center"
+                  justifyContent="center"
+                  px={2}
+                  color={item.name === activeItem?.name ? '#202020' : '#8D8D8D'}
+                  sx={{
+                    transition: 'color 0.1s linear',
+                    '&:hover': {
+                      color: 'black',
+                    },
+                    cursor: 'pointer',
+                  }}
+                >
                   <Stack direction="row" alignItems="center">
                     <Typography
                       color={'inherit'}
@@ -89,8 +88,8 @@ const Navbar: FC<NavbarProps> = ({ ...props }) => {
                       {item.name}
                     </Typography>
                   </Stack>
-                </Link>
-              </Stack>
+                </Stack>
+              </Link>
             ))}
           </Stack>
         </DContainer>

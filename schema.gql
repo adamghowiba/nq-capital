@@ -332,6 +332,7 @@ type Mutation {
   removeMessage(id: Int!): MessageEntity!
   removeAsset(id: Int!): AssetEntity!
   login(loginInput: LoginInput!): UserEntity!
+  investorLogin(loginInput: LoginInput!): InvestorEntity!
   logout: LogoutEntity!
 }
 
