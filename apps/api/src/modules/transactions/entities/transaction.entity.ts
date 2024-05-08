@@ -28,6 +28,9 @@ export class TransactionEntity implements Transaction {
   @Field(() => String, { nullable: true })
   external_id!: string | null;
 
+  @Field(() => Int, { nullable: true })
+  investor_id!: number | null;
+
   @Field(() => TransactionStatus)
   status!: TransactionStatus;
 

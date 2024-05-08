@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Box from '../lib/components/Box/Box';
 import { Stat } from '../lib/components/KPICard/KPICard';
 import NLink from '../lib/components/Link/Link';
@@ -8,14 +8,27 @@ import Screen from '../lib/components/Screen/Screen';
 import { HStack } from '../lib/components/Stack/Stack';
 import CustomDataGrid from '../lib/components/StyledDataGrid/CustomDataGrid';
 import TransactionTypeChip from '../lib/components/TransactionTypeBadge/TransactionTypeBadge';
-import { useListTransactionsQuery } from '../lib/gql/gql-client';
+import {
+  useInvestorPortfolioQuery,
+  useListTransactionsQuery,
+} from '../lib/gql/gql-client';
 import AccountValueChart from '../lib/modules/home/AccountValueChart';
 import { EmptyTransactions } from '../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../lib/utils/currency.utils';
 import { formatISOForTable } from '../lib/utils/date.utils';
+import { useInvestor } from '../lib/hooks/use-investor';
+import { DateTime } from 'luxon';
 
 const Index = () => {
   const [dateFilter, setDateFilter] = useState<'year' | 'month'>('month');
+  const investor = useInvestor();
+
+  const investorPortfolio = useInvestorPortfolioQuery(
+    {
+      id: investor.data?.id,
+    },
+    { enabled: !!investor.data?.id, select: (data) => data.investorPortfolio }
+  );
 
   const transactionsQuery = useListTransactionsQuery(
     {},
@@ -33,9 +46,6 @@ const Index = () => {
                 Filter
               </Button>
               <Button variant="contained" color="secondary">
-                Export v1
-              </Button>
-              <Button variant="contained" color="secondary">
                 Create New
               </Button>
             </>
@@ -46,7 +56,9 @@ const Index = () => {
           <Stat
             tooltip="The total amount you've invested"
             title="Total invested"
-            value={formatUSDCurrency(50000)}
+            value={formatUSDCurrency(
+              investorPortfolio.data?.total_invested || 0
+            )}
             change={{
               type: 'increase',
               value: formatUSDCurrency(1000),
@@ -55,7 +67,9 @@ const Index = () => {
           <Stat
             title="Current Value"
             tooltip="Current portfolio value"
-            value={formatUSDCurrency(50000)}
+            value={formatUSDCurrency(
+              investorPortfolio.data?.total_balance || 0
+            )}
             change={{
               type: 'increase',
               value: formatUSDCurrency(1000),
@@ -64,11 +78,9 @@ const Index = () => {
           <Stat
             title="Pending Transactions"
             tooltip="Pending transaction amount"
-            value={formatUSDCurrency(50000)}
-            change={{
-              type: 'increase',
-              value: formatUSDCurrency(1000),
-            }}
+            value={formatUSDCurrency(
+              investorPortfolio.data?.total_pending_transactions || 0
+            )}
           />
         </HStack>
 

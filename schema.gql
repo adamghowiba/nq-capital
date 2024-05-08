@@ -43,6 +43,37 @@ type FundEntity {
   updated_at: DateTime!
 }
 
+type TransactionEntity {
+  id: Int!
+  type: TransactionType!
+  amount: Int!
+  currency_code: String!
+  balance_after: Int!
+  description: String
+  fee: Float
+  external_id: String
+  investor_id: Int
+  status: TransactionStatus!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  ADJUSTMENT
+  FEE
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REVERSED
+  FAILED
+}
+
 type InvestorEntity {
   id: Int!
   first_name: String!
@@ -117,6 +148,12 @@ enum BankAccountType {
   SAVINGS
 }
 
+type InvestorPortfolioEntity {
+  total_invested: Float!
+  total_balance: Float!
+  total_pending_transactions: Float!
+}
+
 type InvestorFundEntity {
   id: Int!
   stake_percentage: Float!
@@ -138,36 +175,6 @@ type PaginatedInvestorFundEntity {
   page: Int!
   count: Int!
   hasNextPage: Boolean!
-}
-
-type TransactionEntity {
-  id: Int!
-  type: TransactionType!
-  amount: Int!
-  currency_code: String!
-  balance_after: Int!
-  description: String
-  fee: Float
-  external_id: String
-  status: TransactionStatus!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
-enum TransactionType {
-  DEPOSIT
-  WITHDRAWAL
-  ADJUSTMENT
-  FEE
-  REFUND
-}
-
-enum TransactionStatus {
-  PENDING
-  COMPLETED
-  CANCELLED
-  REVERSED
-  FAILED
 }
 
 type SessionEntity {
@@ -279,8 +286,11 @@ type Query {
   user(id: Int!): UserEntity!
   investors: [InvestorEntity!]!
   investor(id: Int!): InvestorEntity!
+  investorPortfolio(id: Int!): InvestorPortfolioEntity!
   funds: [FundEntity!]!
   fund(id: Int!): FundEntity!
+  transactions: [TransactionEntity!]!
+  transaction(id: Int!): TransactionEntity!
   investorFunds(
     """The page number to retrieve starting from zero"""
     page: Int! = 0
@@ -295,8 +305,6 @@ type Query {
     fundId: Int
   ): PaginatedInvestorFundEntity!
   investorFund(id: Int!): [InvestorFundEntity!]!
-  transactions: [TransactionEntity!]!
-  transaction(id: Int!): TransactionEntity!
   tickets: [TicketEntity!]!
   ticket(id: Int!): TicketEntity!
   messages: [MessageEntity!]!

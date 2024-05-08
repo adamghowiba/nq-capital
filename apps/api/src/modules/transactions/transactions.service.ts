@@ -47,7 +47,11 @@ export class TransactionsService {
   }
 
   async list(): Promise<TransactionEntity[]> {
-    const transactions = await this.prisma.transaction.findMany({});
+    const transactions = await this.prisma.transaction.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
 
     return transactions;
   }
@@ -65,7 +69,7 @@ export class TransactionsService {
   }
 
   /**
-   * TODOS
+   * TODO
    * - Soft delete
    */
   remove(id: number) {

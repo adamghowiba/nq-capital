@@ -9,10 +9,11 @@ import { FundEntity } from './entities/fund.entity';
 import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { AdjustFundInput } from './dto/adjust-fund.input';
 import { GraphQLError } from 'graphql';
+import { TransactionEmitter } from '../transactions/event-manager/transaction-emitter.service';
 
 @Injectable()
 export class FundsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly transactionsEmitter: TransactionEmitter) {}
 
   async create(createFundInput: CreateFundInput) {
     const { initial_balance, ...rest } = createFundInput;
@@ -68,6 +69,8 @@ export class FundsService {
         fund_id: adjustFundInput.fund_id,
         adjusted_by_user_id: adjustFundInput.adjusted_by_user_id,
         description: adjustFundInput.description,
+        balance_before: fund.balance - adjustFundInput.amount,
+        balance_after: fund.balance,
       },
     });
 
@@ -103,6 +106,7 @@ export class FundsService {
               investor_id: addFundInvestorInput.investor_id,
               initial_investment: addFundInvestorInput.amount,
               invested_amount: addFundInvestorInput.amount,
+              balance: addFundInvestorInput.amount,
             },
           },
         },
@@ -112,6 +116,8 @@ export class FundsService {
     const updatedFund = await this.recalculateInvestorStakes({
       fundId: addFundInvestorInput.fund_id,
     });
+
+    this.transactionsEmitter.emit('new_investment', addFundInvestorInput)
 
     return updatedFund;
   }
@@ -150,39 +156,6 @@ export class FundsService {
   }
 
   /**
-   * Calculate the new stake percentage of a group of new investors
-   * when creating a fund
-   */
-  async calculateNewFundInvestorsStake(params: {
-    investors: CreateFundInput['investors'];
-    initialBalance?: number;
-  }): Promise<{
-    investors: (CreateNestedInvestorFundWithoutFundInput & {
-      stage_percentage: number;
-    })[];
-    totalInvestment: number;
-  }> {
-    if (!params.investors)
-      return {
-        totalInvestment: 0,
-        investors: [],
-      };
-
-    const totalInvestment = params.investors.reduce(
-      (acc, investor) => acc + investor.initial_investment || 0,
-      params.initialBalance || 0
-    );
-
-    const investors = params.investors.map((investor) => {
-      const stakePercentage = investor.initial_investment / totalInvestment;
-
-      return { ...investor, stage_percentage: stakePercentage };
-    });
-
-    return { investors: investors, totalInvestment };
-  }
-
-  /**
    * Recalculate an investors balance for a particular fund.
    * @param params
    * @returns
@@ -217,6 +190,39 @@ export class FundsService {
     );
 
     return updatedFundInvestor;
+  }
+
+  /**
+   * Calculate the new stake percentage of a group of new investors
+   * when creating a fund
+   */
+  async calculateNewFundInvestorsStake(params: {
+    investors: CreateFundInput['investors'];
+    initialBalance?: number;
+  }): Promise<{
+    investors: (CreateNestedInvestorFundWithoutFundInput & {
+      stage_percentage: number;
+    })[];
+    totalInvestment: number;
+  }> {
+    if (!params.investors)
+      return {
+        totalInvestment: 0,
+        investors: [],
+      };
+
+    const totalInvestment = params.investors.reduce(
+      (acc, investor) => acc + investor.initial_investment || 0,
+      params.initialBalance || 0
+    );
+
+    const investors = params.investors.map((investor) => {
+      const stakePercentage = investor.initial_investment / totalInvestment;
+
+      return { ...investor, stage_percentage: stakePercentage };
+    });
+
+    return { investors: investors, totalInvestment };
   }
 
   async list() {

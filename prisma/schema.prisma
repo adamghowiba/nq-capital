@@ -72,6 +72,7 @@ model Investor {
   updated_at      DateTime              @updatedAt
   messages        Message[]
   assets          Asset[]
+  transactions    Transaction[]
 }
 
 model Note {
@@ -139,6 +140,8 @@ model FundAdjustment {
   amount              Float    @db.DoublePrecision()
   // change_type ChangeType (Negative or Positive)
   // type FundAdjustmentType (Could be used to specify where the fund adjustment originated)
+  balance_before      Float    @db.DoublePrecision()
+  balance_after       Float    @db.DoublePrecision()
   fund                Fund     @relation(fields: [fund_id], references: [id])
   fund_id             Int
   adjusted_by_user    User     @relation(fields: [adjusted_by_user_id], references: [id])
@@ -253,6 +256,8 @@ model Transaction {
   external_id   String? // Link to any external id
   status        TransactionStatus @default(PENDING)
   meta          Json?
+  investor      Investor?         @relation(fields: [investor_id], references: [id])
+  investor_id   Int?
   created_at    DateTime          @default(now())
   updated_at    DateTime          @updatedAt
   // original_transaction_id Transaction

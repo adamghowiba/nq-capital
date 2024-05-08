@@ -1,28 +1,18 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Tab,
-  TabProps,
-  Tabs,
-  TabsProps,
-  Typography,
-  styled,
-} from '@mui/material';
-import zIndex from '@mui/material/styles/zIndex';
+import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-import React, { FC, useState } from 'react';
+import { FC } from 'react';
 import { StyledTab, StyledTabs } from '../../components/Tabs/StyledTabs';
+import {
+  Timespan,
+  usePortfolioPerformance,
+} from '../transactions/use-perfromance.hook';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
-type DateFilter = 'year' | 'month';
-
 export interface AccountValueChartProps {
   data?: any;
-  dateFilter: DateFilter
-  onChangeDateFilter: (dateFilter: DateFilter) => void;
+  dateFilter: Timespan;
+  onChangeDateFilter: (dateFilter: Timespan) => void;
 }
 
 const AccountValueChart: FC<AccountValueChartProps> = ({
@@ -30,6 +20,7 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
   onChangeDateFilter,
   ...props
 }) => {
+  const performance = usePortfolioPerformance({ timespan: dateFilter });
 
   return (
     <>
@@ -44,7 +35,7 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
             <>
               <StyledTabs
                 value={dateFilter}
-                onChange={(e, value) => onChangeDateFilter(value as DateFilter)}
+                onChange={(e, value) => onChangeDateFilter(value as Timespan)}
               >
                 <StyledTab label="Month" value="month" />
                 <StyledTab label="Year" value="year" />
@@ -66,7 +57,9 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
             series={[
               {
                 name: 'Account value',
-                data: [90, 40, 10, 140, 120, 400],
+                data: performance.aggregatedTransactions.map((transaction) => {
+                  return transaction.amount;
+                }),
               },
             ]}
             options={{
@@ -81,15 +74,23 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
               stroke: {
                 curve: 'straight',
               },
+              yaxis: {
+                tickAmount: 6,
+              },
               xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-
+                categories: performance.timespanDates.map((date) =>
+                  dateFilter === 'year'
+                    ? date.monthShort
+                    : date.toFormat('MM-dd')
+                ),
+                tickAmount: 4,
                 labels: {
                   style: {
                     colors: '#BBBBBB',
                   },
                 },
               },
+
               grid: {
                 show: false,
               },

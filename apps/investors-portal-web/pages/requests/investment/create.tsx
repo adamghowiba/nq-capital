@@ -9,8 +9,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useAddInvestmentMutation } from 'apps/investors-portal-web/lib/gql/gql-client';
-import { useInvestor } from 'apps/investors-portal-web/lib/hooks/use-investor';
+import { useAddInvestmentMutation } from '../../../lib/gql/gql-client';
+import { useInvestor } from '../../../lib/hooks/use-investor';
 import { DateTime } from 'luxon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -58,7 +58,7 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
     investmentMutation.mutate({
       addInvestmentInput: {
         fund_id: 2,
-        investor_id: investor.data!.id,
+        investor_id: 14 || investor.data!.id,
         amount: data.amount,
       },
     });

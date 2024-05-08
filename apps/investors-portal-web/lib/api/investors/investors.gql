@@ -3,3 +3,11 @@ query RetrieveInvestor($id: Int!) {
     ...InvestorAllFragment
   }
 }
+
+query InvestorPortfolio($id: Int!) {
+  investorPortfolio(id: $id) {
+    total_invested
+    total_balance
+    total_pending_transactions
+  }
+}

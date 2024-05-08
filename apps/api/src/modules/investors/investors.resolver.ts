@@ -19,6 +19,7 @@ import { InvestorsService } from './investors.service';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { PrismaService } from '@nq-capital/service-database';
 import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
+import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
@@ -43,6 +44,11 @@ export class InvestorsResolver {
   @Query(() => InvestorEntity, { name: 'investor' })
   retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.investorsService.retrieve(id);
+  }
+
+  @Query(() => InvestorPortfolioEntity, { name: 'investorPortfolio' })
+  retrieveInvestorPortfolio(@Args('id', { type: () => Int }) id: number) {
+    return this.investorsService.getInvestorPortfolio(id);
   }
 
   @Mutation(() => InvestorEntity)
@@ -81,7 +87,7 @@ export class InvestorsResolver {
     nullable: true,
   })
   async resolveBankAccounts(@Parent() investor: InvestorEntity) {
-    const bankAccounts = await this.investorsService.listInvestorBankAccounts({
+    const bankAccounts = await this.investorsService.getInvestorBankAccountsField({
       investorId: investor.id,
     });
 

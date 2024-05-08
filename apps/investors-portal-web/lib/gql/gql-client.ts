@@ -264,6 +264,13 @@ export type InvestorFundEntity = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type InvestorPortfolioEntity = {
+  __typename?: 'InvestorPortfolioEntity';
+  total_balance: Scalars['Float']['output'];
+  total_invested: Scalars['Float']['output'];
+  total_pending_transactions: Scalars['Float']['output'];
+};
+
 /** Login user input */
 export type LoginInput = {
   /** Email of the user */
@@ -490,6 +497,7 @@ export type Query = {
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
+  investorPortfolio: InvestorPortfolioEntity;
   investors: Array<InvestorEntity>;
   me: SessionEntity;
   meInvestor: InvestorEntity;
@@ -535,6 +543,11 @@ export type QueryInvestorFundsArgs = {
   investorId?: InputMaybe<Scalars['Int']['input']>;
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
+};
+
+
+export type QueryInvestorPortfolioArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -623,6 +636,7 @@ export type TransactionEntity = {
   external_id?: Maybe<Scalars['String']['output']>;
   fee?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
+  investor_id?: Maybe<Scalars['Int']['output']>;
   status: TransactionStatus;
   type: TransactionType;
   updated_at: Scalars['DateTime']['output'];
@@ -799,6 +813,13 @@ export type RetrieveInvestorQueryVariables = Exact<{
 
 
 export type RetrieveInvestorQuery = { __typename?: 'Query', investor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
+
+export type InvestorPortfolioQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type InvestorPortfolioQuery = { __typename?: 'Query', investorPortfolio: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number } };
 
 export type UpdateInvestorMutationVariables = Exact<{
   updateInvestorInput: UpdateInvestorInput;
@@ -1259,6 +1280,39 @@ useRetrieveInvestorQuery.getKey = (variables: RetrieveInvestorQueryVariables) =>
 
 
 useRetrieveInvestorQuery.fetcher = (variables: RetrieveInvestorQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables, options);
+
+export const InvestorPortfolioDocument = `
+    query InvestorPortfolio($id: Int!) {
+  investorPortfolio(id: $id) {
+    total_invested
+    total_balance
+    total_pending_transactions
+  }
+}
+    `;
+
+export const useInvestorPortfolioQuery = <
+      TData = InvestorPortfolioQuery,
+      TError = unknown
+    >(
+      variables: InvestorPortfolioQueryVariables,
+      options?: Omit<UseQueryOptions<InvestorPortfolioQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvestorPortfolioQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<InvestorPortfolioQuery, TError, TData>(
+      {
+    queryKey: ['InvestorPortfolio', variables],
+    queryFn: gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables),
+    ...options
+  }
+    )};
+
+useInvestorPortfolioQuery.document = InvestorPortfolioDocument;
+
+useInvestorPortfolioQuery.getKey = (variables: InvestorPortfolioQueryVariables) => ['InvestorPortfolio', variables];
+
+
+useInvestorPortfolioQuery.fetcher = (variables: InvestorPortfolioQueryVariables, options?: RequestInit['headers']) => gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables, options);
 
 export const UpdateInvestorDocument = `
     mutation UpdateInvestor($updateInvestorInput: UpdateInvestorInput!) {
