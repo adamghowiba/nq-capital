@@ -1,0 +1,27 @@
+{
+  "name": "iam",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/iam/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/api/iam",
+        "tsConfig": "libs/api/iam/tsconfig.lib.json",
+        "packageJson": "libs/api/iam/package.json",
+        "main": "libs/api/iam/src/index.ts",
+        "assets": ["libs/api/iam/*.md"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/api/iam/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}

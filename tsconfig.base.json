@@ -17,6 +17,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@nq-capital/iam": ["libs/api/iam/src/index.ts"],
       "@nq-capital/service-database": [
         "libs/api/service-database/src/index.ts"
       ],

@@ -1,6 +1,4 @@
 import { CustomScalar, Scalar } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
-import { Decimal } from '@prisma/client/runtime/library';
 import { GraphQLError, Kind, ValueNode } from 'graphql';
 
 @Scalar('Decimal')
