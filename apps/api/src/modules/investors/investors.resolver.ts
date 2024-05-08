@@ -1,5 +1,6 @@
 import {
   Args,
+  Context,
   Int,
   Mutation,
   Parent,
@@ -7,19 +8,18 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import { PrismaService } from '@nq-capital/service-database';
+import { InvestorSession } from '../../common/decorators/auth/session.decorator';
+import { AddressEntity } from '../addresses/entities/address.entity';
+import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
 import { FundsService } from '../funds/funds.service';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
-import {
-  InvestorFundEntity,
-  InvestorFundWithoutInvestor as InvestorFundWithoutInvestorEntity,
-} from '../investor-funds/entities/investor-fund.entity';
+import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
 import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
-import { AddressEntity } from '../addresses/entities/address.entity';
-import { PrismaService } from '@nq-capital/service-database';
-import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
-import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
+import { AppAbility, UserAbility, Permission } from '@nq-capital/iam';
+import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
@@ -36,19 +36,29 @@ export class InvestorsResolver {
     return this.investorsService.create(createInvestorInput);
   }
 
+  @Permission('read', 'Investor')
   @Query(() => [InvestorEntity], { name: 'investors' })
-  list() {
-    return this.investorsService.list();
+  list(@UserAbility() ability: AppAbility) {
+    return this.investorsService.list({ ability });
   }
 
+  @Permission('read', 'Investor')
   @Query(() => InvestorEntity, { name: 'investor' })
-  retrieve(@Args('id', { type: () => Int }) id: number) {
-    return this.investorsService.retrieve(id);
+  retrieve(
+    @Args('id', { type: () => Int }) id: number,
+    @InvestorSession() session: InvestorEntity,
+    @UserAbility() ability: AppAbility
+  ) {
+    return this.investorsService.retrieve(id, { ability });
   }
 
+  @Permission('read', 'Investor')
   @Query(() => InvestorPortfolioEntity, { name: 'investorPortfolio' })
-  retrieveInvestorPortfolio(@Args('id', { type: () => Int }) id: number) {
-    return this.investorsService.getInvestorPortfolio(id);
+  retrieveInvestorPortfolio(
+    @Args() args: GetInvestorPortfolioArgs,
+    @InvestorSession() investor: InvestorEntity
+  ) {
+    return this.investorsService.getInvestorPortfolio(args?.id || investor?.id);
   }
 
   @Mutation(() => InvestorEntity)
@@ -87,9 +97,10 @@ export class InvestorsResolver {
     nullable: true,
   })
   async resolveBankAccounts(@Parent() investor: InvestorEntity) {
-    const bankAccounts = await this.investorsService.getInvestorBankAccountsField({
-      investorId: investor.id,
-    });
+    const bankAccounts =
+      await this.investorsService.getInvestorBankAccountsField({
+        investorId: investor.id,
+      });
 
     return bankAccounts;
   }

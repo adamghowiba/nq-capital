@@ -4,6 +4,8 @@ import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { GraphQLError } from 'graphql';
 import { TransactionEntity } from './entities/transaction.entity';
+import { AppAbility } from '@nq-capital/iam';
+import { accessibleBy } from '@casl/prisma';
 
 /**
  * Events that trigger a transaction:
@@ -46,8 +48,11 @@ export class TransactionsService {
     return transaction;
   }
 
-  async list(): Promise<TransactionEntity[]> {
+  async list(params: { ability: AppAbility }): Promise<TransactionEntity[]> {
     const transactions = await this.prisma.transaction.findMany({
+      where: {
+        AND: [accessibleBy(params.ability).Transaction],
+      },
       orderBy: {
         created_at: 'desc',
       },

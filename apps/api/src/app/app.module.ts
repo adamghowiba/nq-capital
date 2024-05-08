@@ -28,6 +28,7 @@ import { MessagesModule } from '../modules/messages/messages.module';
 import { AssetsController } from '../modules/assets/assets.controller';
 import { AssetsModule } from '../modules/assets/assets.module';
 import { BankAccountsModule } from '../modules/bank-accounts/bank-accounts.module';
+import { IamModule } from '@nq-capital/iam';
 
 const APP_MODULES = [
   UsersModule,
@@ -39,13 +40,22 @@ const APP_MODULES = [
   AuthModule,
   MessagesModule,
   AssetsModule,
-  BankAccountsModule
+  BankAccountsModule,
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
 
 if (isDevelopment)
-  APOLLO_PLUGINS.push(ApolloServerPluginLandingPageLocalDefault());
+  APOLLO_PLUGINS.push(
+    ApolloServerPluginLandingPageLocalDefault({
+      includeCookies: true,
+      variables: {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
+    })
+  );
 
 @Module({
   imports: [
@@ -53,7 +63,11 @@ if (isDevelopment)
     DatabaseModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: isDevelopment ? false : true,
+      playground: isDevelopment ? false : {
+        settings: {
+          'request.credentials': 'include',
+        },
+      },
       introspection: true,
       autoSchemaFile: 'schema.gql',
       buildSchemaOptions: {
@@ -69,6 +83,7 @@ if (isDevelopment)
       global: true,
       verboseMemoryLeak: true,
     }),
+    IamModule.forRoot({}),
     ExceptionFilterModule.forRoot(),
     PassportModule.register({ session: true, defaultStrategy: 'local' }),
   ],

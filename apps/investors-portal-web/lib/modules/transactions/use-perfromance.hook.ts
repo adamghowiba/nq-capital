@@ -41,31 +41,39 @@ export const usePortfolioPerformance = (params: { timespan: Timespan }) => {
       return [];
     }
 
-    return transactions.data.reduce(
-      (acc, transaction) => {
-        const transactionDate = DateTime.fromISO(transaction.created_at);
+    return transactions.data
+      .reduce(
+        (acc, transaction) => {
+          const transactionDate = DateTime.fromISO(transaction.created_at);
 
-        const timespanIndex = timespanDates.findIndex((timespanDate) => {
-          if (params.timespan === 'year') {
-            return transactionDate.hasSame(timespanDate, 'month');
+          const timespanIndex = timespanDates.findIndex((timespanDate) => {
+            if (params.timespan === 'year') {
+              return transactionDate.hasSame(timespanDate, 'month');
+            }
+
+            return transactionDate.hasSame(timespanDate, 'day');
+          });
+
+          if (timespanIndex === -1) {
+            return acc;
           }
 
-          return transactionDate.hasSame(timespanDate, 'day');
-        });
+          acc[timespanIndex] = {
+            ...acc[timespanIndex],
+            amount: acc[timespanIndex].amount + transaction.amount,
+          };
 
-        if (timespanIndex === -1) {
           return acc;
+        },
+        timespanDates.map((date) => ({ date: date.toMillis(), amount: 0 }))
+      )
+      .map((period, index, allPeriods) => {
+        // Carry forward the balance to the next period if no transactions modify the period
+        if (index > 0 && period.amount === 0) {
+          period.amount = allPeriods[index - 1].amount;
         }
-
-        acc[timespanIndex] = {
-          ...acc[timespanIndex],
-          amount: acc[timespanIndex].amount + transaction.amount,
-        };
-
-        return acc;
-      },
-      timespanDates.map((date) => ({ date: date.toMillis(), amount: 0 }))
-    );
+        return period;
+      });
   }, [transactions.data, timespanDates]);
 
   return {

@@ -19,9 +19,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     if (host.getType<GqlContextType>() === 'graphql') {
       const gqlHost = GqlArgumentsHost.create(host);
-      const ctx = gqlHost.switchToHttp();
-      const request = ctx.getRequest<Request>();
-      const response = ctx.getRequest<Response>();
       const info = gqlHost.getInfo<GraphQLResolveInfo>();
 
       this.logger.error(

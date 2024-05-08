@@ -547,7 +547,7 @@ export type QueryInvestorFundsArgs = {
 
 
 export type QueryInvestorPortfolioArgs = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -815,7 +815,7 @@ export type RetrieveInvestorQueryVariables = Exact<{
 export type RetrieveInvestorQuery = { __typename?: 'Query', investor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
 
 export type InvestorPortfolioQueryVariables = Exact<{
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -1282,7 +1282,7 @@ useRetrieveInvestorQuery.getKey = (variables: RetrieveInvestorQueryVariables) =>
 useRetrieveInvestorQuery.fetcher = (variables: RetrieveInvestorQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables, options);
 
 export const InvestorPortfolioDocument = `
-    query InvestorPortfolio($id: Int!) {
+    query InvestorPortfolio($id: Int) {
   investorPortfolio(id: $id) {
     total_invested
     total_balance
@@ -1295,13 +1295,13 @@ export const useInvestorPortfolioQuery = <
       TData = InvestorPortfolioQuery,
       TError = unknown
     >(
-      variables: InvestorPortfolioQueryVariables,
+      variables?: InvestorPortfolioQueryVariables,
       options?: Omit<UseQueryOptions<InvestorPortfolioQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvestorPortfolioQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<InvestorPortfolioQuery, TError, TData>(
       {
-    queryKey: ['InvestorPortfolio', variables],
+    queryKey: variables === undefined ? ['InvestorPortfolio'] : ['InvestorPortfolio', variables],
     queryFn: gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables),
     ...options
   }
@@ -1309,10 +1309,10 @@ export const useInvestorPortfolioQuery = <
 
 useInvestorPortfolioQuery.document = InvestorPortfolioDocument;
 
-useInvestorPortfolioQuery.getKey = (variables: InvestorPortfolioQueryVariables) => ['InvestorPortfolio', variables];
+useInvestorPortfolioQuery.getKey = (variables?: InvestorPortfolioQueryVariables) => variables === undefined ? ['InvestorPortfolio'] : ['InvestorPortfolio', variables];
 
 
-useInvestorPortfolioQuery.fetcher = (variables: InvestorPortfolioQueryVariables, options?: RequestInit['headers']) => gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables, options);
+useInvestorPortfolioQuery.fetcher = (variables?: InvestorPortfolioQueryVariables, options?: RequestInit['headers']) => gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables, options);
 
 export const UpdateInvestorDocument = `
     mutation UpdateInvestor($updateInvestorInput: UpdateInvestorInput!) {

@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Box from '../lib/components/Box/Box';
 import { Stat } from '../lib/components/KPICard/KPICard';
 import NLink from '../lib/components/Link/Link';
@@ -16,18 +16,13 @@ import AccountValueChart from '../lib/modules/home/AccountValueChart';
 import { EmptyTransactions } from '../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../lib/utils/currency.utils';
 import { formatISOForTable } from '../lib/utils/date.utils';
-import { useInvestor } from '../lib/hooks/use-investor';
-import { DateTime } from 'luxon';
 
 const Index = () => {
   const [dateFilter, setDateFilter] = useState<'year' | 'month'>('month');
-  const investor = useInvestor();
 
   const investorPortfolio = useInvestorPortfolioQuery(
-    {
-      id: investor.data?.id,
-    },
-    { enabled: !!investor.data?.id, select: (data) => data.investorPortfolio }
+    {},
+    { select: (data) => data.investorPortfolio }
   );
 
   const transactionsQuery = useListTransactionsQuery(
@@ -37,7 +32,7 @@ const Index = () => {
 
   return (
     <>
-      <Screen h="100%" w="100%">
+      <Screen h="100%" w="100%" gap={3}>
         <PageHeader
           title="Overview"
           actions={

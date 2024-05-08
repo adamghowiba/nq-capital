@@ -4,7 +4,7 @@ query RetrieveInvestor($id: Int!) {
   }
 }
 
-query InvestorPortfolio($id: Int!) {
+query InvestorPortfolio($id: Int) {
   investorPortfolio(id: $id) {
     total_invested
     total_balance

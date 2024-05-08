@@ -3,6 +3,7 @@ import { TransactionsService } from './transactions.service';
 import { TransactionEntity } from './entities/transaction.entity';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
+import { AppAbility, Permission, UserAbility } from '@nq-capital/iam';
 
 @Resolver(() => TransactionEntity)
 export class TransactionsResolver {
@@ -16,9 +17,10 @@ export class TransactionsResolver {
     return this.transactionsService.create(createTransactionInput);
   }
 
+  @Permission('read', 'Transaction')
   @Query(() => [TransactionEntity], { name: 'transactions' })
-  findAll() {
-    return this.transactionsService.list();
+  findAll(@UserAbility() ability: AppAbility) {
+    return this.transactionsService.list({ ability });
   }
 
   @Query(() => TransactionEntity, { name: 'transaction' })

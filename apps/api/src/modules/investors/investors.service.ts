@@ -1,10 +1,14 @@
+import { subject } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
+import { AppAbility } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
-import { InvestorEntity } from './entities/investor.entity';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
-import { Decimal } from '@prisma/client/runtime/library';
+import { InvestorEntity } from './entities/investor.entity';
+import { Investor } from '@prisma/client';
+import { ApiError } from '../../common/exceptions/api.error';
+import { accessibleBy } from '@casl/prisma';
 
 @Injectable()
 export class InvestorsService {
@@ -21,14 +25,33 @@ export class InvestorsService {
     return investor;
   }
 
-  async list(): Promise<InvestorEntity[]> {
-    const investors = await this.prisma.investor.findMany();
+  async list(params: { ability: AppAbility }): Promise<InvestorEntity[]> {
+    const investors = await this.prisma.investor.findMany({
+      where: {
+        AND: [accessibleBy(params.ability).Investor],
+      },
+    });
 
     return investors;
   }
 
-  async retrieve(id: number) {
-    const investor = await this.prisma.investor.findUnique({ where: { id } });
+  async retrieve(id: number, params?: { ability: AppAbility | null }) {
+    const investor = await this.prisma.investor.findUniqueOrThrow({
+      where: { id },
+    });
+
+    if (params?.ability === null) return investor;
+
+    const hasPermission = params?.ability?.can(
+      'read',
+      subject('Investor', investor)
+    );
+
+    if (hasPermission === false) {
+      throw new ApiError("You don't have permission to view this user", {
+        statusCode: 403,
+      });
+    }
 
     return investor;
   }

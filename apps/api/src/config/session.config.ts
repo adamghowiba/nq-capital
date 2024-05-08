@@ -1,13 +1,12 @@
+import { DOMAIN_HOST } from '@nq-capital/utils-constants';
 import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import session from 'express-session';
-import { UserEntity } from '../modules/users/entities/user.entity';
 import { SessionEntity } from '../modules/auth/entities/session.entity';
-import { API_URL, DOMAIN_HOST } from '@nq-capital/utils-constants';
 
 const isProduction = process.env['NODE_ENV'] === 'production';
 
-const secure = isProduction ? true : undefined;
+const secure = isProduction ? true : false;
 const domain = isProduction ? `.${DOMAIN_HOST}` : undefined;
 const sameSite = isProduction ? 'none' : 'lax';
 const maxAge = 1000 * 60 * 60 * 24 * 4;

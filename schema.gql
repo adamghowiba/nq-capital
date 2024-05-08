@@ -74,36 +74,6 @@ enum TransactionStatus {
   FAILED
 }
 
-type InvestorEntity {
-  id: Int!
-  first_name: String!
-  middle_name: String
-  last_name: String!
-  email: String!
-  password: String
-  passport_number: String
-  national_id: String
-  date_of_birth: DateTime
-  nationality: String
-  company_name: String
-  company_tax_id: String
-  is_accredited: Boolean
-  avatar: String
-  mobile_number: String
-  account_status: InvestorAccountStatus
-  address_id: Int
-  created_at: DateTime!
-  updated_at: DateTime!
-  address: AddressEntity
-  bank_accounts: [BankAccountEntity!]
-}
-
-enum InvestorAccountStatus {
-  ONBOARDING
-  ACTIVE
-  DISABLED
-}
-
 type AddressEntity {
   id: Int!
   street: String!
@@ -152,6 +122,36 @@ type InvestorPortfolioEntity {
   total_invested: Float!
   total_balance: Float!
   total_pending_transactions: Float!
+}
+
+type InvestorEntity {
+  id: Int!
+  first_name: String!
+  middle_name: String
+  last_name: String!
+  email: String!
+  password: String
+  passport_number: String
+  national_id: String
+  date_of_birth: DateTime
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  avatar: String
+  mobile_number: String
+  account_status: InvestorAccountStatus
+  address_id: Int
+  created_at: DateTime!
+  updated_at: DateTime!
+  address: AddressEntity
+  bank_accounts: [BankAccountEntity!]
+}
+
+enum InvestorAccountStatus {
+  ONBOARDING
+  ACTIVE
+  DISABLED
 }
 
 type InvestorFundEntity {
@@ -286,7 +286,7 @@ type Query {
   user(id: Int!): UserEntity!
   investors: [InvestorEntity!]!
   investor(id: Int!): InvestorEntity!
-  investorPortfolio(id: Int!): InvestorPortfolioEntity!
+  investorPortfolio(id: Int): InvestorPortfolioEntity!
   funds: [FundEntity!]!
   fund(id: Int!): FundEntity!
   transactions: [TransactionEntity!]!
