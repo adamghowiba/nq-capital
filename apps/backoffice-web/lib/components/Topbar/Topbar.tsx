@@ -1,17 +1,14 @@
+import alertIcon from '@iconify/icons-fluent/alert-16-filled';
 import { Icon } from '@iconify/react';
 import {
-  Avatar,
   Breadcrumbs,
-  Button,
   IconButton,
   Link,
-  Typography,
+  Typography
 } from '@mui/material';
 import { Box, HStack, NAvatar } from '@nq-capital/nui';
-import React, { FC, useMemo } from 'react';
-import alertIcon from '@iconify/icons-fluent/alert-16-filled';
 import { useRouter } from 'next/router';
-import NextLink from 'next/link';
+import { FC, useMemo } from 'react';
 
 export interface TopbarProps {}
 

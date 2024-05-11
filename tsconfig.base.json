@@ -17,6 +17,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@nq-capital/data-access": ["libs/client/data-access/src/index.ts"],
       "@nq-capital/iam": ["libs/api/iam/src/index.ts"],
       "@nq-capital/nui": ["libs/client/nui/src/index.ts"],
       "@nq-capital/service-database": [
