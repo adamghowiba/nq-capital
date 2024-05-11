@@ -18,6 +18,7 @@
     "baseUrl": ".",
     "paths": {
       "@nq-capital/iam": ["libs/api/iam/src/index.ts"],
+      "@nq-capital/nui": ["libs/client/nui/src/index.ts"],
       "@nq-capital/service-database": [
         "libs/api/service-database/src/index.ts"
       ],
