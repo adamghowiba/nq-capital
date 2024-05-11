@@ -312,8 +312,13 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         styleOverrides: {
           root: ({ theme }) => ({
             '.MuiOutlinedInput-root .MuiAutocomplete-input': {
-              padding: '0px',
+              padding: '0px 6px',
             },
+            '& .MuiInputBase-root.MuiOutlinedInput-root': {
+              padding: '8px 6px',
+              paddingRight: '35px',
+              height: 'unset',
+            }
           }),
         },
         defaultProps: {
@@ -470,7 +475,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         styleOverrides: {
           spacing: {
             borderTop: '1px solid rgba(0, 0, 0, 0.12)',
-            padding: '16px',
+            padding: '8px',
           },
         },
       },

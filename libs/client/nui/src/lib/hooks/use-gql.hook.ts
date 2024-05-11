@@ -38,6 +38,8 @@ export function useGql<
     ? [(document.definitions[0] as any).name.value, options?.[0]]
     : [(document.definitions[0] as any).name.value];
 
+  const queryOptions = options?.[1] ?? {};
+
   return useQuery<TQueryFnData, TError, TData>({
     // @ts-expect-error Cannot find viable way to assert query fn data
     queryFn: async ({ queryKey }) =>
@@ -47,7 +49,7 @@ export function useGql<
         // @ts-expect-error Cannot find viable way to assert query variable type
         queryKey[1] ? queryKey[1] : undefined
       ),
-    ...options,
+    ...queryOptions,
     queryKey: queryKey,
   });
 }

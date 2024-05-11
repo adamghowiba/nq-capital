@@ -22,10 +22,11 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
 };
 
 const config: CodegenConfig = {
-  schema: '../../schema.gql',
-  documents: ['./lib/api/**/*.gql'],
+  schema: '../../../../../schema.gql',
+  documents: ['./requests/**/*.gql'],
+  watch: './requests/**/*.gql',
   generates: {
-    './lib/gql/gql-client.ts': {
+    './gql-client.ts': {
       plugins: [
         'typescript',
         'typescript-operations',

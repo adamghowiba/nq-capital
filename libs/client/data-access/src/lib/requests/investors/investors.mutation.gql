@@ -1,0 +1,27 @@
+mutation UpdateInvestor($updateInvestorInput: UpdateInvestorInput!) {
+  updateInvestor(updateInvestorInput: $updateInvestorInput) {
+    ...InvestorAllFragment
+  }
+}
+
+mutation CreateBankAccount($createBankAccountInput: CreateBankAccountInput!) {
+  createBankAccount(createBankAccountInput: $createBankAccountInput) {
+    ...BankAccountAllFragment
+  }
+}
+
+mutation UpdateBankAccount($updateBankAccountInput: UpdateBankAccountInput!) {
+  updateBankAccount(updateBankAccountInput: $updateBankAccountInput) {
+    ...BankAccountAllFragment
+  }
+}
+
+mutation AddInvestment($addInvestmentInput: AddInvestmentInput!) {
+  addInvestment(addInvestmentInput: $addInvestmentInput) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}

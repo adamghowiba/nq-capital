@@ -2,11 +2,9 @@ import {
   Box,
   ClickAwayListener,
   ListItemIcon,
-  Menu,
   MenuItem,
   MenuItemProps,
-  Popover,
-  Popper,
+  Popper
 } from '@mui/material';
 import Link from 'next/link';
 import React, {

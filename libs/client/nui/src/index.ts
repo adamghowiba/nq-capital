@@ -35,5 +35,25 @@ export {
   ColoredChipProps,
 } from './lib/components/ColoredChip/ColoredChip';
 
+export {
+  MenuButton,
+  MenuButtonProps,
+  MenuContext,
+  MenuContextProps,
+  MenuList,
+  MenuListProps,
+  NMenu,
+  NMenuItem,
+  NMenuItemProps,
+  NMenuProps,
+} from './lib/components/Menu/NMenu';
+
+export { DialogHeader } from './lib/components/Dialog/DialogHeader';
+
+export {
+  PageHeader,
+  PageHeaderProps,
+} from './lib/components/PageHeader/PageHeader';
+
 export { useGql } from './lib/hooks/use-gql.hook';
 export { theme } from './lib/themes/primary.theme';

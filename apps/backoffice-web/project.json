@@ -6,9 +6,23 @@
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/backoffice-web/jest.config.ts"
+      }
+    },
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen",
+        "cwd": "apps/backoffice-web"
+      },
+      "configurations": {
+        "watch": {
+          "command": "graphql-codegen --watch"
+        }
       }
     }
   },

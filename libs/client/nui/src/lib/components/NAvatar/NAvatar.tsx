@@ -24,7 +24,7 @@ export const NAvatar: FC<NAvatarProps> = ({
     }
   > = {
     xs: { width: '22px', height: '22px' },
-    sm: { width: '28px', height: '28px' },
+    sm: { width: '28px', height: '28px', fontSize: '13px' },
     md: { width: '32px', height: '32px', fontSize: '16px' },
     lg: { width: '40px', height: '40px' },
     xl: { width: '56px', height: '56px' },
