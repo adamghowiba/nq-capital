@@ -83,7 +83,7 @@ if (isDevelopment)
       global: true,
       verboseMemoryLeak: true,
     }),
-    IamModule.forRoot({}),
+    // IamModule.forRoot({}),
     ExceptionFilterModule.forRoot(),
     PassportModule.register({ session: true, defaultStrategy: 'local' }),
   ],

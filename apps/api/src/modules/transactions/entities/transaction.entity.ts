@@ -16,7 +16,7 @@ export class TransactionEntity implements Transaction {
   @Field(() => String)
   currency_code!: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   balance_after!: number;
 
   @Field(() => String, { nullable: true })

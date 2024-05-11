@@ -266,6 +266,9 @@ export type InvestorFundEntity = {
 
 export type InvestorPortfolioEntity = {
   __typename?: 'InvestorPortfolioEntity';
+  balance_change_amount: Scalars['Float']['output'];
+  balance_change_percentage: Scalars['Float']['output'];
+  previous_month: PortfolioTotalEntity;
   total_balance: Scalars['Float']['output'];
   total_invested: Scalars['Float']['output'];
   total_pending_transactions: Scalars['Float']['output'];
@@ -486,6 +489,13 @@ export type PaginatedUserEntity = {
   page: Scalars['Int']['output'];
 };
 
+export type PortfolioTotalEntity = {
+  __typename?: 'PortfolioTotalEntity';
+  total_balance: Scalars['Float']['output'];
+  total_invested: Scalars['Float']['output'];
+  total_pending_transactions: Scalars['Float']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   asset: AssetEntity;
@@ -629,7 +639,7 @@ export type TicketType =
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
   amount: Scalars['Int']['output'];
-  balance_after: Scalars['Int']['output'];
+  balance_after: Scalars['Float']['output'];
   created_at: Scalars['DateTime']['output'];
   currency_code: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
@@ -819,7 +829,7 @@ export type InvestorPortfolioQueryVariables = Exact<{
 }>;
 
 
-export type InvestorPortfolioQuery = { __typename?: 'Query', investorPortfolio: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number } };
+export type InvestorPortfolioQuery = { __typename?: 'Query', investorPortfolio: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number, balance_change_percentage: number, balance_change_amount: number, previous_month: { __typename?: 'PortfolioTotalEntity', total_invested: number, total_balance: number, total_pending_transactions: number } } };
 
 export type UpdateInvestorMutationVariables = Exact<{
   updateInvestorInput: UpdateInvestorInput;
@@ -1287,6 +1297,13 @@ export const InvestorPortfolioDocument = `
     total_invested
     total_balance
     total_pending_transactions
+    balance_change_percentage
+    balance_change_amount
+    previous_month {
+      total_invested
+      total_balance
+      total_pending_transactions
+    }
   }
 }
     `;

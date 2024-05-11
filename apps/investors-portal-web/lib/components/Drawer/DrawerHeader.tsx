@@ -3,7 +3,7 @@ import dismissIcon from '@iconify/icons-fluent/dismiss-12-filled';
 import minimizeFilledIcon from '@iconify/icons-fluent/minimize-16-filled';
 import { Icon } from '@iconify/react';
 import { IconButton, Tooltip } from "@mui/material";
-import { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, useContext } from "react";
 import Box from "../Box/Box";
 import { HStack, StackPropsExtended } from "../Stack/Stack";
 
@@ -20,6 +20,7 @@ const DrawerHeader: FC<DrawerHeaderProps> = ({
   onClose,
   ...props
 }) => {
+
   return (
     <>
       <HStack p={3} pt={2} pb={'12px'} align="start" {...props}>

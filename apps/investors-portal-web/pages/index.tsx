@@ -54,10 +54,6 @@ const Index = () => {
             value={formatUSDCurrency(
               investorPortfolio.data?.total_invested || 0
             )}
-            change={{
-              type: 'increase',
-              value: formatUSDCurrency(1000),
-            }}
           />
           <Stat
             title="Current Value"
@@ -67,7 +63,7 @@ const Index = () => {
             )}
             change={{
               type: 'increase',
-              value: formatUSDCurrency(1000),
+              value: formatUSDCurrency(investorPortfolio.data?.balance_change_amount || 0),
             }}
           />
           <Stat

@@ -38,18 +38,15 @@ export class InvestorsResolver {
 
   @Permission('read', 'Investor')
   @Query(() => [InvestorEntity], { name: 'investors' })
-  list(@UserAbility() ability: AppAbility) {
-    return this.investorsService.list({ ability });
+  list() {
+    return this.investorsService.list();
   }
 
-  @Permission('read', 'Investor')
   @Query(() => InvestorEntity, { name: 'investor' })
   retrieve(
     @Args('id', { type: () => Int }) id: number,
-    @InvestorSession() session: InvestorEntity,
-    @UserAbility() ability: AppAbility
   ) {
-    return this.investorsService.retrieve(id, { ability });
+    return this.investorsService.retrieve(id);
   }
 
   @Permission('read', 'Investor')

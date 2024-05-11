@@ -48,7 +48,7 @@ type TransactionEntity {
   type: TransactionType!
   amount: Int!
   currency_code: String!
-  balance_after: Int!
+  balance_after: Float!
   description: String
   fee: Float
   external_id: String
@@ -118,10 +118,19 @@ enum BankAccountType {
   SAVINGS
 }
 
+type PortfolioTotalEntity {
+  total_invested: Float!
+  total_balance: Float!
+  total_pending_transactions: Float!
+}
+
 type InvestorPortfolioEntity {
   total_invested: Float!
   total_balance: Float!
   total_pending_transactions: Float!
+  previous_month: PortfolioTotalEntity!
+  balance_change_percentage: Float!
+  balance_change_amount: Float!
 }
 
 type InvestorEntity {

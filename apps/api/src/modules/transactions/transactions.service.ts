@@ -48,11 +48,8 @@ export class TransactionsService {
     return transaction;
   }
 
-  async list(params: { ability: AppAbility }): Promise<TransactionEntity[]> {
+  async list(): Promise<TransactionEntity[]> {
     const transactions = await this.prisma.transaction.findMany({
-      where: {
-        AND: [accessibleBy(params.ability).Transaction],
-      },
       orderBy: {
         created_at: 'desc',
       },

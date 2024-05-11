@@ -1,7 +1,9 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRetrieveInvestorQuery } from '../../gql/gql-client';
 
-export type InferGetInvestorSSP =  InferGetServerSidePropsType<ReturnType<typeof getInvestorSSP>>;
+export type InferGetInvestorSSP = InferGetServerSidePropsType<
+  ReturnType<typeof getInvestorSSP>
+>;
 
 export const getInvestorSSP =
   () => async (context: GetServerSidePropsContext) => {

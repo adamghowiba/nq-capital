@@ -6,7 +6,7 @@ import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
 import { InvestorEntity } from './entities/investor.entity';
-import { Investor } from '@prisma/client';
+import { Investor, Transaction } from '@prisma/client';
 import { ApiError } from '../../common/exceptions/api.error';
 import { accessibleBy } from '@casl/prisma';
 
@@ -25,60 +25,93 @@ export class InvestorsService {
     return investor;
   }
 
-  async list(params: { ability: AppAbility }): Promise<InvestorEntity[]> {
+  async list(): Promise<InvestorEntity[]> {
     const investors = await this.prisma.investor.findMany({
-      where: {
-        AND: [accessibleBy(params.ability).Investor],
-      },
+      where: {},
     });
 
     return investors;
   }
 
-  async retrieve(id: number, params?: { ability: AppAbility | null }) {
+  async retrieve(id: number) {
     const investor = await this.prisma.investor.findUniqueOrThrow({
       where: { id },
     });
 
-    if (params?.ability === null) return investor;
+    // if (params?.ability === null) return investor;
 
-    const hasPermission = params?.ability?.can(
-      'read',
-      subject('Investor', investor)
-    );
+    // const hasPermission = params?.ability?.can(
+    //   'read',
+    //   subject('Investor', investor)
+    // );
 
-    if (hasPermission === false) {
-      throw new ApiError("You don't have permission to view this user", {
-        statusCode: 403,
-      });
-    }
+    // if (hasPermission === false) {
+    //   throw new ApiError("You don't have permission to view this user", {
+    //     statusCode: 403,
+    //   });
+    // }
 
     return investor;
   }
 
-  async getInvestorPortfolio(id: number): Promise<InvestorPortfolioEntity> {
-    const investor = await this.prisma.investorFund.findMany({
-      where: { investor_id: id },
-    });
-
-    const totals = investor.reduce(
+  async getTransactionTotal(transactions: Transaction[]) {
+    const totals = transactions.reduce(
       (
-        acc: Pick<InvestorPortfolioEntity, 'total_balance' | 'total_invested'>,
+        acc: Pick<
+          InvestorPortfolioEntity,
+          'total_balance' | 'total_invested' | 'total_pending_transactions'
+        >,
         curr
       ) => {
         // TODO!: May need to use Decimal library from prisma
-        acc.total_invested += curr.invested_amount;
+        if (curr.type === 'DEPOSIT' || curr.type === 'WITHDRAWAL') {
+          acc.total_invested += curr.amount;
+        }
 
-        acc.total_balance += curr.balance;
+        if (curr.status === 'PENDING') {
+          acc.total_pending_transactions = curr.amount;
+        }
+
+        acc.total_balance += curr.amount;
         return acc;
       },
-      { total_invested: 0, total_balance: 0 }
+      { total_invested: 0, total_balance: 0, total_pending_transactions: 0 }
     );
 
+    return totals;
+  }
+
+  async getInvestorPortfolio(id: number): Promise<InvestorPortfolioEntity> {
+    const transactions = await this.prisma.transaction.findMany({
+      where: { investor_id: id },
+    });
+
+    const previousMonthTransactions = transactions.filter((transaction) => {
+      const today = new Date();
+      const monthAgo = new Date(today);
+      monthAgo.setMonth(today.getMonth() - 1);
+
+      return transaction.created_at > monthAgo;
+    });
+
+    const previousMonthTotals = await this.getTransactionTotal(
+      previousMonthTransactions
+    );
+    const overallTotals = await this.getTransactionTotal(transactions);
+
+    const balanceChangePercentage =
+      (overallTotals.total_balance - previousMonthTotals.total_balance) /
+      previousMonthTotals.total_balance;
+
+    const balanceChangeAmount = overallTotals.total_balance - previousMonthTotals.total_balance;
+
     return {
-      total_balance: totals.total_balance,
-      total_invested: totals.total_invested,
-      total_pending_transactions: 0,
+      total_balance: overallTotals.total_balance,
+      total_invested: overallTotals.total_invested,
+      total_pending_transactions: overallTotals.total_pending_transactions,
+      balance_change_percentage: balanceChangePercentage,
+      balance_change_amount: balanceChangeAmount,
+      previous_month: previousMonthTotals,
     };
   }
 

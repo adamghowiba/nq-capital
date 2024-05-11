@@ -1,70 +1,59 @@
 import { Tab, TabProps, Tabs, TabsProps, styled } from '@mui/material';
+import { FC } from 'react';
 
-// TODO: REPLACE BUTTON STYLES WITH BELOW
-// <Button
-//   variant="contained"
-//   color={selectedType === type ? 'primary' : 'secondary'}
-//   key={type}
-//   onClick={() => onChangeSelectedType?.(type)}
-//   sx={{
-//     textTransform: 'capitalize',
-//     flexShrink: 0,
-//     minWidth: 0,
-//     borderRadius: '100px',
-//     minHeight: 0,
-//     '&.MuiButton-sizeMedium': {
-//       height: '32px',
-//     },
-//   }}
-// >
-//   {type?.toLowerCase()}
-// </Button>
+export interface ButtonTabProps extends TabsProps {
+  size?: 'small' | 'medium';
+  colorSchema?: 'dark' | 'light';
+}
 
-/**
- * Button tabs are single "button" like tabs. Typically used
- * in data table filters
- */
-export const ButtonTabs = styled((props: TabsProps) => (
-  <Tabs
-    {...props}
-    TabIndicatorProps={{ children: <span className="MuiTabs-indicatorSpan" /> }}
-  />
-))({
-  backgroundColor: '#F1F1F1',
-  padding: '4px',
-  minHeight: 'unset',
-  borderRadius: '8px',
-  '& .MuiTabs-indicator': {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    height: '100%',
-    width: '100%',
-    borderRadius: '6px',
-    boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #EBEBEB',
-  },
-  '& .MuiTabs-indicatorSpan': {
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white',
-    borderRadius: 'inherit',
-  },
-});
+export const ButtonTabs: FC<ButtonTabProps> = ({
+  size,
+  colorSchema,
+  ...props
+}) => {
+  return (
+    <Tabs
+      {...props}
+      sx={{
+        minHeight: 'unset',
+        '& .MuiTabs-indicator': {
+          display: 'flex',
+          justifyContent: 'center',
+          backgroundColor: 'transparent',
+          height: '100%',
+          width: '100%',
+          borderRadius: '100px',
+          boxShadow: '0px 1px 2px 0px rgba(0, 0, 0, 0.05)',
+        },
+        '& .MuiTabs-indicatorSpan': {
+          width: '100%',
+          height: '100%',
+          backgroundColor:
+            colorSchema === 'dark' ? 'rgba(255, 255, 255, 0.23)' : 'white',
+          borderRadius: 'inherit',
+        },
+        ...props.sx,
+      }}
+      TabIndicatorProps={{
+        children: <span className="MuiTabs-indicatorSpan" />,
+      }}
+    />
+  );
+};
 
 export const ButtonTab = styled((props: TabProps) => (
   <Tab disableRipple {...props} />
 ))(({ theme }) => ({
   textTransform: 'none',
   fontWeight: theme.typography.fontWeightMedium,
-  fontSize: theme.typography.pxToRem(15),
-  color: '#8D8D8D',
+  fontSize: theme.typography.pxToRem(14),
+  color: '#d0d0d0',
   zIndex: 2,
   minHeight: 'unset',
   lineHeight: '1.3',
+  transition: 'color 0.15s ease',
   '&.Mui-selected': {
-    color: '#646464',
-    // backgroundColor: 'white',
+    color: '#FFFFFF',
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)',

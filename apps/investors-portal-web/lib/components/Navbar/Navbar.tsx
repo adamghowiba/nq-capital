@@ -22,10 +22,10 @@ const Navbar: FC<NavbarProps> = ({ ...props }) => {
       name: 'Overview',
       href: '/',
     },
-    {
-      name: 'Fund',
-      href: '/fund',
-    },
+    // {
+    //   name: 'Fund',
+    //   href: '/fund',
+    // },
     {
       name: 'Tickets',
       href: '/tickets',

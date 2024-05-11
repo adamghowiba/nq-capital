@@ -99,6 +99,7 @@ const TickerMutationDrawer: FC<TickerMutationDrawerProps> = ({
           <DrawerHeader
             onClickExpand={() => setIsExpanded((expanded) => !expanded)}
             isExpanded={isExpanded}
+            onClose={() => props?.onClose?.({}, 'backdropClick')}
           >
             <Typography variant="h4" fontWeight="500">
               Ticket

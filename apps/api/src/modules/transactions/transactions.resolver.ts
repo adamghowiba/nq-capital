@@ -1,9 +1,9 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { TransactionsService } from './transactions.service';
-import { TransactionEntity } from './entities/transaction.entity';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Permission } from '@nq-capital/iam';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
-import { AppAbility, Permission, UserAbility } from '@nq-capital/iam';
+import { TransactionEntity } from './entities/transaction.entity';
+import { TransactionsService } from './transactions.service';
 
 @Resolver(() => TransactionEntity)
 export class TransactionsResolver {
@@ -19,8 +19,8 @@ export class TransactionsResolver {
 
   @Permission('read', 'Transaction')
   @Query(() => [TransactionEntity], { name: 'transactions' })
-  findAll(@UserAbility() ability: AppAbility) {
-    return this.transactionsService.list({ ability });
+  findAll() {
+    return this.transactionsService.list();
   }
 
   @Query(() => TransactionEntity, { name: 'transaction' })
