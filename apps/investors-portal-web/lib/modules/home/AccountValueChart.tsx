@@ -83,7 +83,7 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
                     ? date.monthShort
                     : date.toFormat('MM-dd')
                 ),
-                tickAmount: 4,
+                tickAmount: 5,
                 labels: {
                   style: {
                     colors: '#BBBBBB',
