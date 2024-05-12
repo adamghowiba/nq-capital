@@ -278,6 +278,34 @@ type LogoutEntity {
   status: String!
 }
 
+type InvitationEntity {
+  id: Int!
+  email: String!
+  invitation_code: String!
+  status: InvitationStatus!
+  type: InvitationType!
+  investor_id: Int
+  invited_by_user_id: Int!
+  responded_at: DateTime
+  resent_count: Int!
+  expires_at: DateTime!
+  sent_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  REVOKED
+}
+
+enum InvitationType {
+  INVESTOR
+  USER
+}
+
 """Prisma Decimal Scalar"""
 scalar Decimal
 
@@ -325,6 +353,8 @@ type Query {
   meUser: UserEntity!
   bankAccounts: [BankAccountEntity!]!
   bankAccount(id: Int!): BankAccountEntity!
+  invitations: [InvitationEntity!]!
+  invitation(id: Int!): InvitationEntity!
 }
 
 type Mutation {
@@ -356,6 +386,10 @@ type Mutation {
   createBankAccount(createBankAccountInput: CreateBankAccountInput!): BankAccountEntity!
   updateBankAccount(updateBankAccountInput: UpdateBankAccountInput!): BankAccountEntity!
   removeBankAccount(id: Int!): BankAccountEntity!
+  inviteInvestor(invitationInput: CreateInvitationInput!): InvitationEntity!
+  inviteUser(invitationInput: CreateInvitationInput!): InvitationEntity!
+  updateInvitation(updateInvitationInput: UpdateInvitationInput!): InvitationEntity!
+  removeInvitation(id: Int!): InvitationEntity!
 }
 
 input CreateUserInput {
@@ -583,5 +617,22 @@ input UpdateBankAccountInput {
   branch_code: String
   branch_address: String
   is_primary: Boolean
+  id: Int!
+}
+
+input CreateInvitationInput {
+  email: String!
+  type: InvitationType!
+  status: InvitationStatus
+  investor_id: Int
+  invited_by_user_id: Int
+}
+
+input UpdateInvitationInput {
+  email: String
+  type: InvitationType
+  status: InvitationStatus
+  investor_id: Int
+  invited_by_user_id: Int
   id: Int!
 }

@@ -265,10 +265,16 @@ model Transaction {
   // investor_fund_id Int
 }
 
+enum InvitationType {
+  INVESTOR
+  USER
+}
+
 model Invitation {
   id                 Int              @id @default(autoincrement())
   email              String
   invitation_code    String
+  type               InvitationType
   status             InvitationStatus @default(PENDING)
   investor           Investor?        @relation(fields: [investor_id], references: [id])
   investor_id        Int?

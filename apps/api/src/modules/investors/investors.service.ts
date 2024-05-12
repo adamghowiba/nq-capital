@@ -54,6 +54,14 @@ export class InvestorsService {
     return investor;
   }
 
+  async invite(id: number) {
+    const investor = await this.prisma.investor.findUniqueOrThrow({
+      where: { id },
+    });
+
+    return investor;
+  }
+
   async getTransactionTotal(transactions: Transaction[]) {
     const totals = transactions.reduce(
       (
