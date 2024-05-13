@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InvitationEvent } from '../events/events.constant';
 import { InvitationCreatedEvent } from '../events/invite.event';
-import { EmailService } from 'apps/api/src/common/services/email/email.service';
+import { EmailService } from '../../../common/services/email/email.service';
 import { InvitationType } from '@prisma/client';
 
 @Injectable()
@@ -13,12 +13,10 @@ export class InvitationListener {
 
   @OnEvent(InvitationEvent.INVITATION_CREATED)
   async handleInvitationCreatedEvent(payload: InvitationCreatedEvent) {
-    const token = payload.code || Math.random().toString(36).substring(2, 15);
-
     const email = await this.sendInvitationEmail({
       email: payload.email,
       type: payload.type,
-      token,
+      token: payload.code,
     });
 
     return email;
@@ -38,9 +36,19 @@ export class InvitationListener {
       params.type === 'INVESTOR' ? 'Investors Portal' : 'Admin Portal';
 
     const emailHtmlBody = `
-      <h1>You've been invited to NQ ${applicationName} </h1> <br /> <br />
+      <h3>You've been invited to NQ ${applicationName}. Click the link below to accept the invitation. </h3>
 
-      <p>Click <a href="http://localhost:3000/invitations/accept/${params.token}">here</a> to accept the invitation</p>
+      <p>
+        We are pleased to invite you to join the NQ Investors Portal. you will gain access to exclusive <br />
+        tools and resources designed to help you effectively manage and enhance your investment portfolio. <br/>
+        Welcome aboard and thank you for trusting us with your investment journey. <br />
+      </p>
+
+
+      <a href="http://localhost:3000/invitations/accept/${params.token}">Accept invitation</a> <br /><br />
+
+      <span> Warm regards, </span> <br/>
+      <span> NQ Capital Team </span>
     `;
 
     return this.emailService.sendEmail({

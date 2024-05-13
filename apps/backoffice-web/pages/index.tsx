@@ -1,4 +1,6 @@
 import { Box } from '@nq-capital/nui';
+import { graphql } from '../lib/gql';
+
 
 export function Index() {
   return (

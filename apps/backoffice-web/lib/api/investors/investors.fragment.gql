@@ -1,0 +1,36 @@
+fragment InvestorBaseFragment on InvestorEntity {
+  id
+  first_name
+  middle_name
+  last_name
+  email
+  company_name
+  is_accredited
+  avatar
+  mobile_number
+  account_status
+  created_at
+  updated_at
+}
+
+fragment InvestorAllFragment on InvestorEntity {
+  company_tax_id
+  address {
+    id
+    street
+    street_2
+    city
+    state_province
+    country
+    postal_zip_code
+    verified
+    latitude
+    longitude
+    country_code
+  }
+  passport_number
+  national_id
+  date_of_birth
+  nationality
+  ...InvestorBaseFragment
+}

@@ -1,0 +1,36 @@
+query RetrieveInvestor($id: Int!) {
+  investor(id: $id) {
+    ...InvestorAllFragment
+  }
+}
+
+query InvestorPortfolio($id: Int) {
+  investorPortfolio(id: $id) {
+    total_invested
+    total_balance
+    total_pending_transactions
+    balance_change_percentage
+    balance_change_amount
+    previous_month {
+      total_invested
+      total_balance
+      total_pending_transactions
+    }
+  }
+}
+
+query ListInvestors {
+  investors {
+    ...InvestorAllFragment
+  }
+}
+
+query ListInvitations(
+  $emails: [String!]
+  $status: InvitationStatus
+  $statuses: [InvitationStatus!]
+) {
+  invitations(emails: $emails, status: $status, statuses: $statuses) {
+    ...InvitationBaseFragment
+  }
+}

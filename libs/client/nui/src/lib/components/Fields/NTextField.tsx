@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, FormLabel } from '@mui/material';
+import { FormControl, FormHelperText, FormHelperTextProps, FormLabel } from '@mui/material';
 import TextField, { TextFieldProps } from '@mui/material/TextField';
 import { ReactNode } from 'react';
 import {
@@ -27,6 +27,8 @@ export interface NTextFieldProps<
   label?: string;
   placeholder?: string;
   isRequired?: boolean;
+  HelperTextProps?: FormHelperTextProps
+  error?: string;
 }
 
 /**
@@ -47,37 +49,40 @@ export const NTextField = <
   rules,
   shouldUnregister,
   fullWidth,
+  error,
+  HelperTextProps,
   ...props
 }: NTextFieldProps<TFieldValues, TName>) => {
   return (
-      <Controller
-        control={control}
-        name={name}
-        render={({ field, fieldState }) => {
-          return (
-            <FormControl
-              error={fieldState.invalid}
-              required={isRequired}
-              fullWidth={fullWidth}
-            >
-              <FormLabel>{label}</FormLabel>
+    <Controller
+      control={control}
+      name={name}
+      render={({ field, fieldState }) => {
+        return (
+          <FormControl
+            error={fieldState.invalid || !!error}
+            required={isRequired}
+            fullWidth={fullWidth}
+          >
+            <FormLabel>{label}</FormLabel>
 
-              <TextField placeholder={placeholder} {...field} {...props} />
+            <TextField placeholder={placeholder} {...field} {...props} />
 
-              {(fieldState.invalid || helperText) && (
-                <FormHelperText>
-                  {fieldState.error?.message
+            {(fieldState.invalid || helperText) && (
+              <FormHelperText {...HelperTextProps}>
+                {error ||
+                  (fieldState.error?.message
                     ? fieldState.error?.message
-                    : helperText}
-                </FormHelperText>
-              )}
-            </FormControl>
-          );
-        }}
-        defaultValue={defaultValue}
-        disabled={disabled}
-        rules={rules}
-        shouldUnregister={shouldUnregister}
-      />
+                    : helperText)}
+              </FormHelperText>
+            )}
+          </FormControl>
+        );
+      }}
+      defaultValue={defaultValue}
+      disabled={disabled}
+      rules={rules}
+      shouldUnregister={shouldUnregister}
+    />
   );
 };

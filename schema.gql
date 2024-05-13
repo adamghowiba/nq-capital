@@ -353,7 +353,14 @@ type Query {
   meUser: UserEntity!
   bankAccounts: [BankAccountEntity!]!
   bankAccount(id: Int!): BankAccountEntity!
-  invitations: [InvitationEntity!]!
+  invitations(
+    """Filter by an array of emails"""
+    emails: [String!]
+
+    """Filter by a list of statuses"""
+    statuses: [InvitationStatus!]
+    status: InvitationStatus
+  ): [InvitationEntity!]!
   invitation(id: Int!): InvitationEntity!
 }
 
@@ -623,16 +630,10 @@ input UpdateBankAccountInput {
 input CreateInvitationInput {
   email: String!
   type: InvitationType!
-  status: InvitationStatus
-  investor_id: Int
-  invited_by_user_id: Int
 }
 
 input UpdateInvitationInput {
   email: String
   type: InvitationType
-  status: InvitationStatus
-  investor_id: Int
-  invited_by_user_id: Int
   id: Int!
 }

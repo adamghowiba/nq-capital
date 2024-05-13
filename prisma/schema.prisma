@@ -285,6 +285,8 @@ model Invitation {
   expires_at         DateTime         @default(dbgenerated("CURRENT_TIMESTAMP + INTERVAL '4 days'"))
   sent_at            DateTime         @default(now())
   updated_at         DateTime         @updatedAt
+
+  @@unique([email, type])
 }
 
 model Address {

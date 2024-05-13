@@ -1,5 +1,0 @@
-query Investors {
-  investors {
-    id
-  }
-}

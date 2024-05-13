@@ -1,18 +1,15 @@
-import { InputType, Int, Field, HideField } from '@nestjs/graphql';
+import { Field, HideField, InputType } from '@nestjs/graphql';
 import {
-  $Enums,
   InvitationStatus,
   InvitationType,
-  Prisma,
+  Prisma
 } from '@prisma/client';
-import { IsEmail, IsEnum, IsNumber, IsOptional } from 'class-validator';
+import { IsEmail, IsEnum } from 'class-validator';
 
 @InputType()
 export class CreateInvitationInput
   implements Prisma.InvitationUncheckedCreateInput
 {
-  @HideField()
-  id?: number | undefined;
 
   @Field(() => String)
   @IsEmail()
@@ -22,18 +19,16 @@ export class CreateInvitationInput
   @IsEnum(InvitationType)
   type!: InvitationType;
 
-  @Field(() => InvitationStatus, { nullable: true })
-  @IsEnum(InvitationStatus)
+  @HideField()
+  id?: number | undefined;
+
+  @HideField()
   status?: InvitationStatus | undefined;
 
-  @Field(() => Int, { nullable: true })
-  @IsNumber()
-  @IsOptional()
+  @HideField()
   investor_id?: number | null | undefined;
 
-  @Field(() => Int, { nullable: true })
-  @IsNumber()
-  @IsOptional()
+  @HideField()
   invited_by_user_id!: number;
 
   @HideField()

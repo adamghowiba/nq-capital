@@ -24,25 +24,27 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
 const config: CodegenConfig = {
   schema: '../../schema.gql',
   generates: {
-    //   './lib/gql/gql-client.ts': {
-    //     plugins: [
-    //       'typescript',
-    //       'typescript-operations',
-    //       'typescript-react-query',
-    //     ],
-    //     config: {
-    //       ...REACT_QUERY_PLUGIN_CONFIG,
-    //       enumsAsTypes: true,
-    //     },
-    './lib/gql/': {
-      documents: ['./pages/**/*.tsx', './lib/api/**/*.gql'],
-      preset: 'client',
-      presetConfig: {
+    './lib/gql/gql-client.ts': {
+      documents: ['./lib/api/**/*.gql'],
+      plugins: [
+        'typescript',
+        'typescript-operations',
+        'typescript-react-query',
+      ],
+      config: {
+        ...REACT_QUERY_PLUGIN_CONFIG,
         enumsAsTypes: true,
-        documentMode: 'string',
-        fragmentMasking: { unmaskFunctionName: 'getFragmentData' },
       },
     },
+    // './lib/gql/': {
+    //   documents: ['./pages/**/*.tsx', './lib/api/**/*.gql'],
+    //   preset: 'client',
+    //   presetConfig: {
+    //     enumsAsTypes: true,
+    //     documentMode: 'string',
+    //     fragmentMasking: { unmaskFunctionName: 'getFragmentData' },
+    //   },
+    // },
   },
 };
 

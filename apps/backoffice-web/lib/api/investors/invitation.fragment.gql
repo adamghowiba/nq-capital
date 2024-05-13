@@ -1,0 +1,13 @@
+fragment InvitationBaseFragment on InvitationEntity {
+  id
+  email
+  invitation_code
+  status
+  type
+  investor_id
+  invited_by_user_id
+  resent_count
+  sent_at
+  updated_at
+  expires_at
+}

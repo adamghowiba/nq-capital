@@ -7,5 +7,4 @@ projects:
     schema: "./schema.gql"
     documents:
       - "apps/backoffice-web/**/*.gql"
-      - "apps/backoffice-web/**/*.tsx"
     exclude: "apps/backoffice-web/.next/**/*"

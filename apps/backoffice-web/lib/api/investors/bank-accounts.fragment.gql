@@ -1,0 +1,22 @@
+fragment BankAccountAllFragment on BankAccountEntity {
+  id
+  iban
+  sort_code
+  bsb_number
+  bank_code
+  branch_code
+  branch_address
+  is_primary
+  investor_id
+  created_at
+  updated_at
+  nickname
+  bank_name
+  account_number
+  account_holder_name
+  type
+  bank_country
+  currency
+  routing_number
+  swift_code
+}

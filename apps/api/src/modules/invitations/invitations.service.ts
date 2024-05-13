@@ -6,6 +6,9 @@ import { InvitationEntity } from './entities/invitation.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InvitationEvent } from './events/events.constant';
 import { InvitationCreatedEvent } from './events/invite.event';
+import { ListInvitationArgs } from './dto/get-invitations.input';
+import { DateTime } from 'luxon';
+import { ApiError } from '../../common/exceptions/api.error';
 
 @Injectable()
 export class InvitationsService {
@@ -15,10 +18,41 @@ export class InvitationsService {
   ) {}
 
   async inviteInvestor(createInvitationInput: CreateInvitationInput) {
-    const invitation = await this.prisma.invitation.create({
-      data: {
-        ...createInvitationInput,
+    const invitation_code = Math.random().toString(36).substring(7);
+
+    const investor = await this.prisma.investor.findUnique({
+      where: { email: createInvitationInput.email },
+    });
+
+    if (investor)
+      throw new ApiError('Investor already exists', {
+        meta: {
+          email: createInvitationInput.email,
+          investor_id: investor.id,
+          created_at: investor.created_at,
+        },
+      });
+
+    const invitation = await this.prisma.invitation.upsert({
+      where: {
+        email_type: {
+          email: createInvitationInput.email,
+          type: 'INVESTOR',
+        },
+      },
+      create: {
+        email: createInvitationInput.email,
+        invited_by_user_id: createInvitationInput.invited_by_user_id,
+        invitation_code: invitation_code,
+        status: 'PENDING',
         type: 'INVESTOR',
+      },
+      update: {
+        expires_at: DateTime.now().plus({ days: 7 }).toJSDate(),
+        resent_count: {
+          increment: 1,
+        },
+        status: 'PENDING',
       },
     });
 
@@ -27,14 +61,20 @@ export class InvitationsService {
       new InvitationCreatedEvent({
         email: invitation.email,
         type: invitation.type,
+        code: invitation_code,
       })
     );
 
     return invitation;
   }
 
-  async list(): Promise<InvitationEntity[]> {
-    const invitation = await this.prisma.invitation.findMany();
+  async list(args: ListInvitationArgs): Promise<InvitationEntity[]> {
+    const invitation = await this.prisma.invitation.findMany({
+      where: {
+        email: args.emails ? { in: args.emails } : undefined,
+        status: args.statuses ? { in: args.statuses } : undefined,
+      },
+    });
 
     return invitation;
   }

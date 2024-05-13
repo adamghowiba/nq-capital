@@ -28,10 +28,10 @@ const InviteInvestorDialog: FC<InviteInvestorDialogProps> = ({
 }) => {
   const [emails, setEmails] = useState<string[]>([]);
   const regex =
-    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleInvite = () => {
-    //
+    onInvite(emails)
   };
 
   const handleValidation: AutocompleteProps<

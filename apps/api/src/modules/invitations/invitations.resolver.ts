@@ -4,6 +4,9 @@ import { InvitationEntity } from './entities/invitation.entity';
 import { CreateInvitationInput } from './dto/create-invitation.input';
 import { UpdateInvitationInput } from './dto/update-invitation.input';
 import { ApiError } from '../../common/exceptions/api.error';
+import { UserSession } from '../../common/decorators/auth/session.decorator';
+import { UserEntity } from '../users/entities/user.entity';
+import { ListInvitationArgs } from './dto/get-invitations.input';
 
 @Resolver(() => InvitationEntity)
 export class InvitationsResolver {
@@ -11,9 +14,13 @@ export class InvitationsResolver {
 
   @Mutation(() => InvitationEntity)
   inviteInvestor(
-    @Args('invitationInput') invitationInput: CreateInvitationInput
+    @Args('invitationInput') invitationInput: CreateInvitationInput,
+    @UserSession() userSession: UserEntity
   ) {
-    return this.invitationsService.inviteInvestor(invitationInput);
+    return this.invitationsService.inviteInvestor({
+      ...invitationInput,
+      invited_by_user_id: 1,
+    });
   }
 
   @Mutation(() => InvitationEntity)
@@ -22,8 +29,8 @@ export class InvitationsResolver {
   }
 
   @Query(() => [InvitationEntity], { name: 'invitations' })
-  list() {
-    return this.invitationsService.list();
+  list(@Args() args: ListInvitationArgs) {
+    return this.invitationsService.list(args);
   }
 
   @Query(() => InvitationEntity, { name: 'invitation' })

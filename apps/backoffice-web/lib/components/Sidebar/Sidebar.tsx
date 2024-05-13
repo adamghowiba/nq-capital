@@ -31,8 +31,8 @@ const NAVBAR_ITEMS: { name: string; href: string; icon: ReactNode }[] = [
     icon: <Icon icon={creditCardIcon} width={18} height={18} />,
   },
   {
-    name: 'Investors',
-    href: '/investors',
+    name: 'Users',
+    href: '/users',
     icon: <Icon icon={people20FilledIcon} width={18} height={18} />,
   },
 ];

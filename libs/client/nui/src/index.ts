@@ -55,5 +55,13 @@ export {
   PageHeaderProps,
 } from './lib/components/PageHeader/PageHeader';
 
+export {
+  ButtonTab,
+  ButtonTabProps,
+  ButtonTabs,
+} from './lib/components/Tabs/ButtonTabs';
+export { StyledTab, StyledTabs } from './lib/components/Tabs/StyledTabs';
+
 export { useGql } from './lib/hooks/use-gql.hook';
+export { useDebounce } from './lib/hooks/use-debounce';
 export { theme } from './lib/themes/primary.theme';

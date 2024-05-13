@@ -1,6 +1,8 @@
+import inviteIcon from '@iconify/icons-fluent/add-16-filled';
 import moreVertical from '@iconify/icons-fluent/more-vertical-16-filled';
-import React, { FC, useMemo, useState } from 'react';
-import { NextPageWithLayout } from '../_app';
+import { Icon } from '@iconify/react';
+import { Button, IconButton, Tab, Tabs, Typography } from '@mui/material';
+import { GridColDef } from '@mui/x-data-grid';
 import {
   Box,
   ChipColorSchema,
@@ -13,54 +15,69 @@ import {
   NMenu,
   NMenuItem,
   PageHeader,
+  StyledTab,
+  StyledTabs,
   VStack,
-  useGql,
 } from '@nq-capital/nui';
-import { GridColDef } from '@mui/x-data-grid';
-import { Button, IconButton, Typography } from '@mui/material';
 import { formatISOForTable } from '@nq-capital/utils';
-import { graphql } from 'apps/backoffice-web/lib/gql';
+import { useMemo, useState } from 'react';
+import { Screen } from '../../lib/components/Screen/Screen';
 import {
   InvestorAccountStatus,
+  InvitationStatus,
   ListInvestorsQuery,
-} from 'apps/backoffice-web/lib/gql/graphql';
-import { Icon } from '@iconify/react';
-import { Screen } from 'apps/backoffice-web/lib/components/Screen/Screen';
-import inviteIcon from '@iconify/icons-fluent/add-16-filled';
-import InviteInvestorDialog from 'apps/backoffice-web/lib/modules/investors/components/InviteInvestorDialog';
+  ListInvitationsQuery,
+  useDeleteInvitationMutation,
+  useInviteInvestorMutation,
+  useListInvestorsQuery,
+  useListInvitationsQuery,
+} from '../../lib/gql/gql-client';
+import InviteSingleInvestorDialog from '../../lib/modules/investors/components/InviteSingleInvestorDialog';
+import { NextPageWithLayout } from '../_app';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 
-const ListUsersDocument = graphql(`
-  query ListInvestors {
-    investors {
-      id
-      first_name
-      last_name
-      email
-      bank_accounts {
-        account_number
-        is_primary
-      }
-      account_status
-      created_at
-    }
-  }
-`);
-
-const UserListPage: NextPageWithLayout = ({ ...props }) => {
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
-
-  const investorsQuery = useGql(ListUsersDocument, undefined, {
-    select: (data) => data.investors,
-  });
-
-  const ACCOUNT_STATUS_COLOR_MAP: Record<
-    InvestorAccountStatus,
-    ChipColorSchema
-  > = {
+const ACCOUNT_STATUS_COLOR_MAP: Record<InvestorAccountStatus, ChipColorSchema> =
+  {
     ACTIVE: 'green',
     DISABLED: 'red',
     ONBOARDING: 'blue',
   };
+
+const INVITATION_STATUS_COLOR_MAP: Record<InvitationStatus, ChipColorSchema> = {
+  ACCEPTED: 'green',
+  DECLINED: 'red',
+  EXPIRED: 'blue',
+  PENDING: 'blue',
+  REVOKED: 'neutral',
+};
+
+const UserListPage: NextPageWithLayout = ({ ...props }) => {
+  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const [tabValue, setTabValue] = useState<'investors' | 'invitations'>(
+    'investors'
+  );
+
+  const investorsQuery = useListInvestorsQuery(undefined, {
+    select: (data) => data.investors,
+  });
+
+  const invitationsQuery = useListInvitationsQuery(
+    {},
+    { select: (data) => data.invitations }
+  );
+
+  const inviteInvestorMutation = useInviteInvestorMutation({
+    onSuccess: () => {
+      setIsInviteDialogOpen(false);
+      investorsQuery.refetch();
+    },
+  });
+
+  const deleteInvitationMutation = useDeleteInvitationMutation({
+    onSuccess: () => {
+      invitationsQuery.refetch();
+    },
+  });
 
   const investorColumns = useMemo((): GridColDef<
     ListInvestorsQuery['investors'][number]
@@ -148,6 +165,83 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
     ];
   }, []);
 
+  const invitationColumn = useMemo((): GridColDef<
+    ListInvitationsQuery['invitations'][number]
+  >[] => {
+    return [
+      {
+        field: 'id',
+        headerName: 'ID',
+        width: 50,
+      },
+      {
+        field: 'email',
+        headerName: 'Email',
+        width: 250,
+      },
+      {
+        field: 'invitation_code',
+        headerName: 'Code',
+        valueFormatter: (params) => params.value || '-',
+      },
+      {
+        field: 'status',
+        headerName: 'Status',
+        renderCell: (params) => (
+          <ColoredChip
+            colorSchema={
+              INVITATION_STATUS_COLOR_MAP[params?.row?.status] || 'neutral'
+            }
+            label={params?.value}
+          />
+        ),
+        width: 100,
+      },
+      {
+        field: 'sent_at',
+        headerName: 'Sent Date',
+        valueFormatter: (params) => formatISOForTable(params.value),
+        width: 150,
+      },
+      {
+        field: 'expires_at',
+        headerName: 'Expires',
+        valueFormatter: (params) => formatISOForTable(params.value),
+        width: 150,
+      },
+      {
+        field: 'resent_count',
+        headerName: 'Resent Count',
+        width: 150,
+      },
+      {
+        field: 'actions',
+        headerName: '',
+        type: 'actions',
+        renderCell: (params) => (
+          <NMenu>
+            <MenuButton>
+              <IconButton size="small">
+                <Icon icon={moreVertical} />
+              </IconButton>
+            </MenuButton>
+
+            <MenuList>
+              <NMenuItem disabled>Resend</NMenuItem>
+              <NMenuItem
+                onClick={() =>
+                  deleteInvitationMutation.mutate({ id: params.row.id })
+                }
+              >
+                Delete
+              </NMenuItem>
+            </MenuList>
+          </NMenu>
+        ),
+      },
+    ];
+  }, []);
+
   return (
     <>
       <Screen>
@@ -167,20 +261,82 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
           }
         />
 
-        <Box h="700px">
-          <CustomDataGrid
-            loading={investorsQuery.isLoading}
-            rows={investorsQuery.data || []}
-            columns={investorColumns}
-            checkboxSelection
-            disableRowSelectionOnClick
-          />
-        </Box>
+        <TabContext value={tabValue}>
+          <StyledTabs
+            value={tabValue}
+            onChange={(event, value) => setTabValue(value)}
+            aria-label="Switch tabs"
+            sx={{ width: 'auto', marginRight: 'auto' }}
+          >
+            <StyledTab
+              label="Investors"
+              value="investors"
+              sx={{ padding: '4px 10px', minHeight: '25px' }}
+            />
+            <StyledTab
+              label="Invitations"
+              value="invitations"
+              sx={{ padding: '4px 10px', minHeight: '25px' }}
+            />
+          </StyledTabs>
+
+          <TabPanel value="investors" sx={{ p: 0 }}>
+            <Box h="700px">
+              <CustomDataGrid
+                loading={investorsQuery.isLoading}
+                rows={investorsQuery.data || []}
+                columns={investorColumns}
+                checkboxSelection
+                disableRowSelectionOnClick
+              />
+            </Box>
+          </TabPanel>
+
+          <TabPanel value="invitations" sx={{ p: 0 }}>
+            <Box h="700px">
+              <CustomDataGrid
+                loading={invitationsQuery.isLoading}
+                rows={invitationsQuery.data || []}
+                columns={invitationColumn}
+                checkboxSelection
+                disableRowSelectionOnClick
+                renderSelectActions={({ selectedRows }) => {
+                  return (
+                    <>
+                      {selectedRows.length === 1 && (
+                        <Button
+                          variant="contained"
+                          color="error"
+                          size="small"
+                          onClick={() =>
+                            deleteInvitationMutation.mutate({
+                              id: selectedRows[0] as number,
+                            })
+                          }
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </>
+                  );
+                }}
+              />
+            </Box>
+          </TabPanel>
+        </TabContext>
       </Screen>
 
-      <InviteInvestorDialog
+      <InviteSingleInvestorDialog
         open={isInviteDialogOpen}
-        onInvite={console.log}
+        onInvite={(data) =>
+          inviteInvestorMutation.mutate({
+            invitationInput: {
+              email: data.email,
+              type: 'INVESTOR',
+            },
+          })
+        }
+        isLoading={inviteInvestorMutation.isPending}
         onClose={() => setIsInviteDialogOpen(false)}
       />
     </>
