@@ -27,9 +27,7 @@ import { BankAccountAllFragmentFragment } from '../../gql/gql-client';
 
 export interface BankMutationDialogProps extends DialogProps {
   onSave: (type: 'edit' | 'create', bank: BankAccountSchema) => void;
-  mode?:
-    | { type: 'create' }
-    | { type: 'edit'; data: BankAccountAllFragmentFragment };
+  mode?: { type: 'create' } | { type: 'edit'; data: BankAccountSchema };
 }
 
 export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
@@ -46,7 +44,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
       bank_name: modeData?.bank_name || '',
       account_number: modeData?.account_number || '',
       account_holder_name: modeData?.account_holder_name || '',
-      account_type: modeData?.type || 'CHECKING',
+      account_type: modeData?.account_type || 'CHECKING',
       bank_country: modeData?.bank_country || '',
       currency: modeData?.currency || '',
       routing_number: modeData?.routing_number || '',
@@ -59,6 +57,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
       branch_address: modeData?.branch_address || '',
       is_primary: modeData?.is_primary || false,
     },
+    values: modeData,
     shouldUnregister: true,
     resolver: zodResolver(bankAccountSchema),
   });

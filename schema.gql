@@ -361,7 +361,7 @@ type Query {
     statuses: [InvitationStatus!]
     status: InvitationStatus
   ): [InvitationEntity!]!
-  invitation(id: Int!): InvitationEntity!
+  invitation(code: String!): InvitationEntity!
 }
 
 type Mutation {
@@ -421,6 +421,7 @@ input UpdateUserInput {
 }
 
 input CreateInvestorInput {
+  invitation_code: String
   date_of_birth: DateTime
   account_status: InvestorAccountStatus
   bank_accounts: [BankAccountWithoutInvestorInput!]
@@ -464,6 +465,7 @@ input BankAccountWithoutInvestorInput {
 }
 
 input UpdateInvestorInput {
+  invitation_code: String
   date_of_birth: DateTime
   account_status: InvestorAccountStatus
 

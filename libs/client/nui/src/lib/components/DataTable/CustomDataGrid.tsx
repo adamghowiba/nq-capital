@@ -83,10 +83,21 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
             selectedRows: selectedRows,
             autoHideSelectActions,
           } as CustomToolbarProps,
+          baseCheckbox: {
+            size: 'small',
+            sx: {
+              '&.MuiCheckbox-root.Mui-checked': {
+                color: '#5B5BD6',
+              },
+            },
+          },
         }}
         sx={{
           '& .MuiDataGrid-withBorderColor': {
             borderColor: '#F0F0F0',
+          },
+          '.MuiDataGrid-row.Mui-selected': {
+            backgroundColor: '#FAFAFF',
           },
         }}
         rowSelectionModel={selectedRows}

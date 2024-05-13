@@ -318,7 +318,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
               padding: '8px 6px',
               paddingRight: '35px',
               height: 'unset',
-            }
+            },
           }),
         },
         defaultProps: {
@@ -515,6 +515,11 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
               padding: 0,
             },
           }),
+        },
+      },
+      MuiList: {
+        defaultProps: {
+          dense: true,
         },
       },
     },

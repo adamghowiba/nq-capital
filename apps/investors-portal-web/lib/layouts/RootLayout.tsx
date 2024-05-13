@@ -4,7 +4,7 @@ import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { FC, PropsWithChildren } from 'react';
 import { queryClient } from '../api/query-client';
-import { theme } from '../theme';
+import { theme } from '@nq-capital/nui';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RootLayoutProps extends PropsWithChildren {}

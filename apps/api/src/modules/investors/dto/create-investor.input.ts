@@ -22,7 +22,6 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-
 @InputType()
 export class CreateInvestorInput
   implements Omit<Prisma.InvestorUncheckedCreateInput, 'bank_accounts'>
@@ -45,6 +44,11 @@ export class CreateInvestorInput
 
   @IsEmail()
   email!: string;
+
+  @IsString()
+  @IsOptional()
+  @Field(() => String, { nullable: true })
+  invitation_code!: string | null;
 
   @IsString()
   @IsOptional()

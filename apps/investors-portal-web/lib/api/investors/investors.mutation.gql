@@ -25,3 +25,9 @@ mutation AddInvestment($addInvestmentInput: AddInvestmentInput!) {
     updated_at
   }
 }
+
+mutation CreateInvestor($createInvestorInput: CreateInvestorInput!) {
+  createInvestor(createInvestorInput: $createInvestorInput) {
+    ...InvestorAllFragment
+  }
+}

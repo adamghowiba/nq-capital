@@ -163,6 +163,7 @@ export type CreateInvestorInput = {
   email: Scalars['String']['input'];
   /** Investor first name */
   first_name: Scalars['String']['input'];
+  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name: Scalars['String']['input'];
   /** Investor middle name */
@@ -620,7 +621,7 @@ export type QueryInvestorPortfolioArgs = {
 
 
 export type QueryInvitationArgs = {
-  id: Scalars['Int']['input'];
+  code: Scalars['String']['input'];
 };
 
 
@@ -772,6 +773,7 @@ export type UpdateInvestorInput = {
   /** Investor first name */
   first_name?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
+  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
   /** Investor middle name */

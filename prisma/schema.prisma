@@ -273,7 +273,7 @@ enum InvitationType {
 model Invitation {
   id                 Int              @id @default(autoincrement())
   email              String
-  invitation_code    String
+  invitation_code    String           @unique
   type               InvitationType
   status             InvitationStatus @default(PENDING)
   investor           Investor?        @relation(fields: [investor_id], references: [id])

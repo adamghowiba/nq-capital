@@ -163,6 +163,7 @@ export type CreateInvestorInput = {
   email: Scalars['String']['input'];
   /** Investor first name */
   first_name: Scalars['String']['input'];
+  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name: Scalars['String']['input'];
   /** Investor middle name */
@@ -172,6 +173,11 @@ export type CreateInvestorInput = {
   nationality?: InputMaybe<Scalars['String']['input']>;
   passport_number?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateInvitationInput = {
+  email: Scalars['String']['input'];
+  type: InvitationType;
 };
 
 export type CreateNestedInvestorFundWithoutFundInput = {
@@ -274,6 +280,33 @@ export type InvestorPortfolioEntity = {
   total_pending_transactions: Scalars['Float']['output'];
 };
 
+export type InvitationEntity = {
+  __typename?: 'InvitationEntity';
+  email: Scalars['String']['output'];
+  expires_at: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  investor_id?: Maybe<Scalars['Int']['output']>;
+  invitation_code: Scalars['String']['output'];
+  invited_by_user_id: Scalars['Int']['output'];
+  resent_count: Scalars['Int']['output'];
+  responded_at?: Maybe<Scalars['DateTime']['output']>;
+  sent_at: Scalars['DateTime']['output'];
+  status: InvitationStatus;
+  type: InvitationType;
+  updated_at: Scalars['DateTime']['output'];
+};
+
+export type InvitationStatus =
+  | 'ACCEPTED'
+  | 'DECLINED'
+  | 'EXPIRED'
+  | 'PENDING'
+  | 'REVOKED';
+
+export type InvitationType =
+  | 'INVESTOR'
+  | 'USER';
+
 /** Login user input */
 export type LoginInput = {
   /** Email of the user */
@@ -316,12 +349,15 @@ export type Mutation = {
   createTransaction: TransactionEntity;
   createUser: UserEntity;
   investorLogin: InvestorEntity;
+  inviteInvestor: InvitationEntity;
+  inviteUser: InvitationEntity;
   login: UserEntity;
   logout: LogoutEntity;
   removeAsset: AssetEntity;
   removeBankAccount: BankAccountEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
+  removeInvitation: InvitationEntity;
   removeMessage: MessageEntity;
   removeTicket: TicketEntity;
   removeTransaction: TransactionEntity;
@@ -330,6 +366,7 @@ export type Mutation = {
   updateBankAccount: BankAccountEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
+  updateInvitation: InvitationEntity;
   updateMessage: MessageEntity;
   updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
@@ -387,6 +424,16 @@ export type MutationInvestorLoginArgs = {
 };
 
 
+export type MutationInviteInvestorArgs = {
+  invitationInput: CreateInvitationInput;
+};
+
+
+export type MutationInviteUserArgs = {
+  invitationInput: CreateInvitationInput;
+};
+
+
 export type MutationLoginArgs = {
   loginInput: LoginInput;
 };
@@ -408,6 +455,11 @@ export type MutationRemoveFundArgs = {
 
 
 export type MutationRemoveInvestorArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveInvitationArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -449,6 +501,11 @@ export type MutationUpdateFundArgs = {
 
 export type MutationUpdateInvestorArgs = {
   updateInvestorInput: UpdateInvestorInput;
+};
+
+
+export type MutationUpdateInvitationArgs = {
+  updateInvitationInput: UpdateInvitationInput;
 };
 
 
@@ -509,6 +566,8 @@ export type Query = {
   investorFunds: PaginatedInvestorFundEntity;
   investorPortfolio: InvestorPortfolioEntity;
   investors: Array<InvestorEntity>;
+  invitation: InvitationEntity;
+  invitations: Array<InvitationEntity>;
   me: SessionEntity;
   meInvestor: InvestorEntity;
   meUser: UserEntity;
@@ -558,6 +617,18 @@ export type QueryInvestorFundsArgs = {
 
 export type QueryInvestorPortfolioArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryInvitationArgs = {
+  code: Scalars['String']['input'];
+};
+
+
+export type QueryInvitationsArgs = {
+  emails?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<InvitationStatus>;
+  statuses?: InputMaybe<Array<InvitationStatus>>;
 };
 
 
@@ -702,6 +773,7 @@ export type UpdateInvestorInput = {
   /** Investor first name */
   first_name?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
+  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
   /** Investor middle name */
@@ -711,6 +783,12 @@ export type UpdateInvestorInput = {
   nationality?: InputMaybe<Scalars['String']['input']>;
   passport_number?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateInvitationInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  type?: InputMaybe<InvitationType>;
 };
 
 export type UpdateMessageInput = {
@@ -859,6 +937,22 @@ export type AddInvestmentMutationVariables = Exact<{
 
 export type AddInvestmentMutation = { __typename?: 'Mutation', addInvestment: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
 
+export type CreateInvestorMutationVariables = Exact<{
+  createInvestorInput: CreateInvestorInput;
+}>;
+
+
+export type CreateInvestorMutation = { __typename?: 'Mutation', createInvestor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
+
+export type InvitationBaseFragmentFragment = { __typename?: 'InvitationEntity', id: number, email: string, invitation_code: string, status: InvitationStatus, type: InvitationType, investor_id?: number | null, invited_by_user_id: number, resent_count: number, sent_at: any, updated_at: any, expires_at: any };
+
+export type RetrieveInvitationQueryVariables = Exact<{
+  code: Scalars['String']['input'];
+}>;
+
+
+export type RetrieveInvitationQuery = { __typename?: 'Query', invitation: { __typename?: 'InvitationEntity', id: number, email: string, invitation_code: string, status: InvitationStatus, type: InvitationType, investor_id?: number | null, invited_by_user_id: number, resent_count: number, sent_at: any, updated_at: any, expires_at: any } };
+
 export type MessageBaseFragmentFragment = { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null };
 
 export type TicketsAllFragmentFragment = { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any };
@@ -1004,6 +1098,21 @@ export const InvestorAllFragmentFragmentDoc = `
   date_of_birth
   nationality
   ...InvestorBaseFragment
+}
+    `;
+export const InvitationBaseFragmentFragmentDoc = `
+    fragment InvitationBaseFragment on InvitationEntity {
+  id
+  email
+  invitation_code
+  status
+  type
+  investor_id
+  invited_by_user_id
+  resent_count
+  sent_at
+  updated_at
+  expires_at
 }
     `;
 export const MessageBaseFragmentFragmentDoc = `
@@ -1431,6 +1540,62 @@ export const useAddInvestmentMutation = <
 
 
 useAddInvestmentMutation.fetcher = (variables: AddInvestmentMutationVariables, options?: RequestInit['headers']) => gqlFetcher<AddInvestmentMutation, AddInvestmentMutationVariables>(AddInvestmentDocument, variables, options);
+
+export const CreateInvestorDocument = `
+    mutation CreateInvestor($createInvestorInput: CreateInvestorInput!) {
+  createInvestor(createInvestorInput: $createInvestorInput) {
+    ...InvestorAllFragment
+  }
+}
+    ${InvestorAllFragmentFragmentDoc}
+${InvestorBaseFragmentFragmentDoc}`;
+
+export const useCreateInvestorMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateInvestorMutation, TError, CreateInvestorMutationVariables, TContext>) => {
+    
+    return useMutation<CreateInvestorMutation, TError, CreateInvestorMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateInvestor'],
+    mutationFn: (variables?: CreateInvestorMutationVariables) => gqlFetcher<CreateInvestorMutation, CreateInvestorMutationVariables>(CreateInvestorDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useCreateInvestorMutation.fetcher = (variables: CreateInvestorMutationVariables, options?: RequestInit['headers']) => gqlFetcher<CreateInvestorMutation, CreateInvestorMutationVariables>(CreateInvestorDocument, variables, options);
+
+export const RetrieveInvitationDocument = `
+    query RetrieveInvitation($code: String!) {
+  invitation(code: $code) {
+    ...InvitationBaseFragment
+  }
+}
+    ${InvitationBaseFragmentFragmentDoc}`;
+
+export const useRetrieveInvitationQuery = <
+      TData = RetrieveInvitationQuery,
+      TError = unknown
+    >(
+      variables: RetrieveInvitationQueryVariables,
+      options?: Omit<UseQueryOptions<RetrieveInvitationQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RetrieveInvitationQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RetrieveInvitationQuery, TError, TData>(
+      {
+    queryKey: ['RetrieveInvitation', variables],
+    queryFn: gqlFetcher<RetrieveInvitationQuery, RetrieveInvitationQueryVariables>(RetrieveInvitationDocument, variables),
+    ...options
+  }
+    )};
+
+useRetrieveInvitationQuery.document = RetrieveInvitationDocument;
+
+useRetrieveInvitationQuery.getKey = (variables: RetrieveInvitationQueryVariables) => ['RetrieveInvitation', variables];
+
+
+useRetrieveInvitationQuery.fetcher = (variables: RetrieveInvitationQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveInvitationQuery, RetrieveInvitationQueryVariables>(RetrieveInvitationDocument, variables, options);
 
 export const CreateTickerDocument = `
     mutation CreateTicker($createTicketInput: CreateTicketInput!) {

@@ -1,0 +1,5 @@
+query RetrieveInvitation($code: String!) {
+  invitation(code: $code) {
+    ...InvitationBaseFragment
+  }
+}

@@ -34,7 +34,7 @@ export class InvitationsResolver {
   }
 
   @Query(() => InvitationEntity, { name: 'invitation' })
-  retrieve(@Args('id', { type: () => Int }) id: number) {
+  retrieve(@Args('code', { type: () => String }) id: string) {
     return this.invitationsService.retrieve(id);
   }
 

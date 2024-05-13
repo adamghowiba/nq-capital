@@ -79,9 +79,9 @@ export class InvitationsService {
     return invitation;
   }
 
-  async retrieve(id: number): Promise<InvitationEntity> {
+  async retrieve(invitationCode: string): Promise<InvitationEntity> {
     const invitation = await this.prisma.invitation.findUniqueOrThrow({
-      where: { id },
+      where: { invitation_code: invitationCode },
     });
 
     return invitation;
