@@ -4,6 +4,7 @@ import { InvitationEvent } from '../events/events.constant';
 import { InvitationCreatedEvent } from '../events/invite.event';
 import { EmailService } from '../../../common/services/email/email.service';
 import { InvitationType } from '@prisma/client';
+import { INVESTORS_PORTAL_URL } from '@nq-capital/utils-constants';
 
 @Injectable()
 export class InvitationListener {
@@ -35,6 +36,12 @@ export class InvitationListener {
     const applicationName =
       params.type === 'INVESTOR' ? 'Investors Portal' : 'Admin Portal';
 
+    const applicationSignUpPath =
+      params.type === 'INVESTOR'
+        ? `/onboarding?invitation_code=${params.token}`
+        : `/onboarding?invitation_code=${params.token}`;
+    const onboardingUrl = `${INVESTORS_PORTAL_URL.href}${applicationSignUpPath}`;
+
     const emailHtmlBody = `
       <h3>You've been invited to NQ ${applicationName}. Click the link below to accept the invitation. </h3>
 
@@ -45,7 +52,7 @@ export class InvitationListener {
       </p>
 
 
-      <a href="http://localhost:3000/invitations/accept/${params.token}">Accept invitation</a> <br /><br />
+      <a href="${onboardingUrl}">Accept invitation</a> <br /><br />
 
       <span> Warm regards, </span> <br/>
       <span> NQ Capital Team </span>
