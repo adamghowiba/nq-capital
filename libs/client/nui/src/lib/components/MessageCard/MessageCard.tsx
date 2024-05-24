@@ -1,12 +1,10 @@
-import React, { FC } from 'react';
-import { HStack, VStack } from '../Stack/Stack';
-import { Avatar, Box, Tooltip, Typography } from '@mui/material';
-import { stringifyISODate } from '../../utils/date.utils';
+import { Avatar, Tooltip, Typography } from '@mui/material';
+import { FileType, stringifyISODate } from '@nq-capital/utils';
 import { DateTime } from 'luxon';
-import CheckBadgeIcon from '../Icons/CheckBadgeIcon';
-import { AssetEntity } from '../../gql/gql-client';
+import { FC } from 'react';
 import FileChip from '../FileChip/FileChip';
-import { downloadFile } from '../../utils/download.utils';
+import { CheckBadgeIcon } from '../Icons/CheckBadgeIcon';
+import { HStack, VStack } from '../Stack/Stack';
 
 export interface MessageCardProps {
   displayName: string;
@@ -16,13 +14,15 @@ export interface MessageCardProps {
    * ISO date time for the message
    */
   date: string;
-  files?: Pick<
-    AssetEntity,
-    'original_name' | 'url' | 'asset_type' | 'mime_type'
-  >[];
+  files: {
+    original_name: string;
+    url: string;
+    asset_type: string;
+    mime_type: string;
+  }[];
 }
 
-const MessageCard: FC<MessageCardProps> = ({
+export const MessageCard: FC<MessageCardProps> = ({
   content,
   date,
   displayName,
@@ -35,7 +35,6 @@ const MessageCard: FC<MessageCardProps> = ({
   );
 
   return (
-    <>
       <HStack align="start" gap={1.5}>
         <Avatar
           sx={{
@@ -57,7 +56,7 @@ const MessageCard: FC<MessageCardProps> = ({
               fontWeight="semibold"
               lineHeight="1"
             >
-              You
+              {displayName}
             </Typography>
 
             {isVerified && <CheckBadgeIcon />}
@@ -77,9 +76,12 @@ const MessageCard: FC<MessageCardProps> = ({
                 <FileChip
                   key={file.url}
                   fileName={file.original_name}
-                  fileType={file.asset_type}
+                  // TODO Fix invalid type assertion
+                  fileType={file.asset_type as FileType}
                   onClick={() =>
-                    downloadFile(file.url, { filename: file.original_name })
+                    // TODO: Add back in download or pass this up to the parent
+                    // downloadFile(file.url, { filename: file.original_name })
+                    ""
                   }
                 />
               ))}
@@ -87,8 +89,5 @@ const MessageCard: FC<MessageCardProps> = ({
           )}
         </VStack>
       </HStack>
-    </>
   );
 };
-
-export default MessageCard;

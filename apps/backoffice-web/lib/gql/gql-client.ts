@@ -1,4 +1,4 @@
-import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
 import { gqlFetcher } from './fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -222,6 +222,13 @@ export type FundEntity = {
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   updated_at: Scalars['DateTime']['output'];
+};
+
+export type FundOverviewEntity = {
+  __typename?: 'FundOverviewEntity';
+  current_amount: Scalars['Float']['output'];
+  invested_amount: Scalars['Float']['output'];
+  net_returns: Scalars['Float']['output'];
 };
 
 export type InvestorAccountStatus =
@@ -560,6 +567,7 @@ export type Query = {
   bankAccount: BankAccountEntity;
   bankAccounts: Array<BankAccountEntity>;
   fund: FundEntity;
+  fundOverview: Array<FundOverviewEntity>;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
@@ -594,6 +602,11 @@ export type QueryBankAccountArgs = {
 
 export type QueryFundArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryFundOverviewArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 
@@ -855,6 +868,37 @@ export type UserType =
   | 'ADMIN'
   | 'INVESTOR';
 
+export type LoginMutationVariables = Exact<{
+  loginInput: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserEntity', id: number, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, first_name: string, last_name: string, email: string, created_at: any, updated_at: any } };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutEntity', status: string } };
+
+export type MeUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeUserQuery = { __typename?: 'Query', meUser: { __typename?: 'UserEntity', id: number, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, first_name: string, last_name: string, email: string, created_at: any, updated_at: any } };
+
+export type FundAllFragmentFragment = { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any };
+
+export type ListFundsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListFundsQuery = { __typename?: 'Query', funds: Array<{ __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any }> };
+
+export type FundOverviewQueryVariables = Exact<{
+  fund_ids: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+}>;
+
+
+export type FundOverviewQuery = { __typename?: 'Query', fundOverview: Array<{ __typename?: 'FundOverviewEntity', invested_amount: number, current_amount: number, net_returns: number }> };
+
 export type BankAccountAllFragmentFragment = { __typename?: 'BankAccountEntity', id: number, iban?: string | null, sort_code?: string | null, bsb_number?: string | null, bank_code?: string | null, branch_code?: string | null, branch_address?: string | null, is_primary: boolean, investor_id: number, created_at: any, updated_at: any, nickname?: string | null, bank_name: string, account_number: string, account_holder_name: string, type?: BankAccountType | null, bank_country: string, currency: string, routing_number?: string | null, swift_code?: string | null };
 
 export type InvestorBaseFragmentFragment = { __typename?: 'InvestorEntity', id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any };
@@ -933,7 +977,60 @@ export type DeleteInvitationMutation = { __typename?: 'Mutation', removeInvitati
 
 export type InvitationBaseFragmentFragment = { __typename?: 'InvitationEntity', id: number, email: string, invitation_code: string, status: InvitationStatus, type: InvitationType, investor_id?: number | null, invited_by_user_id: number, resent_count: number, sent_at: any, updated_at: any, expires_at: any };
 
+export type MessageBaseFragmentFragment = { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null };
 
+export type TicketsAllFragmentFragment = { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any };
+
+export type CreateTickerMutationVariables = Exact<{
+  createTicketInput: CreateTicketInput;
+}>;
+
+
+export type CreateTickerMutation = { __typename?: 'Mutation', createTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
+export type UpdateTicketMutationVariables = Exact<{
+  updateTicketInput: UpdateTicketInput;
+}>;
+
+
+export type UpdateTicketMutation = { __typename?: 'Mutation', updateTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
+export type SendTicketMessageMutationVariables = Exact<{
+  sendTicketMessageInput: SendTicketMessageInput;
+}>;
+
+
+export type SendTicketMessageMutation = { __typename?: 'Mutation', sendTicketMessage: { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null } };
+
+export type DeleteTicketMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteTicketMutation = { __typename?: 'Mutation', removeTicket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any } };
+
+export type ListTickersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListTickersQuery = { __typename?: 'Query', tickets: Array<{ __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any }> };
+
+export type RetrieveTicketQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets?: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any }> | null, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
+
+
+export const FundAllFragmentFragmentDoc = `
+    fragment FundAllFragment on FundEntity {
+  id
+  name
+  balance
+  created_at
+  updated_at
+}
+    `;
 export const BankAccountAllFragmentFragmentDoc = `
     fragment BankAccountAllFragment on BankAccountEntity {
   id
@@ -1012,6 +1109,205 @@ export const InvitationBaseFragmentFragmentDoc = `
   expires_at
 }
     `;
+export const MessageBaseFragmentFragmentDoc = `
+    fragment MessageBaseFragment on MessageEntity {
+  id
+  content
+  type
+  sent_by_user_id
+  sent_by_investor_id
+  sent_by_user {
+    id
+    first_name
+    last_name
+    avatar
+    role
+  }
+  sent_by_investor {
+    id
+    first_name
+    last_name
+    avatar
+  }
+  edit_count
+  updated_at
+  created_at
+}
+    `;
+export const TicketsAllFragmentFragmentDoc = `
+    fragment TicketsAllFragment on TicketEntity {
+  id
+  data
+  priority
+  type
+  status
+  investor_id
+  assigned_to_user_id
+  updated_at
+  created_at
+}
+    `;
+export const LoginDocument = `
+    mutation Login($loginInput: LoginInput!) {
+  login(loginInput: $loginInput) {
+    id
+    middle_name
+    avatar
+    mobile_number
+    role
+    first_name
+    last_name
+    email
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useLoginMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<LoginMutation, TError, LoginMutationVariables, TContext>) => {
+    
+    return useMutation<LoginMutation, TError, LoginMutationVariables, TContext>(
+      {
+    mutationKey: ['Login'],
+    mutationFn: (variables?: LoginMutationVariables) => gqlFetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useLoginMutation.fetcher = (variables: LoginMutationVariables, options?: RequestInit['headers']) => gqlFetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables, options);
+
+export const LogoutDocument = `
+    mutation Logout {
+  logout {
+    status
+  }
+}
+    `;
+
+export const useLogoutMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<LogoutMutation, TError, LogoutMutationVariables, TContext>) => {
+    
+    return useMutation<LogoutMutation, TError, LogoutMutationVariables, TContext>(
+      {
+    mutationKey: ['Logout'],
+    mutationFn: (variables?: LogoutMutationVariables) => gqlFetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useLogoutMutation.fetcher = (variables?: LogoutMutationVariables, options?: RequestInit['headers']) => gqlFetcher<LogoutMutation, LogoutMutationVariables>(LogoutDocument, variables, options);
+
+export const MeUserDocument = `
+    query MeUser {
+  meUser {
+    id
+    middle_name
+    avatar
+    mobile_number
+    role
+    first_name
+    last_name
+    email
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useMeUserQuery = <
+      TData = MeUserQuery,
+      TError = unknown
+    >(
+      variables?: MeUserQueryVariables,
+      options?: Omit<UseQueryOptions<MeUserQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<MeUserQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<MeUserQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['MeUser'] : ['MeUser', variables],
+    queryFn: gqlFetcher<MeUserQuery, MeUserQueryVariables>(MeUserDocument, variables),
+    ...options
+  }
+    )};
+
+useMeUserQuery.document = MeUserDocument;
+
+useMeUserQuery.getKey = (variables?: MeUserQueryVariables) => variables === undefined ? ['MeUser'] : ['MeUser', variables];
+
+
+useMeUserQuery.fetcher = (variables?: MeUserQueryVariables, options?: RequestInit['headers']) => gqlFetcher<MeUserQuery, MeUserQueryVariables>(MeUserDocument, variables, options);
+
+export const ListFundsDocument = `
+    query ListFunds {
+  funds {
+    ...FundAllFragment
+  }
+}
+    ${FundAllFragmentFragmentDoc}`;
+
+export const useListFundsQuery = <
+      TData = ListFundsQuery,
+      TError = unknown
+    >(
+      variables?: ListFundsQueryVariables,
+      options?: Omit<UseQueryOptions<ListFundsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListFundsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListFundsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListFunds'] : ['ListFunds', variables],
+    queryFn: gqlFetcher<ListFundsQuery, ListFundsQueryVariables>(ListFundsDocument, variables),
+    ...options
+  }
+    )};
+
+useListFundsQuery.document = ListFundsDocument;
+
+useListFundsQuery.getKey = (variables?: ListFundsQueryVariables) => variables === undefined ? ['ListFunds'] : ['ListFunds', variables];
+
+
+useListFundsQuery.fetcher = (variables?: ListFundsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListFundsQuery, ListFundsQueryVariables>(ListFundsDocument, variables, options);
+
+export const FundOverviewDocument = `
+    query FundOverview($fund_ids: [Int!]!) {
+  fundOverview(fund_ids: $fund_ids) {
+    invested_amount
+    current_amount
+    net_returns
+  }
+}
+    `;
+
+export const useFundOverviewQuery = <
+      TData = FundOverviewQuery,
+      TError = unknown
+    >(
+      variables: FundOverviewQueryVariables,
+      options?: Omit<UseQueryOptions<FundOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FundOverviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<FundOverviewQuery, TError, TData>(
+      {
+    queryKey: ['FundOverview', variables],
+    queryFn: gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables),
+    ...options
+  }
+    )};
+
+useFundOverviewQuery.document = FundOverviewDocument;
+
+useFundOverviewQuery.getKey = (variables: FundOverviewQueryVariables) => ['FundOverview', variables];
+
+
+useFundOverviewQuery.fetcher = (variables: FundOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables, options);
+
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($id: Int!) {
   investor(id: $id) {
@@ -1301,3 +1597,175 @@ export const useDeleteInvitationMutation = <
 
 
 useDeleteInvitationMutation.fetcher = (variables: DeleteInvitationMutationVariables, options?: RequestInit['headers']) => gqlFetcher<DeleteInvitationMutation, DeleteInvitationMutationVariables>(DeleteInvitationDocument, variables, options);
+
+export const CreateTickerDocument = `
+    mutation CreateTicker($createTicketInput: CreateTicketInput!) {
+  createTicket(createTicketInput: $createTicketInput) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useCreateTickerMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateTickerMutation, TError, CreateTickerMutationVariables, TContext>) => {
+    
+    return useMutation<CreateTickerMutation, TError, CreateTickerMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateTicker'],
+    mutationFn: (variables?: CreateTickerMutationVariables) => gqlFetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useCreateTickerMutation.fetcher = (variables: CreateTickerMutationVariables, options?: RequestInit['headers']) => gqlFetcher<CreateTickerMutation, CreateTickerMutationVariables>(CreateTickerDocument, variables, options);
+
+export const UpdateTicketDocument = `
+    mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
+  updateTicket(updateTicketInput: $updateTicketInput) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useUpdateTicketMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateTicketMutation, TError, UpdateTicketMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateTicketMutation, TError, UpdateTicketMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateTicket'],
+    mutationFn: (variables?: UpdateTicketMutationVariables) => gqlFetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useUpdateTicketMutation.fetcher = (variables: UpdateTicketMutationVariables, options?: RequestInit['headers']) => gqlFetcher<UpdateTicketMutation, UpdateTicketMutationVariables>(UpdateTicketDocument, variables, options);
+
+export const SendTicketMessageDocument = `
+    mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
+  sendTicketMessage(sendTicketMessageInput: $sendTicketMessageInput) {
+    ...MessageBaseFragment
+  }
+}
+    ${MessageBaseFragmentFragmentDoc}`;
+
+export const useSendTicketMessageMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SendTicketMessageMutation, TError, SendTicketMessageMutationVariables, TContext>) => {
+    
+    return useMutation<SendTicketMessageMutation, TError, SendTicketMessageMutationVariables, TContext>(
+      {
+    mutationKey: ['SendTicketMessage'],
+    mutationFn: (variables?: SendTicketMessageMutationVariables) => gqlFetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useSendTicketMessageMutation.fetcher = (variables: SendTicketMessageMutationVariables, options?: RequestInit['headers']) => gqlFetcher<SendTicketMessageMutation, SendTicketMessageMutationVariables>(SendTicketMessageDocument, variables, options);
+
+export const DeleteTicketDocument = `
+    mutation DeleteTicket($id: Int!) {
+  removeTicket(id: $id) {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useDeleteTicketMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<DeleteTicketMutation, TError, DeleteTicketMutationVariables, TContext>) => {
+    
+    return useMutation<DeleteTicketMutation, TError, DeleteTicketMutationVariables, TContext>(
+      {
+    mutationKey: ['DeleteTicket'],
+    mutationFn: (variables?: DeleteTicketMutationVariables) => gqlFetcher<DeleteTicketMutation, DeleteTicketMutationVariables>(DeleteTicketDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useDeleteTicketMutation.fetcher = (variables: DeleteTicketMutationVariables, options?: RequestInit['headers']) => gqlFetcher<DeleteTicketMutation, DeleteTicketMutationVariables>(DeleteTicketDocument, variables, options);
+
+export const ListTickersDocument = `
+    query ListTickers {
+  tickets {
+    ...TicketsAllFragment
+  }
+}
+    ${TicketsAllFragmentFragmentDoc}`;
+
+export const useListTickersQuery = <
+      TData = ListTickersQuery,
+      TError = unknown
+    >(
+      variables?: ListTickersQueryVariables,
+      options?: Omit<UseQueryOptions<ListTickersQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListTickersQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListTickersQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListTickers'] : ['ListTickers', variables],
+    queryFn: gqlFetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables),
+    ...options
+  }
+    )};
+
+useListTickersQuery.document = ListTickersDocument;
+
+useListTickersQuery.getKey = (variables?: ListTickersQueryVariables) => variables === undefined ? ['ListTickers'] : ['ListTickers', variables];
+
+
+useListTickersQuery.fetcher = (variables?: ListTickersQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListTickersQuery, ListTickersQueryVariables>(ListTickersDocument, variables, options);
+
+export const RetrieveTicketDocument = `
+    query RetrieveTicket($id: Int!) {
+  ticket(id: $id) {
+    messages {
+      assets {
+        id
+        original_name
+        key
+        url
+        mime_type
+        asset_type
+        created_at
+        updated_at
+      }
+      ...MessageBaseFragment
+    }
+    ...TicketsAllFragment
+  }
+}
+    ${MessageBaseFragmentFragmentDoc}
+${TicketsAllFragmentFragmentDoc}`;
+
+export const useRetrieveTicketQuery = <
+      TData = RetrieveTicketQuery,
+      TError = unknown
+    >(
+      variables: RetrieveTicketQueryVariables,
+      options?: Omit<UseQueryOptions<RetrieveTicketQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RetrieveTicketQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RetrieveTicketQuery, TError, TData>(
+      {
+    queryKey: ['RetrieveTicket', variables],
+    queryFn: gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables),
+    ...options
+  }
+    )};
+
+useRetrieveTicketQuery.document = RetrieveTicketDocument;
+
+useRetrieveTicketQuery.getKey = (variables: RetrieveTicketQueryVariables) => ['RetrieveTicket', variables];
+
+
+useRetrieveTicketQuery.fetcher = (variables: RetrieveTicketQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables, options);

@@ -1,1 +1,1 @@
-export * from './lib/data-access';
+export { NqRestApi } from './lib/rest/rest-api';

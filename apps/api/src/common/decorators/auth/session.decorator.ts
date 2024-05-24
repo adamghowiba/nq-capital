@@ -4,8 +4,6 @@ import {
   createParamDecorator,
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { INVESTORS_PORTAL_URL } from '@nq-capital/utils-constants';
-import { Application } from '../../../modules/auth/entities/session.entity';
 import { Request } from 'express';
 import { ApiError } from '../../exceptions/api.error';
 
@@ -14,15 +12,14 @@ export const GqlSession = createParamDecorator(
     const context = GqlExecutionContext.create(ctx);
     const gqlContext = context.getContext<{ req: Request; headers: Headers }>();
 
-    const originalUrl = gqlContext.req.originalUrl;
-    const application: Application = originalUrl.includes(
-      INVESTORS_PORTAL_URL.host
-    )
-      ? 'investors_portal'
-      : 'admin_portal';
+    /** Since a user can be logged into both an admin or investor account,
+     * we send down the authority to differentiate where the call came form. */
+    const authority = gqlContext.req.headers?.authority;
+    const application = gqlContext.req.headers?.application;
 
     return {
       ...(gqlContext.req?.user || { user: null, investor: null }),
+      user_type: authority,
       application,
     };
   }

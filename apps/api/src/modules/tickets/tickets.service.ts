@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTicketInput } from './dto/create-ticket.input';
-import { UpdateTicketInput } from './dto/update-ticket.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { ApiError } from '../../common/exceptions/api.error';
-import { SendTicketMessageInput } from './dto/create-ticket-message.input';
-import {
-  ApplicationSessionEntity,
-  SessionEntity,
-} from '../auth/entities/session.entity';
-import { TicketEntity } from './entities/ticket.entity';
-import { UploadTicketFileDto } from './dto/upload-ticket-file.dto';
 import { AssetsService } from '../assets/assets.service';
-import { FileBody, UploadAssetDto } from '../assets/dto/upload-asset.dto';
 import { MulterFile } from '../assets/entities/multer-file.entity';
+import {
+  ApplicationSessionEntity
+} from '../auth/entities/session.entity';
+import { SendTicketMessageInput } from './dto/create-ticket-message.input';
+import { CreateTicketInput } from './dto/create-ticket.input';
+import { UpdateTicketInput } from './dto/update-ticket.input';
+import { UploadTicketFileDto } from './dto/upload-ticket-file.dto';
+import { TicketEntity } from './entities/ticket.entity';
 
 @Injectable()
 export class TicketsService {
@@ -40,11 +38,11 @@ export class TicketsService {
       data: {
         ...sendMessageInput,
         sent_by_investor_id:
-          params.application === 'investors_portal' && params.investor?.id
+          params.user_type === 'INVESTOR' && params.investor?.id
             ? params.investor.id
             : undefined,
         sent_by_user_id:
-          params.application === 'admin_portal' && params.user?.id
+          params.user_type === 'ADMIN' && params.user?.id
             ? params.user.id
             : undefined,
       },
@@ -131,7 +129,7 @@ export class TicketsService {
 
   getTickerMessagesField(ticket: TicketEntity) {
     return this.prisma.ticket
-      .findUnique({ where: { id: ticket.id } })
-      .messages();
+      .findUnique({ where: { id: ticket.id }})
+      .messages({orderBy: {created_at: 'asc'}});
   }
 }

@@ -1,24 +1,28 @@
 import alertIcon from '@iconify/icons-fluent/alert-16-filled';
 import { Icon } from '@iconify/react';
-import {
-  Breadcrumbs,
-  IconButton,
-  Link,
-  Typography
-} from '@mui/material';
+import { Breadcrumbs, IconButton, Link, Typography } from '@mui/material';
 import { Box, HStack, NAvatar } from '@nq-capital/nui';
 import { useRouter } from 'next/router';
 import { FC, useMemo } from 'react';
+import { useUser } from '../../hooks/use-user';
+import { useLoginMutation } from '../../gql/gql-client';
 
 export interface TopbarProps {}
 
 const Topbar: FC<TopbarProps> = ({ ...props }) => {
+  const user = useUser();
+
   const router = useRouter();
+  const loginMutation = useLoginMutation({
+    onSuccess: () => {
+      user.refetch()
+    }
+  });
+
   const pathBreadcrumbs = useMemo((): { name: string; href?: string }[] => {
     const pathSegments = router.asPath.split('/').filter(Boolean);
 
     const breadcrumbs = pathSegments.map((segment, index) => {
-
       return {
         name: segment,
         href:
@@ -30,6 +34,16 @@ const Topbar: FC<TopbarProps> = ({ ...props }) => {
 
     return [{ name: 'Home', href: '/' }, ...breadcrumbs];
   }, [router.pathname]);
+
+  const handleTestLogin = () => {
+    loginMutation.mutate({
+      loginInput: {
+        email: 'admin@webrevived.com',
+        password: 'password',
+        user_type: 'ADMIN',
+      },
+    });
+  };
 
   return (
     <>
@@ -65,7 +79,9 @@ const Topbar: FC<TopbarProps> = ({ ...props }) => {
             <Icon icon={alertIcon} width={18} height={18} />
           </IconButton>
 
-          <NAvatar size="md">A</NAvatar>
+          <NAvatar size="md" onClick={() => handleTestLogin()}>
+            {user.data?.first_name?.slice(0, 1) || 'U'}
+          </NAvatar>
         </HStack>
       </HStack>
     </>

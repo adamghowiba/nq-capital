@@ -1,7 +1,6 @@
 import notification from '@iconify/icons-fluent/alert-24-filled';
 import upDown from '@iconify/icons-fluent/chevron-up-down-24-filled';
 import person from '@iconify/icons-fluent/person-24-filled';
-import questionCircle from '@iconify/icons-fluent/question-circle-24-filled';
 import settings from '@iconify/icons-fluent/settings-24-filled';
 import { Icon, IconifyIcon } from '@iconify/react';
 import {
@@ -13,15 +12,16 @@ import {
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import DContainer from '../DContainer/DContainer';
-import OneIcon from '../../utils/OneIcon';
-import TopbarSearch from './TopbarSearch';
-import Logo from '../Logo/logo';
+import Link from 'next/link';
 import { FC, useRef, useState } from 'react';
 import { useInvestor } from '../../hooks/use-investor';
-import Link from 'next/link';
-import { HStack } from '../Stack/Stack';
+import OneIcon from '../../utils/OneIcon';
+import DContainer from '../DContainer/DContainer';
+import Logo from '../Logo/logo';
 import NotificationPopover from '../NotificationPopover/NotificationPopover';
+import { HStack } from '../Stack/Stack';
+import TopbarSearch from './TopbarSearch';
+import { useLoginMutation } from '../../gql/gql-client';
 
 const Topbar: FC<any> = () => {
   const investor = useInvestor();
@@ -29,6 +29,7 @@ const Topbar: FC<any> = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const notificationsIconRef = useRef<HTMLButtonElement>(null);
+  const loginMutation = useLoginMutation();
 
   const rightIcons: {
     title: string;
@@ -96,6 +97,15 @@ const Topbar: FC<any> = () => {
                     width: '32px',
                     height: '32px',
                   }}
+                  onClick={() =>
+                    loginMutation.mutate({
+                      loginInput: {
+                        email: 'investor@webrevived.com',
+                        password: 'password',
+                        user_type: 'INVESTOR',
+                      },
+                    })
+                  }
                 >
                   {investor.data?.first_name[0]}
                   {investor.data?.last_name[0]}

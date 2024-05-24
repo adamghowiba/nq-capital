@@ -33,7 +33,12 @@ export const gqlFetcher = <TData, TVariables>(
   return async (): Promise<TData> => {
     const res = await fetch(API_URL.href, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...options },
+      headers: {
+        'Content-Type': 'application/json',
+        authority: 'ADMIN',
+        application: 'admin_portal',
+        ...options,
+      },
       credentials: 'include',
       body: JSON.stringify({ query, variables }),
     });

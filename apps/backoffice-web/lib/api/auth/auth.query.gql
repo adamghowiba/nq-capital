@@ -1,0 +1,14 @@
+query MeUser {
+  meUser {
+    id
+    middle_name
+    avatar
+    mobile_number
+    role
+    first_name
+    last_name
+    email
+    created_at
+    updated_at
+  }
+}

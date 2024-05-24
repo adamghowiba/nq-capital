@@ -43,6 +43,12 @@ type FundEntity {
   updated_at: DateTime!
 }
 
+type FundOverviewEntity {
+  invested_amount: Float!
+  current_amount: Float!
+  net_returns: Float!
+}
+
 type TransactionEntity {
   id: Int!
   type: TransactionType!
@@ -325,6 +331,10 @@ type Query {
   investor(id: Int!): InvestorEntity!
   investorPortfolio(id: Int): InvestorPortfolioEntity!
   funds: [FundEntity!]!
+  fundOverview(
+    "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
+    fund_ids: [Int!]
+  ): [FundOverviewEntity!]!
   fund(id: Int!): FundEntity!
   transactions: [TransactionEntity!]!
   transaction(id: Int!): TransactionEntity!

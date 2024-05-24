@@ -224,6 +224,13 @@ export type FundEntity = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type FundOverviewEntity = {
+  __typename?: 'FundOverviewEntity';
+  current_amount: Scalars['Float']['output'];
+  invested_amount: Scalars['Float']['output'];
+  net_returns: Scalars['Float']['output'];
+};
+
 export type InvestorAccountStatus =
   | 'ACTIVE'
   | 'DISABLED'
@@ -560,6 +567,7 @@ export type Query = {
   bankAccount: BankAccountEntity;
   bankAccounts: Array<BankAccountEntity>;
   fund: FundEntity;
+  fundOverview: Array<FundOverviewEntity>;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
@@ -594,6 +602,11 @@ export type QueryBankAccountArgs = {
 
 export type QueryFundArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryFundOverviewArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 

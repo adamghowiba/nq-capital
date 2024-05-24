@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { UserEntity } from '../../users/entities/user.entity';
 import { InvestorEntity } from '../../investors/entities/investor.entity';
+import { UserType } from '@prisma/client';
 
 @ObjectType()
 export class SessionEntity {
@@ -19,4 +20,5 @@ export type Application = 'investors_portal' | 'admin_portal';
  */
 export class ApplicationSessionEntity extends SessionEntity {
   application!: Application;
+  user_type!: UserType;
 }

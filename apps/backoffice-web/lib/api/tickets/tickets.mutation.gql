@@ -1,0 +1,24 @@
+mutation CreateTicker($createTicketInput: CreateTicketInput!) {
+  createTicket(createTicketInput: $createTicketInput) {
+    ...TicketsAllFragment
+  }
+}
+
+mutation UpdateTicket($updateTicketInput: UpdateTicketInput!) {
+  updateTicket(updateTicketInput: $updateTicketInput) {
+    ...TicketsAllFragment
+  }
+}
+
+mutation SendTicketMessage($sendTicketMessageInput: SendTicketMessageInput!) {
+  sendTicketMessage(sendTicketMessageInput: $sendTicketMessageInput) {
+    ...MessageBaseFragment
+  }
+}
+
+
+mutation DeleteTicket($id: Int!) {
+  removeTicket(id: $id) {
+    ...TicketsAllFragment
+  }
+}

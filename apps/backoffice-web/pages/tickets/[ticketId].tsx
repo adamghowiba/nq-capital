@@ -1,40 +1,43 @@
+import add12Icon from '@iconify/icons-fluent/add-12-filled';
+import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
+import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
+import { Icon } from '@iconify/react';
 import {
   Alert,
   AlertTitle,
   Box,
   Button,
-  ButtonGroup,
   Chip,
   CircularProgress,
+  Unstable_Grid2 as Grid,
   IconButton,
   TextField,
   Typography,
   styled,
 } from '@mui/material';
-import Screen from '../../lib/components/Screen/Screen';
-import { HStack, VStack } from '../../lib/components/Stack/Stack';
 import {
-  MessageEntity,
+  FileChip,
+  HStack,
+  MessageCard,
+  VStack,
+  useFileUpload,
+} from '@nq-capital/nui';
+import { formatISOForTable } from '@nq-capital/utils';
+import { useMutation } from '@tanstack/react-query';
+import { DateTime } from 'luxon';
+import { useRouter } from 'next/router';
+import React, { ReactNode, useState } from 'react';
+import { queryClient } from '../../lib/api/query-client';
+import { restApi } from '../../lib/api/rest-client';
+import { Screen } from '../../lib/components/Screen/Screen';
+import { SCREEN_HEIGHT_CALC } from '../../lib/constants/size.constants';
+import {
   RetrieveTicketQuery,
   useDeleteTicketMutation,
   useRetrieveTicketQuery,
   useSendTicketMessageMutation,
 } from '../../lib/gql/gql-client';
-import { formatISOForTable } from '../../lib/utils/date.utils';
-import { useRouter } from 'next/router';
-import React, { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
-import { Unstable_Grid2 as Grid } from '@mui/material';
-import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
-import add12Icon from '@iconify/icons-fluent/add-12-filled';
-import send16FilledIcon from '@iconify/icons-fluent/send-16-filled';
-import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
-import { Icon } from '@iconify/react';
-import { useMutation } from '@tanstack/react-query';
-import { useInvestor } from '../../lib/hooks/use-investor';
-import { queryClient } from '../../lib/api/query-client';
-import { DateTime } from 'luxon';
-import { FileChip, MessageCard, useFileUpload } from '@nq-capital/nui';
-import { nqRestApi } from '../../lib/api/rest-api';
+import { useUser } from '../../lib/hooks/use-user';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
 
@@ -52,12 +55,9 @@ const VisuallyHiddenInput = styled('input')({
 
 const getMessageDisplayName = (
   message: TicketMessageQueryData,
-  investorId?: number
+  userId?: number
 ) => {
-  if (
-    message.type === 'INVESTOR' &&
-    message?.sent_by_investor_id === investorId
-  )
+  if (message.type === 'ADMIN' && message?.sent_by_user_id === userId)
     return 'You';
 
   if (message.sent_by_investor) {
@@ -78,10 +78,11 @@ const getMessageDisplayName = (
 const TickerDetailPage = ({ ...props }) => {
   const [messageInput, setMessageInput] = useState('');
 
-  const investor = useInvestor();
+  const user = useUser();
   const fileUploader = useFileUpload({
     maxFiles: 4,
   });
+
   const router = useRouter();
   const ticketId = parseInt(router.query?.ticketId as string);
 
@@ -146,7 +147,7 @@ const TickerDetailPage = ({ ...props }) => {
   });
 
   const uploadFileMutation = useMutation({
-    mutationFn: nqRestApi.uploadTicketFile,
+    mutationFn: restApi.uploadTicketFile,
     onSuccess: () => {
       console.log('Success');
     },
@@ -219,9 +220,9 @@ const TickerDetailPage = ({ ...props }) => {
 
   return (
     <>
-      <Grid container height="100%">
+      <Grid container height={SCREEN_HEIGHT_CALC}>
         <Grid mobile={8}>
-          <Screen>
+          <Screen gap={5}>
             <HStack>
               <VStack>
                 <HStack gap={1} alignItems="center">
@@ -311,7 +312,7 @@ const TickerDetailPage = ({ ...props }) => {
           </Screen>
         </Grid>
 
-        <Grid mobile={4} height="calc(100vh - 108px)">
+        <Grid mobile={4} height="100%">
           <VStack
             borderLeft="1px solid #EBEBEB"
             height="100%"
@@ -327,17 +328,12 @@ const TickerDetailPage = ({ ...props }) => {
                   key={message.id}
                   content={message.content}
                   date={message.created_at}
-                  displayName={getMessageDisplayName(
-                    message,
-                    investor.data?.id
-                  )}
+                  displayName={getMessageDisplayName(message, user.data?.id)}
                   isVerified={!!message.sent_by_user_id}
                   files={message?.assets || []}
                 />
               ))}
             </VStack>
-
-            {/*  */}
 
             <VStack p={2} gap={1} borderTop="1px solid #EBEBEB" mt="auto">
               {!!fileUploader.files.length && (

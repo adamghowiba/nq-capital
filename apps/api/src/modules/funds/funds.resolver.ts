@@ -14,6 +14,8 @@ import { FundEntity } from './entities/fund.entity';
 import { FundsService } from './funds.service';
 import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { AdjustFundInput } from './dto/adjust-fund.input';
+import { FundOverviewEntity } from './entities/fund-overview.entity';
+import { GetFundOverViewArgs } from './dto/get-fund-overview.args';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {
@@ -34,6 +36,11 @@ export class FundsResolver {
   @Query(() => [FundEntity], { name: 'funds' })
   list() {
     return this.fundsService.list();
+  }
+
+  @Query(() => [FundOverviewEntity], { name: 'fundOverview' })
+  fundOverview(@Args() fundOverviewArgs: GetFundOverViewArgs) {
+    return this.fundsService.getFundOverview(fundOverviewArgs);
   }
 
   @Query(() => FundEntity, { name: 'fund' })
