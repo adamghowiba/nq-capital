@@ -1,13 +1,13 @@
 import add12FilledIcon from '@iconify/icons-fluent/add-12-filled';
 import { Icon } from '@iconify/react';
 import { IconButton, Typography } from '@mui/material';
+import { HStack, VStack } from '@nq-capital/nui';
 import { useState } from 'react';
 import { BankCard } from '../../lib/components/BankCard/BankCard';
 import {
   BankCardMutationDialog,
   BankMutationDialogProps,
 } from '../../lib/components/BankCardMutationDialog/BankMutationDialog';
-import { HStack, VStack } from '../../lib/components/Stack/Stack';
 import {
   CreateBankAccountInput,
   useCreateBankAccountMutation,

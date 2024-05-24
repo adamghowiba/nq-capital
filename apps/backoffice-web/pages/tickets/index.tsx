@@ -3,7 +3,6 @@ import { Button } from '@mui/material';
 import { GridColDef, GridFilterModel } from '@mui/x-data-grid';
 import {
   Box,
-  ChipColorSchema,
   ColoredChip,
   CustomDataGrid,
   MenuButton,
@@ -13,17 +12,16 @@ import {
   NMenuItem,
   PageHeader,
   StyledTab,
-  StyledTabs
+  StyledTabs,
+  TICKET_STATUS_COLOR_MAP,
+  TICKET_TYPE_COLOR_MAP
 } from '@nq-capital/nui';
 import { formatISOForTable } from '@nq-capital/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Screen } from '../../lib/components/Screen/Screen';
 import {
-  InvestorAccountStatus,
-  InvitationStatus,
   ListTickersQuery,
   TicketStatus,
-  TicketType,
   useDeleteTicketMutation,
   useListTickersQuery,
   useUpdateTicketMutation
@@ -52,17 +50,6 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
     updateTicketMutation.mutate({
       updateTicketInput: { id: ticketId, status },
     });
-  };
-
-  const TICKET_TYPE_COLOR_MAP: Record<TicketType, ChipColorSchema> = {
-    DOCUMENT_REQUEST: 'blue',
-    SUPPORT: 'green',
-  };
-
-  const TICKET_STATUS_COLOR_MAP: Record<TicketStatus, ChipColorSchema> = {
-    CLOSED: 'neutral',
-    OPEN: 'green',
-    UNDER_REVIEW: 'blue',
   };
 
   const ticketColumns = useMemo((): GridColDef<

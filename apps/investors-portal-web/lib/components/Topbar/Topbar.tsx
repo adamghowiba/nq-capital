@@ -19,9 +19,9 @@ import OneIcon from '../../utils/OneIcon';
 import DContainer from '../DContainer/DContainer';
 import Logo from '../Logo/logo';
 import NotificationPopover from '../NotificationPopover/NotificationPopover';
-import { HStack } from '../Stack/Stack';
 import TopbarSearch from './TopbarSearch';
 import { useLoginMutation } from '../../gql/gql-client';
+import { HStack } from '@nq-capital/nui';
 
 const Topbar: FC<any> = () => {
   const investor = useInvestor();

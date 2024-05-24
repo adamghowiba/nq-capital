@@ -19,14 +19,13 @@ import { DrawerBody } from '../../../../lib/components/Drawer/DrawerBody';
 import DrawerContent from '../../../../lib/components/Drawer/DrawerContent';
 import DrawerFooter from '../../../../lib/components/Drawer/DrawerFooter';
 import DrawerHeader from '../../../../lib/components/Drawer/DrawerHeader';
-import NTextField from '../../../../lib/components/Fields/NTextField';
-import { HStack } from '../../../../lib/components/Stack/Stack';
 import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
 import {
   useCreateTickerMutation,
   useListTickersQuery,
 } from '../../../../lib/gql/gql-client';
 import { useQueryClient } from '@tanstack/react-query';
+import { HStack, NTextField } from '@nq-capital/nui';
 
 export interface TickerMutationDrawerProps extends DrawerProps {
   mode:

@@ -8,9 +8,9 @@ import {
   Typography,
 } from '@mui/material';
 import React, { FC, useMemo, useState } from 'react';
-import { HStack, VStack } from '../Stack/Stack';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { ButtonTab, ButtonTabs } from '../Tabs/ButtonTabs';
+import { HStack, VStack } from '@nq-capital/nui';
 
 export interface NotificationPopoverProps extends PopperProps {}
 

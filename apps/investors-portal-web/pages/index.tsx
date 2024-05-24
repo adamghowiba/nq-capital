@@ -1,11 +1,10 @@
 import { Button } from '@mui/material';
+import { HStack, Stat } from '@nq-capital/nui';
 import { useState } from 'react';
 import Box from '../lib/components/Box/Box';
-import { Stat } from '../lib/components/KPICard/KPICard';
 import NLink from '../lib/components/Link/Link';
 import PageHeader from '../lib/components/PageHeader/PageHeader';
 import Screen from '../lib/components/Screen/Screen';
-import { HStack } from '../lib/components/Stack/Stack';
 import CustomDataGrid from '../lib/components/StyledDataGrid/CustomDataGrid';
 import TransactionTypeChip from '../lib/components/TransactionTypeBadge/TransactionTypeBadge';
 import {

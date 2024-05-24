@@ -1,13 +1,17 @@
 import type { CodegenConfig } from '@graphql-codegen/cli';
+import {TypeScriptPluginConfig} from '@graphql-codegen/typescript'
+
+const TYPESCRIPT_CONFIG: TypeScriptPluginConfig = {
+  enumsAsTypes: true,
+}
 
 const config: CodegenConfig = {
   schema: '../../../schema.gql',
-  watch: './requests/**/*.gql',
   generates: {
     './src/schema.ts': {
-      plugins: ['typescript', 'typescript-operations'],
+      plugins: ['typescript'],
       config: {
-        enumsAsTypes: true,
+        ...TYPESCRIPT_CONFIG
       },
     },
   },

@@ -1,14 +1,16 @@
 import inviteIcon from '@iconify/icons-fluent/add-16-filled';
 import moreVertical from '@iconify/icons-fluent/more-vertical-16-filled';
 import { Icon } from '@iconify/react';
-import { Button, IconButton, Tab, Tabs, Typography } from '@mui/material';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Button, IconButton, Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import {
+  ACCOUNT_STATUS_COLOR_MAP,
   Box,
-  ChipColorSchema,
   ColoredChip,
   CustomDataGrid,
   HStack,
+  INVITATION_STATUS_COLOR_MAP,
   MenuButton,
   MenuList,
   NAvatar,
@@ -17,39 +19,21 @@ import {
   PageHeader,
   StyledTab,
   StyledTabs,
-  VStack,
+  VStack
 } from '@nq-capital/nui';
 import { formatISOForTable } from '@nq-capital/utils';
 import { useMemo, useState } from 'react';
 import { Screen } from '../../lib/components/Screen/Screen';
 import {
-  InvestorAccountStatus,
-  InvitationStatus,
   ListInvestorsQuery,
   ListInvitationsQuery,
   useDeleteInvitationMutation,
   useInviteInvestorMutation,
   useListInvestorsQuery,
-  useListInvitationsQuery,
+  useListInvitationsQuery
 } from '../../lib/gql/gql-client';
 import InviteSingleInvestorDialog from '../../lib/modules/investors/components/InviteSingleInvestorDialog';
 import { NextPageWithLayout } from '../_app';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
-
-const ACCOUNT_STATUS_COLOR_MAP: Record<InvestorAccountStatus, ChipColorSchema> =
-  {
-    ACTIVE: 'green',
-    DISABLED: 'red',
-    ONBOARDING: 'blue',
-  };
-
-const INVITATION_STATUS_COLOR_MAP: Record<InvitationStatus, ChipColorSchema> = {
-  ACCEPTED: 'green',
-  DECLINED: 'red',
-  EXPIRED: 'blue',
-  PENDING: 'blue',
-  REVOKED: 'neutral',
-};
 
 const UserListPage: NextPageWithLayout = ({ ...props }) => {
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);

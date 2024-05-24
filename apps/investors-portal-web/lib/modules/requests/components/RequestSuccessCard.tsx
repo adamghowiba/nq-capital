@@ -1,10 +1,10 @@
-import { HStack, VStack } from '../../../../lib/components/Stack/Stack';
 import React, { FC, ReactNode } from 'react';
 import checkMarkIcon from '@iconify/icons-fluent/checkmark-circle-16-filled';
 import arrowCircleUpRight from '@iconify/icons-fluent/arrow-circle-up-right-20-filled';
 import { Icon } from '@iconify/react';
 import { Button, Typography } from '@mui/material';
 import Link from 'next/link';
+import { HStack, VStack } from '@nq-capital/nui';
 
 export interface RequestSuccessCardProps {
   title: string;

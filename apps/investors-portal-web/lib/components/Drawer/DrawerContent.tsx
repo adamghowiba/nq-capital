@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
+import { StackPropsExtended } from '@nq-capital/nui';
 import { FC, PropsWithChildren } from 'react';
-import { StackPropsExtended } from '../Stack/Stack';
 
 export type DrawerSize = 'sm' | 'md' | 'lg' | 'full';
 export interface DrawerContentProps

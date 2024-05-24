@@ -1,7 +1,5 @@
-import {
-  StackPropsExtended,
-  VStack,
-} from '../../../../lib/components/Stack/Stack';
+
+import { StackPropsExtended, VStack } from '@nq-capital/nui';
 import React, { FC } from 'react';
 
 export interface SettingsFieldGroupProps extends StackPropsExtended {}

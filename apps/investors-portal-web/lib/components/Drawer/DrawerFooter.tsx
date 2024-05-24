@@ -1,5 +1,5 @@
+import { HStack } from '@nq-capital/nui';
 import { FC, PropsWithChildren } from 'react';
-import { HStack } from '../Stack/Stack';
 
 export interface DrawerFooterProps extends PropsWithChildren {}
 

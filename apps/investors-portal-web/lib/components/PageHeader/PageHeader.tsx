@@ -1,7 +1,6 @@
-import React, { FC, ReactNode } from 'react';
-import Box from '../Box/Box';
-import { Typography, useTheme } from '@mui/material';
-import { HStack, StackPropsExtended } from '../Stack/Stack';
+import { Typography } from '@mui/material';
+import { HStack, StackPropsExtended } from '@nq-capital/nui';
+import { FC, ReactNode } from 'react';
 
 export interface PageHeaderProps {
   title: ReactNode;

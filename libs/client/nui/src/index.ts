@@ -99,6 +99,14 @@ export type { ChatBoxTextFieldProps } from './lib/components/Chatbox/ChatBoxText
 export { UploadIconButton } from './lib/components/Chatbox/UploadIconButton';
 export { UploadIconButtonProps } from './lib/components/Chatbox/UploadIconButton';
 
+// CONSTANTS
+export {
+  TICKET_STATUS_COLOR_MAP,
+  TICKET_TYPE_COLOR_MAP,
+  ACCOUNT_STATUS_COLOR_MAP,
+  INVITATION_STATUS_COLOR_MAP,
+} from './lib/constants/color-map.constants';
+
 // HOOKS
 export { useFileUpload } from './lib/hooks/use-file-upload';
 export type {

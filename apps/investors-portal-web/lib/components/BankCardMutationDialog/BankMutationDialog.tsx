@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import { FC } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { BANK_ACCOUNT_TYPES } from '../../constants/bank.constants';
 import { NATIONALITIES } from '../../constants/nationalities.constants';
 import {
   BankAccountSchema,
@@ -22,8 +21,7 @@ import {
 } from '../../modules/payment-source/payment-source.schema';
 import DialogHeader from '../Dialog/DialogHeader';
 import NTextField from '../Fields/NTextField';
-import { HStack } from '../Stack/Stack';
-import { BankAccountAllFragmentFragment } from '../../gql/gql-client';
+import { HStack } from '@nq-capital/nui';
 
 export interface BankMutationDialogProps extends DialogProps {
   onSave: (type: 'edit' | 'create', bank: BankAccountSchema) => void;

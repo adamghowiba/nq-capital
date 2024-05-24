@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
+import { StackPropsExtended } from '@nq-capital/nui';
 import { FC } from 'react';
-import { StackPropsExtended } from '../Stack/Stack';
 
 export interface ScreenProps extends StackPropsExtended {}
 

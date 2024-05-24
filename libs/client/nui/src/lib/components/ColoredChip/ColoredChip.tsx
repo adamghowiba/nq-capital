@@ -1,7 +1,13 @@
 import { Chip, ChipProps } from '@mui/material';
 import { FC } from 'react';
 
-export type ChipColorSchema = 'red' | 'green' | 'blue' | 'neutral';
+export type ChipColorSchema =
+  | 'red'
+  | 'green'
+  | 'blue'
+  | 'neutral'
+  | 'yellow'
+  | 'orange';
 
 export interface ColoredChipProps extends ChipProps {
   colorSchema?: ChipColorSchema;
@@ -23,6 +29,14 @@ export const CHIP_COLOR_MAP: Record<
     color: '#3A5CCC',
     bgColor: 'rgba(1, 68, 255, 0.06)',
   },
+  yellow: {
+    color: '#FFC107',
+    bgColor: 'rgba(255, 193, 7, 0.06)',
+  },
+  orange: {
+    color: '#FF8C00',
+    bgColor: 'rgba(255, 140, 0, 0.06)',
+  },
   neutral: {
     color: '#646464',
     bgColor: '#F9F9F9',
@@ -36,14 +50,14 @@ export const ColoredChip: FC<ColoredChipProps> = ({
   const typeColor = CHIP_COLOR_MAP[colorSchema];
 
   return (
-      <Chip
-        size="small"
-        {...props}
-        sx={{
-          color: typeColor.color,
-          backgroundColor: typeColor.bgColor,
-          ...props?.sx,
-        }}
-      />
+    <Chip
+      size="small"
+      {...props}
+      sx={{
+        color: typeColor.color,
+        backgroundColor: typeColor.bgColor,
+        ...props?.sx,
+      }}
+    />
   );
 };

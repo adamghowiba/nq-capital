@@ -1,11 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Alert, AlertTitle, Box, Button } from '@mui/material';
-import { HStack } from '@nq-capital/nui';
+import { HStack, VStack } from '@nq-capital/nui';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { VStack } from '../../lib/components/Stack/Stack';
 import {
   InvitationStatus,
   useCreateInvestorMutation,

@@ -1,45 +1,14 @@
+import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
+import { Icon } from '@iconify/react';
 import {
   Alert,
   AlertTitle,
-  Box,
   Button,
-  ButtonGroup,
   Chip,
   CircularProgress,
-  IconButton,
-  TextField,
-  Typography,
-  styled,
+  Unstable_Grid2 as Grid,
+  Typography
 } from '@mui/material';
-import Screen from '../../lib/components/Screen/Screen';
-import { HStack, VStack } from '../../lib/components/Stack/Stack';
-import {
-  MessageEntity,
-  RetrieveTicketQuery,
-  useDeleteTicketMutation,
-  useRetrieveTicketQuery,
-  useSendTicketMessageMutation,
-} from '../../lib/gql/gql-client';
-import { formatISOForTable } from '../../lib/utils/date.utils';
-import { useRouter } from 'next/router';
-import React, {
-  ChangeEvent,
-  FC,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { Unstable_Grid2 as Grid } from '@mui/material';
-import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
-import add12Icon from '@iconify/icons-fluent/add-12-filled';
-import send16FilledIcon from '@iconify/icons-fluent/send-16-filled';
-import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
-import { Icon } from '@iconify/react';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useInvestor } from '../../lib/hooks/use-investor';
-import { queryClient } from '../../lib/api/query-client';
-import { DateTime } from 'luxon';
 import {
   ChatBox,
   ChatBoxBody,
@@ -47,11 +16,32 @@ import {
   ChatBoxHeader,
   ChatBoxTextField,
   FileChip,
+  HStack,
   MessageCard,
   UploadIconButton,
+  VStack,
   useFileUpload,
 } from '@nq-capital/nui';
+import { useMutation } from '@tanstack/react-query';
+import { DateTime } from 'luxon';
+import { useRouter } from 'next/router';
+import React, {
+  ReactNode,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
+import { queryClient } from '../../lib/api/query-client';
 import { nqRestApi } from '../../lib/api/rest-api';
+import Screen from '../../lib/components/Screen/Screen';
+import {
+  RetrieveTicketQuery,
+  useDeleteTicketMutation,
+  useRetrieveTicketQuery,
+  useSendTicketMessageMutation
+} from '../../lib/gql/gql-client';
+import { useInvestor } from '../../lib/hooks/use-investor';
+import { formatISOForTable } from '../../lib/utils/date.utils';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
 
