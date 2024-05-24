@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build:investors": "nx build investors-portal-web --configuration production"
+    "build:investors": "nx build investors-portal-web --configuration production",
+    "codegen": "nx run-many -t codegen -p backoffice-web nui investors-portal-web"
   },
   "private": true,
   "prisma": {

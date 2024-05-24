@@ -1,14 +1,7 @@
 import {
-  HStack,
-  KPICard,
-  KPICardChange,
-  KPICardTitle,
-  KPICardValue,
-  PageHeader,
-  Stat,
-} from '@nq-capital/nui';
-import { Screen } from '../lib/components/Screen/Screen';
-import {
+  Alert,
+  AlertTitle,
+  Box,
   Card,
   CardContent,
   CardHeader,
@@ -18,15 +11,33 @@ import {
   Select,
   Typography,
 } from '@mui/material';
-import InvestmentOverviewChart from '../lib/modules/overview/components/InvestmentOverviewChart';
-import { useListFundsQuery } from '../lib/gql/gql-client';
+import {
+  BarList,
+  HStack,
+  KPICard,
+  KPICardChange,
+  KPICardTitle,
+  KPICardValue,
+  PageHeader,
+  VStack,
+} from '@nq-capital/nui';
+import { formatUSDCurrency } from '@nq-capital/utils';
 import { useState } from 'react';
+import { Screen } from '../lib/components/Screen/Screen';
+import {
+  useGetFundInvestorsOverviewQuery,
+  useListFundsQuery,
+} from '../lib/gql/gql-client';
+import InvestmentOverviewChart from '../lib/modules/overview/components/InvestmentOverviewChart';
 
 export function Index() {
   const [selectedFundIds, setSelectedFundIds] = useState<number[]>([]);
   const funds = useListFundsQuery({}, { select: (data) => data.funds });
 
-  console.log(selectedFundIds);
+  const fundInvestorsOverview = useGetFundInvestorsOverviewQuery(
+    {},
+    { select: (data) => data.fundInvestorsOverview }
+  );
 
   return (
     <>
@@ -59,7 +70,9 @@ export function Index() {
                   }}
                   displayEmpty
                 >
-                  <MenuItem value="" sx={{display: 'none'}}>All</MenuItem>
+                  <MenuItem value="" sx={{ display: 'none' }}>
+                    All
+                  </MenuItem>
 
                   {funds.data?.map((fund) => {
                     return (
@@ -76,7 +89,9 @@ export function Index() {
 
         <HStack gap={3}>
           <KPICard>
-            <KPICardTitle>Total Investment</KPICardTitle>
+            <KPICardTitle tooltip="Total amount invested across all funds">
+              Total Investment
+            </KPICardTitle>
 
             <HStack gap={1}>
               <KPICardValue>$150,736</KPICardValue>
@@ -86,7 +101,9 @@ export function Index() {
           </KPICard>
 
           <KPICard>
-            <KPICardTitle>Current Value</KPICardTitle>
+            <KPICardTitle tooltip="Accumulated value for all funds">
+              Current Value
+            </KPICardTitle>
 
             <HStack gap={1}>
               <KPICardValue>$150,736</KPICardValue>
@@ -102,21 +119,47 @@ export function Index() {
               <KPICardValue>$150,736</KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
+
             <Typography variant="subtitle2">vs last month</Typography>
           </KPICard>
         </HStack>
 
         <InvestmentOverviewChart />
 
-        <HStack gap={3}>
+        <HStack gap={3} align="start">
           <Card sx={{ width: '100%' }} variant="outlined">
-            <CardHeader title="Investment Distribution" subheader="Mar 2024" />
-            <CardContent></CardContent>
+            <CardHeader
+              title="Investment Distribution"
+              subheader="Total $4,320"
+            />
+            <CardContent sx={{ minHeight: '200px' }}>
+              {fundInvestorsOverview.isSuccess &&
+                !fundInvestorsOverview.data.length && (
+                  <VStack w="100%" h="186px" align="center" justify="center">
+                    <Typography>No data available</Typography>
+                  </VStack>
+                )}
+
+              <BarList
+                valueFormatter={(value) => formatUSDCurrency(value || 0)}
+                data={
+                  fundInvestorsOverview.data?.map((investor) => ({
+                    name: investor.first_name,
+                    value: investor.invested_amount,
+                  })) || []
+                }
+              />
+            </CardContent>
           </Card>
 
-          <Card sx={{ width: '100%' }} variant="outlined">
+          <Card sx={{ width: '100%', alignSelf: 'stretch' }} variant="outlined">
             <CardHeader title="Investment Performance" subheader="Mar 2024" />
-            <CardContent></CardContent>
+            <CardContent>
+              <Alert severity="warning">
+                <AlertTitle>Under construction</AlertTitle>
+                This component is still being built, stand by!
+              </Alert>
+            </CardContent>
           </Card>
         </HStack>
       </Screen>

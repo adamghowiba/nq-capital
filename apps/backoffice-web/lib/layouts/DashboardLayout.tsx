@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import Sidebar from '../components/Sidebar/Sidebar';
 import { Box } from '@nq-capital/nui';
 import Topbar from '../components/Topbar/Topbar';
+import { SCREEN_HEIGHT_CALC } from '../constants/size.constants';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
@@ -27,12 +28,21 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             margin: '8px',
             bgcolor: 'white',
             borderRadius: '12px',
-            height: "calc(100vh - 16px)",
+            height: 'calc(100vh - 16px)',
             boxShadow: '0px 2px 4px 0px #EBEBEB, 0px 0px 0px 1px #EBEBEB',
           }}
         >
           <Topbar />
-          {children}
+
+          <Box
+            sx={{
+              overflow: 'auto',
+              scrollbarWidth: 'thin',
+              height: SCREEN_HEIGHT_CALC,
+            }}
+          >
+            {children}
+          </Box>
         </Box>
       </Box>
     </Box>

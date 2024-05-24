@@ -6,8 +6,8 @@ export interface ScreenProps extends StackPropsExtended {}
 
 export const Screen: FC<ScreenProps> = ({ children, ...props }) => {
   return (
-      <Stack py="24px" px="24px" gap={2} {...props}>
-        {children}
-      </Stack>
+    <Stack py="24px" px="24px" gap={2} {...props}>
+      {children}
+    </Stack>
   );
 };

@@ -16,10 +16,15 @@ import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.
 import { AdjustFundInput } from './dto/adjust-fund.input';
 import { FundOverviewEntity } from './entities/fund-overview.entity';
 import { GetFundOverViewArgs } from './dto/get-fund-overview.args';
+import { FundAggregatorService } from './fund-aggregator.service';
+import { FundInvestorOverview } from './entities/fund-investor-overview.entity';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {
-  constructor(private readonly fundsService: FundsService) {}
+  constructor(
+    private readonly fundsService: FundsService,
+    private readonly fundAggregatorService: FundAggregatorService
+  ) {}
 
   @Mutation(() => FundEntity)
   createFund(@Args('createFundInput') createFundInput: CreateFundInput) {
@@ -40,7 +45,12 @@ export class FundsResolver {
 
   @Query(() => [FundOverviewEntity], { name: 'fundOverview' })
   fundOverview(@Args() fundOverviewArgs: GetFundOverViewArgs) {
-    return this.fundsService.getFundOverview(fundOverviewArgs);
+    return this.fundAggregatorService.getOverview(fundOverviewArgs);
+  }
+
+  @Query(() => [FundInvestorOverview], { name: 'fundInvestorsOverview' })
+  fundInvestorsOverview(@Args() fundOverviewArgs: GetFundOverViewArgs) {
+    return this.fundAggregatorService.getInvestorsOverview(fundOverviewArgs);
   }
 
   @Query(() => FundEntity, { name: 'fund' })

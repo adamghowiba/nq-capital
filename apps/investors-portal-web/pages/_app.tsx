@@ -5,6 +5,7 @@ import { ReactElement, ReactNode } from 'react';
 import DashboardLayout from '../lib/layouts/DashboardLayout';
 import RootLayout from '../lib/layouts/RootLayout';
 import '../styles/global.css';
+import Head from 'next/head';
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -24,6 +25,10 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
+      <Head>
+        <title>NQ - Investors Portal</title>
+      </Head>
+
       <main
         className={`${inter.className}`}
         style={{

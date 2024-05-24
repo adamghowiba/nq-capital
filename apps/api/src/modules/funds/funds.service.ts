@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@nq-capital/service-database';
+import { GraphQLError } from 'graphql';
+import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
+import { TransactionEmitter } from '../transactions/event-manager/transaction-emitter.service';
+import { AdjustFundInput } from './dto/adjust-fund.input';
 import {
   CreateFundInput,
   CreateNestedInvestorFundWithoutFundInput,
 } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
-import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
-import { AdjustFundInput } from './dto/adjust-fund.input';
-import { GraphQLError } from 'graphql';
-import { TransactionEmitter } from '../transactions/event-manager/transaction-emitter.service';
-import { GetFundOverViewArgs } from './dto/get-fund-overview.args';
-import { FundOverviewEntity } from './entities/fund-overview.entity';
 
 @Injectable()
 export class FundsService {
@@ -228,51 +226,6 @@ export class FundsService {
     });
 
     return { investors: investors, totalInvestment };
-  }
-
-  async getFundOverview(
-    params: GetFundOverViewArgs
-  ): Promise<FundOverviewEntity> {
-    const funds = await this.prisma.fund.findMany({
-      where: { id: params.fund_ids ? { in: params.fund_ids } : undefined },
-      include: {
-        investors: {
-          select: {
-            invested_amount: true,
-          },
-        },
-      },
-    });
-
-    // const transactions = await this.prisma.transaction.findMany({
-    //   where: {
-    //     type: 'ADJUSTMENT',
-    //     // TODO: only get transactions for the fund
-    //     // fund_id: { in: funds.map((fund) => fund.id) },
-    //   },
-    // });
-
-    const data = funds.reduce(
-      (
-        acc: Pick<FundOverviewEntity, 'current_amount' | 'invested_amount'>,
-        fund
-      ) => {
-        acc.current_amount += fund.balance;
-        acc.invested_amount += fund.investors.reduce(
-          (acc, investor) => acc + investor.invested_amount,
-          0
-        );
-
-        return acc;
-      },
-      { current_amount: 0, invested_amount: 0 }
-    );
-
-    return {
-      invested_amount: data.invested_amount,
-      current_amount: data.current_amount,
-      net_returns: data.current_amount - data.invested_amount,
-    };
   }
 
   async list() {

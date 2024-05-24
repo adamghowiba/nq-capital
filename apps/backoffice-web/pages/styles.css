@@ -12,6 +12,10 @@ body,
   width: 100%;
 }
 
+div {
+  scrollbar-width: thin;
+}
+
 body {
   margin: 0;
   padding: 0;

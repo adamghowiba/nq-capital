@@ -17,16 +17,16 @@ export { formatGridColumns } from './lib/components/DataTable/helpers/data-grid.
 export { NAvatar } from './lib/components/NAvatar/NAvatar';
 export type {
   AvatarSize,
-  NAvatarProps
+  NAvatarProps,
 } from './lib/components/NAvatar/NAvatar';
 
 export {
   CHIP_COLOR_MAP,
-  ColoredChip
+  ColoredChip,
 } from './lib/components/ColoredChip/ColoredChip';
 export type {
   ChipColorSchema,
-  ColoredChipProps
+  ColoredChipProps,
 } from './lib/components/ColoredChip/ColoredChip';
 
 export {
@@ -34,24 +34,24 @@ export {
   MenuContext,
   MenuList,
   NMenu,
-  NMenuItem
+  NMenuItem,
 } from './lib/components/Menu/NMenu';
 export type {
   MenuButtonProps,
   MenuContextProps,
   MenuListProps,
   NMenuItemProps,
-  NMenuProps
+  NMenuProps,
 } from './lib/components/Menu/NMenu';
 
-export {DrawerBody} from './lib/components/Drawer/DrawerBody'
-export {DrawerContent} from './lib/components/Drawer/DrawerContent'
-export {DrawerFooter} from './lib/components/Drawer/DrawerFooter'
-export {DrawerHeader} from './lib/components/Drawer/DrawerHeader'
-export {DrawerBodyProps} from './lib/components/Drawer/DrawerBody'
-export {DrawerContentProps} from './lib/components/Drawer/DrawerContent'
-export {DrawerFooterProps} from './lib/components/Drawer/DrawerFooter'
-export {DrawerHeaderProps} from './lib/components/Drawer/DrawerHeader'
+export { DrawerBody } from './lib/components/Drawer/DrawerBody';
+export { DrawerBodyProps } from './lib/components/Drawer/DrawerBody';
+export { DrawerContent } from './lib/components/Drawer/DrawerContent';
+export { DrawerContentProps } from './lib/components/Drawer/DrawerContent';
+export { DrawerFooter } from './lib/components/Drawer/DrawerFooter';
+export { DrawerFooterProps } from './lib/components/Drawer/DrawerFooter';
+export { DrawerHeader } from './lib/components/Drawer/DrawerHeader';
+export { DrawerHeaderProps } from './lib/components/Drawer/DrawerHeader';
 
 export { DialogHeader } from './lib/components/Dialog/DialogHeader';
 export type { DialogHeaderProps } from './lib/components/Dialog/DialogHeader';
@@ -64,12 +64,14 @@ export type { ButtonTabProps } from './lib/components/Tabs/ButtonTabs';
 
 export { StyledTab, StyledTabs } from './lib/components/Tabs/StyledTabs';
 
+export { BarList, BarListProps } from './lib/components/BarList/BarList';
+
 export {
   KPICard,
   KPICardChange,
   KPICardTitle,
   KPICardValue,
-  Stat
+  Stat,
 } from './lib/components/KPICard/KPICard';
 
 export type {
@@ -77,7 +79,7 @@ export type {
   KPICardProps,
   KPICardTitleProps,
   KPICardValueProps,
-  StatProps
+  StatProps,
 } from './lib/components/KPICard/KPICard';
 
 export { NLink, NLinkProps } from './lib//components/Link/Link';
@@ -89,26 +91,32 @@ export { FileChip } from './lib/components/FileChip/FileChip';
 export type { FileChipProps } from './lib/components/FileChip/FileChip';
 
 export {
-  ChatBox, ChatBoxBody, ChatBoxFooter,
-  ChatBoxHeader
+  ChatBox,
+  ChatBoxBody,
+  ChatBoxFooter,
+  ChatBoxHeader,
 } from './lib/components/Chatbox/Chatbox';
 export type {
   ChatBoxBodyProps,
   ChatBoxFooterProps,
   ChatBoxHeaderProps,
-  ChatBoxProps
+  ChatBoxProps,
 } from './lib/components/Chatbox/Chatbox';
 
 export { ChatBoxTextField } from './lib/components/Chatbox/ChatBoxTextField';
 export type { ChatBoxTextFieldProps } from './lib/components/Chatbox/ChatBoxTextField';
 
-export { UploadIconButton, UploadIconButtonProps } from './lib/components/Chatbox/UploadIconButton';
+export {
+  UploadIconButton,
+  UploadIconButtonProps,
+} from './lib/components/Chatbox/UploadIconButton';
 
 // CONSTANTS
 export {
   ACCOUNT_STATUS_COLOR_MAP,
-  INVITATION_STATUS_COLOR_MAP, TICKET_STATUS_COLOR_MAP,
-  TICKET_TYPE_COLOR_MAP
+  INVITATION_STATUS_COLOR_MAP,
+  TICKET_STATUS_COLOR_MAP,
+  TICKET_TYPE_COLOR_MAP,
 } from './lib/constants/color-map.constants';
 
 // HOOKS
@@ -116,10 +124,9 @@ export { useFileUpload } from './lib/hooks/use-file-upload';
 export type {
   FileUploadErrorType,
   UseFileUploadError,
-  UseFileUploadParams
+  UseFileUploadParams,
 } from './lib/hooks/use-file-upload';
 
 export { useDebounce } from './lib/hooks/use-debounce';
 export { useGql } from './lib/hooks/use-gql.hook';
 export { theme } from './lib/themes/primary.theme';
-

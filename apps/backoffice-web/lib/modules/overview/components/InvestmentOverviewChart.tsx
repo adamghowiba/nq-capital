@@ -37,6 +37,7 @@ const InvestmentOverviewChart: FC<InvestmentOverviewChart> = ({ ...props }) => {
               },
             ]}
             options={{
+              colors: ['#5B5BD6'],
               chart: {
                 toolbar: {
                   show: false,
@@ -47,6 +48,12 @@ const InvestmentOverviewChart: FC<InvestmentOverviewChart> = ({ ...props }) => {
               },
               stroke: {
                 curve: 'straight',
+                width: 2,
+              },
+              fill: {
+                gradient: {
+                  shadeIntensity: 0.9
+                }
               },
               yaxis: {
                 tickAmount: 6,

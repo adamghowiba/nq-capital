@@ -679,7 +679,6 @@ export type SendMessageInput = {
 export type SendTicketMessageInput = {
   content: Scalars['String']['input'];
   ticket_id: Scalars['Int']['input'];
-  type: UserType;
 };
 
 export type SessionEntity = {

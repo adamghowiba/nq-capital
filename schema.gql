@@ -49,6 +49,15 @@ type FundOverviewEntity {
   net_returns: Float!
 }
 
+type FundInvestorOverview {
+  investor_id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  invested_amount: Float!
+  current_balance: Float!
+}
+
 type TransactionEntity {
   id: Int!
   type: TransactionType!
@@ -335,6 +344,10 @@ type Query {
     "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
     fund_ids: [Int!]
   ): [FundOverviewEntity!]!
+  fundInvestorsOverview(
+    "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
+    fund_ids: [Int!]
+  ): [FundInvestorOverview!]!
   fund(id: Int!): FundEntity!
   transactions: [TransactionEntity!]!
   transaction(id: Int!): TransactionEntity!

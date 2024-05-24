@@ -224,6 +224,16 @@ export type FundEntity = {
   updated_at: Scalars['DateTime']['output'];
 };
 
+export type FundInvestorOverview = {
+  __typename?: 'FundInvestorOverview';
+  current_balance: Scalars['Float']['output'];
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  invested_amount: Scalars['Float']['output'];
+  investor_id: Scalars['Int']['output'];
+  last_name: Scalars['String']['output'];
+};
+
 export type FundOverviewEntity = {
   __typename?: 'FundOverviewEntity';
   current_amount: Scalars['Float']['output'];
@@ -567,6 +577,7 @@ export type Query = {
   bankAccount: BankAccountEntity;
   bankAccounts: Array<BankAccountEntity>;
   fund: FundEntity;
+  fundInvestorsOverview: Array<FundInvestorOverview>;
   fundOverview: Array<FundOverviewEntity>;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
@@ -602,6 +613,11 @@ export type QueryBankAccountArgs = {
 
 export type QueryFundArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryFundInvestorsOverviewArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
 
@@ -679,7 +695,6 @@ export type SendMessageInput = {
 export type SendTicketMessageInput = {
   content: Scalars['String']['input'];
   ticket_id: Scalars['Int']['input'];
-  type: UserType;
 };
 
 export type SessionEntity = {
@@ -898,6 +913,11 @@ export type FundOverviewQueryVariables = Exact<{
 
 
 export type FundOverviewQuery = { __typename?: 'Query', fundOverview: Array<{ __typename?: 'FundOverviewEntity', invested_amount: number, current_amount: number, net_returns: number }> };
+
+export type GetFundInvestorsOverviewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFundInvestorsOverviewQuery = { __typename?: 'Query', fundInvestorsOverview: Array<{ __typename?: 'FundInvestorOverview', investor_id: number, first_name: string, last_name: string, email: string, invested_amount: number, current_balance: number }> };
 
 export type BankAccountAllFragmentFragment = { __typename?: 'BankAccountEntity', id: number, iban?: string | null, sort_code?: string | null, bsb_number?: string | null, bank_code?: string | null, branch_code?: string | null, branch_address?: string | null, is_primary: boolean, investor_id: number, created_at: any, updated_at: any, nickname?: string | null, bank_name: string, account_number: string, account_holder_name: string, type?: BankAccountType | null, bank_country: string, currency: string, routing_number?: string | null, swift_code?: string | null };
 
@@ -1307,6 +1327,42 @@ useFundOverviewQuery.getKey = (variables: FundOverviewQueryVariables) => ['FundO
 
 
 useFundOverviewQuery.fetcher = (variables: FundOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables, options);
+
+export const GetFundInvestorsOverviewDocument = `
+    query GetFundInvestorsOverview {
+  fundInvestorsOverview {
+    investor_id
+    first_name
+    last_name
+    email
+    invested_amount
+    current_balance
+  }
+}
+    `;
+
+export const useGetFundInvestorsOverviewQuery = <
+      TData = GetFundInvestorsOverviewQuery,
+      TError = unknown
+    >(
+      variables?: GetFundInvestorsOverviewQueryVariables,
+      options?: Omit<UseQueryOptions<GetFundInvestorsOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<GetFundInvestorsOverviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<GetFundInvestorsOverviewQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['GetFundInvestorsOverview'] : ['GetFundInvestorsOverview', variables],
+    queryFn: gqlFetcher<GetFundInvestorsOverviewQuery, GetFundInvestorsOverviewQueryVariables>(GetFundInvestorsOverviewDocument, variables),
+    ...options
+  }
+    )};
+
+useGetFundInvestorsOverviewQuery.document = GetFundInvestorsOverviewDocument;
+
+useGetFundInvestorsOverviewQuery.getKey = (variables?: GetFundInvestorsOverviewQueryVariables) => variables === undefined ? ['GetFundInvestorsOverview'] : ['GetFundInvestorsOverview', variables];
+
+
+useGetFundInvestorsOverviewQuery.fetcher = (variables?: GetFundInvestorsOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<GetFundInvestorsOverviewQuery, GetFundInvestorsOverviewQueryVariables>(GetFundInvestorsOverviewDocument, variables, options);
 
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($id: Int!) {

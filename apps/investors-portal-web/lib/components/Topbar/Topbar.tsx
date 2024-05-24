@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import { HStack } from '@nq-capital/nui';
 import Link from 'next/link';
 import { FC, useRef, useState } from 'react';
 import { useInvestor } from '../../hooks/use-investor';
@@ -20,8 +21,6 @@ import DContainer from '../DContainer/DContainer';
 import Logo from '../Logo/logo';
 import NotificationPopover from '../NotificationPopover/NotificationPopover';
 import TopbarSearch from './TopbarSearch';
-import { useLoginMutation } from '../../gql/gql-client';
-import { HStack } from '@nq-capital/nui';
 
 const Topbar: FC<any> = () => {
   const investor = useInvestor();
@@ -29,7 +28,6 @@ const Topbar: FC<any> = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
   const notificationsIconRef = useRef<HTMLButtonElement>(null);
-  const loginMutation = useLoginMutation();
 
   const rightIcons: {
     title: string;
@@ -97,15 +95,6 @@ const Topbar: FC<any> = () => {
                     width: '32px',
                     height: '32px',
                   }}
-                  onClick={() =>
-                    loginMutation.mutate({
-                      loginInput: {
-                        email: 'investor@webrevived.com',
-                        password: 'password',
-                        user_type: 'INVESTOR',
-                      },
-                    })
-                  }
                 >
                   {investor.data?.first_name[0]}
                   {investor.data?.last_name[0]}

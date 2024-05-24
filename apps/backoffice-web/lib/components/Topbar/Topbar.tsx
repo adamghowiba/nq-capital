@@ -13,11 +13,6 @@ const Topbar: FC<TopbarProps> = ({ ...props }) => {
   const user = useUser();
 
   const router = useRouter();
-  const loginMutation = useLoginMutation({
-    onSuccess: () => {
-      user.refetch()
-    }
-  });
 
   const pathBreadcrumbs = useMemo((): { name: string; href?: string }[] => {
     const pathSegments = router.asPath.split('/').filter(Boolean);
@@ -34,16 +29,6 @@ const Topbar: FC<TopbarProps> = ({ ...props }) => {
 
     return [{ name: 'Home', href: '/' }, ...breadcrumbs];
   }, [router.pathname]);
-
-  const handleTestLogin = () => {
-    loginMutation.mutate({
-      loginInput: {
-        email: 'admin@webrevived.com',
-        password: 'password',
-        user_type: 'ADMIN',
-      },
-    });
-  };
 
   return (
     <>
@@ -79,7 +64,7 @@ const Topbar: FC<TopbarProps> = ({ ...props }) => {
             <Icon icon={alertIcon} width={18} height={18} />
           </IconButton>
 
-          <NAvatar size="md" onClick={() => handleTestLogin()}>
+          <NAvatar size="md">
             {user.data?.first_name?.slice(0, 1) || 'U'}
           </NAvatar>
         </HStack>
