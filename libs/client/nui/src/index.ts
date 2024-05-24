@@ -80,6 +80,25 @@ export type { MessageCardProps } from './lib/components/MessageCard/MessageCard'
 export { FileChip } from './lib/components/FileChip/FileChip';
 export type { FileChipProps } from './lib/components/FileChip/FileChip';
 
+export {
+  ChatBox,
+  ChatBoxFooter,
+  ChatBoxHeader,
+  ChatBoxBody,
+} from './lib/components/Chatbox/Chatbox';
+export type {
+  ChatBoxBodyProps,
+  ChatBoxFooterProps,
+  ChatBoxHeaderProps,
+  ChatBoxProps,
+} from './lib/components/Chatbox/Chatbox';
+
+export { ChatBoxTextField } from './lib/components/Chatbox/ChatBoxTextField';
+export type { ChatBoxTextFieldProps } from './lib/components/Chatbox/ChatBoxTextField';
+
+export { UploadIconButton } from './lib/components/Chatbox/UploadIconButton';
+export { UploadIconButtonProps } from './lib/components/Chatbox/UploadIconButton';
+
 // HOOKS
 export { useFileUpload } from './lib/hooks/use-file-upload';
 export type {

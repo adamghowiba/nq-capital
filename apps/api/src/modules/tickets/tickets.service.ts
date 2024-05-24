@@ -3,9 +3,7 @@ import { PrismaService } from '@nq-capital/service-database';
 import { ApiError } from '../../common/exceptions/api.error';
 import { AssetsService } from '../assets/assets.service';
 import { MulterFile } from '../assets/entities/multer-file.entity';
-import {
-  ApplicationSessionEntity
-} from '../auth/entities/session.entity';
+import { ApplicationSessionEntity } from '../auth/entities/session.entity';
 import { SendTicketMessageInput } from './dto/create-ticket-message.input';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
@@ -37,6 +35,7 @@ export class TicketsService {
     const ticketMessage = await this.prisma.message.create({
       data: {
         ...sendMessageInput,
+        type: params.user_type,
         sent_by_investor_id:
           params.user_type === 'INVESTOR' && params.investor?.id
             ? params.investor.id
@@ -59,7 +58,7 @@ export class TicketsService {
       user_id?: number;
     }
   ) {
-    const {files, ...rest} = attachFileDto;
+    const { files, ...rest } = attachFileDto;
 
     const upload = await this.assetService.batchUpload(
       files.map((file) => {
@@ -71,7 +70,7 @@ export class TicketsService {
             ticket_id: String(attachFileDto.ticket_id),
             message_id: String(attachFileDto.message_id),
           },
-          ...rest
+          ...rest,
         };
       })
     );
@@ -129,7 +128,7 @@ export class TicketsService {
 
   getTickerMessagesField(ticket: TicketEntity) {
     return this.prisma.ticket
-      .findUnique({ where: { id: ticket.id }})
-      .messages({orderBy: {created_at: 'asc'}});
+      .findUnique({ where: { id: ticket.id } })
+      .messages({ orderBy: { created_at: 'asc' } });
   }
 }

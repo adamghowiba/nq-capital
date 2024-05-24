@@ -565,7 +565,6 @@ input CreateTicketInput {
 
 input SendTicketMessageInput {
   content: String!
-  type: UserType!
   ticket_id: Int!
 }
 

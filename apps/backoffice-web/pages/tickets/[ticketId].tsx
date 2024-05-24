@@ -1,24 +1,24 @@
-import add12Icon from '@iconify/icons-fluent/add-12-filled';
-import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
 import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
 import { Icon } from '@iconify/react';
 import {
   Alert,
   AlertTitle,
-  Box,
   Button,
   Chip,
   CircularProgress,
   Unstable_Grid2 as Grid,
-  IconButton,
-  TextField,
-  Typography,
-  styled,
+  Typography
 } from '@mui/material';
 import {
+  ChatBox,
+  ChatBoxBody,
+  ChatBoxFooter,
+  ChatBoxHeader,
+  ChatBoxTextField,
   FileChip,
   HStack,
   MessageCard,
+  UploadIconButton,
   VStack,
   useFileUpload,
 } from '@nq-capital/nui';
@@ -41,17 +41,6 @@ import { useUser } from '../../lib/hooks/use-user';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
 
 const getMessageDisplayName = (
   message: TicketMessageQueryData,
@@ -176,7 +165,6 @@ const TickerDetailPage = ({ ...props }) => {
       sendTicketMessageInput: {
         content: messageInput,
         ticket_id: ticketId,
-        type: 'INVESTOR',
       },
     });
 
@@ -313,16 +301,10 @@ const TickerDetailPage = ({ ...props }) => {
         </Grid>
 
         <Grid mobile={4} height="100%">
-          <VStack
-            borderLeft="1px solid #EBEBEB"
-            height="100%"
-            sx={{ overflow: 'auto' }}
-          >
-            <Box p={2} borderBottom="1px solid #EBEBEB">
-              <Typography>Conversation</Typography>
-            </Box>
+          <ChatBox>
+            <ChatBoxHeader />
 
-            <VStack p={2} gap={4} sx={{ overflow: 'auto' }}>
+            <ChatBoxBody scrollDependency={ticket.data?.messages}>
               {ticket.data?.messages.map((message, index) => (
                 <MessageCard
                   key={message.id}
@@ -333,9 +315,9 @@ const TickerDetailPage = ({ ...props }) => {
                   files={message?.assets || []}
                 />
               ))}
-            </VStack>
+            </ChatBoxBody>
 
-            <VStack p={2} gap={1} borderTop="1px solid #EBEBEB" mt="auto">
+            <ChatBoxFooter>
               {!!fileUploader.files.length && (
                 <HStack gap={1} overflow="auto" sx={{ scrollbarWidth: 'none' }}>
                   {fileUploader.files.map((file, index) => (
@@ -350,62 +332,22 @@ const TickerDetailPage = ({ ...props }) => {
               )}
 
               <HStack gap={1.5}>
-                <IconButton
-                  sx={{ bgcolor: '#F1F1F1' }}
-                  role={undefined}
-                  component="label"
-                >
-                  <VisuallyHiddenInput
-                    type="file"
-                    multiple
-                    accept=".xlsx,.xls,.pdf,.txt,.json,.png,.jpg"
-                    onChange={fileUploader.onFileChange}
-                  />
-                  <Icon icon={add12Icon} width={16} height={16} />
-                </IconButton>
+                <UploadIconButton
+                  enterKeyHint="enter"
+                  accept=".xlsx,.xls,.pdf,.txt,.json,.png,.jpg"
+                  onChange={fileUploader.onFileChange}
+                />
 
-                <TextField
-                  placeholder="Comment.."
+                <ChatBoxTextField
+                  placeholder="Comment"
                   variant="outlined"
-                  multiline
-                  fullWidth
-                  size="medium"
-                  onKeyDown={handleKeydown}
-                  sx={{
-                    '& .MuiInputBase-root.MuiOutlinedInput-root': {
-                      py: 0.5,
-                      pr: 0,
-                    },
-                    '& .MuiInputBase-root': {
-                      bgcolor: 'transparent',
-                    },
-                  }}
-                  maxRows={13}
+                  onSend={handleSendMessage}
                   value={messageInput}
                   onChange={(event) => setMessageInput(event.target.value)}
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton
-                        size="small"
-                        color={messageInput.trim() ? 'primary' : 'secondary'}
-                        sx={{
-                          alignSelf: 'end',
-                          transition: 'color 0.15s ease',
-                        }}
-                        onClick={handleSendMessage}
-                      >
-                        <Icon
-                          icon={arrowCircleUp12Filled}
-                          width={25}
-                          height={25}
-                        />
-                      </IconButton>
-                    ),
-                  }}
                 />
               </HStack>
-            </VStack>
-          </VStack>
+            </ChatBoxFooter>
+          </ChatBox>
         </Grid>
       </Grid>
     </>
