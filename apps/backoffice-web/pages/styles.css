@@ -10,6 +10,11 @@ body,
 #__next {
   height: 100svh;
   width: 100%;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
 }
 
 div {
@@ -29,5 +34,5 @@ a {
 
 .Mui-dg-header {
   background-color: transparent;
-  color: #8d8d8d;
+  color: rgb(17, 24, 39);
 }

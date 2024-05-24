@@ -3,6 +3,7 @@ import {
   InvitationStatus,
   TicketStatus,
   TicketType,
+  TransactionType,
 } from '../../schema';
 import { ChipColorSchema } from '../components/ColoredChip/ColoredChip';
 
@@ -35,4 +36,15 @@ export const INVITATION_STATUS_COLOR_MAP: Record<
   EXPIRED: 'blue',
   PENDING: 'blue',
   REVOKED: 'neutral',
+};
+
+export const TRANSACTION_TYPE_COLOR_MAP: Record<
+  TransactionType,
+  ChipColorSchema
+> = {
+  DEPOSIT: 'green',
+  WITHDRAWAL: 'red',
+  ADJUSTMENT: 'purple',
+  FEE: 'neutral',
+  REFUND: 'orange',
 };

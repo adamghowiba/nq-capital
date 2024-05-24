@@ -11,4 +11,16 @@ export class AddInvestmentInput {
 
   @Field(() => Float)
   amount!: number;
+
+  /**
+   * Custom reference ID for the investment
+   */
+  @Field(() => String, { nullable: true })
+  reference_id?: string;
+
+  /**
+   * Additional notes about the investment
+   */
+  @Field(() => String, { nullable: true })
+  notes?: string;
 }

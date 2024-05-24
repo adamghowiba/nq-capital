@@ -8,7 +8,7 @@ export const DialogHeader: FC<DialogHeaderProps> = ({ children, ...props }) => {
       <Box
         p={3}
         py={2}
-        sx={{ borderBottom: '1px solid', borderColor: 'divider', ...props?.sx }}
+        sx={{ borderBottom: '1px solid', borderColor: '#F1F1F1', ...props?.sx }}
         {...props}
       >
         {children}

@@ -77,6 +77,7 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
         slots={{
           toolbar: CustomToolbar,
         }}
+        rowHeight={53}
         slotProps={{
           toolbar: {
             renderSelectActions: props.renderSelectActions,
@@ -93,6 +94,7 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
           },
         }}
         sx={{
+          fontWeight: '400',
           '& .MuiDataGrid-withBorderColor': {
             borderColor: '#F0F0F0',
           },
@@ -106,7 +108,8 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
         }}
         style={{
           border: 'none',
-          color: '#333333',
+          // color: '#333333',
+          color: 'rgb(107, 114, 128)',
           ...props?.style,
         }}
         {...props}

@@ -2,17 +2,6 @@ import { Box, autocompleteClasses } from '@mui/material';
 import { Theme, ThemeOptions, createTheme } from '@mui/material/styles';
 import React from 'react';
 
-// thin: 100
-// extraLight: 200
-// light: 300
-// regular: 400
-// medium: 500
-// semiBold: 600
-// bold: 700
-// extraBold: 800
-// black: 900
-// 16px => 1rem
-
 declare module '@mui/material/styles' {
   interface Theme {
     common: {
@@ -174,7 +163,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
           color: '#333333',
         },
         body2: {
-          fontSize: '12px',
+          fontSize: '13px',
           fontWeight: 500,
         },
         caption: {
@@ -247,9 +236,8 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         },
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: '12px',
+            borderRadius: '8px',
             textTransform: 'none',
-            fontWeight: 'var(--semiBold)',
             lineHeight: '14px',
             '&.MuiButton-colorInherit.MuiButton-outlined ': {
               border: `1px solid ${theme.common.line}`,
@@ -455,7 +443,7 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       MuiDialog: {
         styleOverrides: {
           paper: ({ theme }) => ({
-            borderRadius: 0,
+            borderRadius: '8px',
             backgroundColor: theme.common.background,
           }),
         },
@@ -473,9 +461,10 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
       },
       MuiDialogActions: {
         styleOverrides: {
-          spacing: {
-            borderTop: '1px solid rgba(0, 0, 0, 0.12)',
+          root: {
+            // borderTop: '1px solid #F1F1F1',
             padding: '8px',
+            paddingBottom: '16px',
           },
         },
       },

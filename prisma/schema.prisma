@@ -129,9 +129,10 @@ model Fund {
   name             String           @unique
   balance          Float            @db.DoublePrecision()
   investors        InvestorFund[]
+  fund_adjustments FundAdjustment[]
+  transactions     Transaction[]
   created_at       DateTime         @default(now())
   updated_at       DateTime         @updatedAt
-  fund_adjustments FundAdjustment[]
 }
 
 model FundAdjustment {
@@ -250,14 +251,16 @@ model Transaction {
   amount        Float             @db.DoublePrecision()
   currency_code String            @default("USD")
   balance_after Float             @db.DoublePrecision()
-  // todo fund its related to
   description   String?
+  notes         String?
   fee           Decimal?
   external_id   String? // Link to any external id
   status        TransactionStatus @default(PENDING)
   meta          Json?
   investor      Investor?         @relation(fields: [investor_id], references: [id])
   investor_id   Int?
+  fund          Fund?             @relation(fields: [fund_id], references: [id])
+  fund_id       Int?
   created_at    DateTime          @default(now())
   updated_at    DateTime          @updatedAt
   // original_transaction_id Transaction

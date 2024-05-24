@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '@nq-capital/service-database';
+import { InvestorPortfolioEntity } from '../../investors/entities/investor-portfilo.entity';
 import { TRANSACTION_EVENTS } from '../event-manager/transaction-emitter.service';
 import { InvestmentEvent } from '../events/investment.event';
-import { InvestorsService } from '../../investors/investors.service';
-import { InvestorPortfolioEntity } from '../../investors/entities/investor-portfilo.entity';
 
 @Injectable()
 export class TransactionListener {
@@ -22,11 +21,15 @@ export class TransactionListener {
         balance_after: investor.total_balance + payload.amount,
         type: 'DEPOSIT',
         currency_code: 'USD',
-        description: 'Investment deposit',
         status: 'COMPLETED',
+        description: 'Investment deposit',
+        notes: payload.notes,
         investor_id: payload.investor_id,
+        fund_id: payload.fund_id,
+        external_id: payload.reference_id,
       },
     });
+
 
     return transaction;
   }

@@ -1,5 +1,17 @@
-import { Field, Float, GraphQLISODateTime, HideField, Int, ObjectType } from '@nestjs/graphql';
-import { Prisma, Transaction, TransactionStatus, TransactionType } from '@prisma/client';
+import {
+  Field,
+  Float,
+  GraphQLISODateTime,
+  HideField,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
+import {
+  Prisma,
+  Transaction,
+  TransactionStatus,
+  TransactionType,
+} from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 
 @ObjectType()
@@ -28,8 +40,14 @@ export class TransactionEntity implements Transaction {
   @Field(() => String, { nullable: true })
   external_id!: string | null;
 
+  @Field(() => String, { nullable: true })
+  notes!: string | null;
+
   @Field(() => Int, { nullable: true })
   investor_id!: number | null;
+
+  @Field(() => Int, { nullable: true })
+  fund_id!: number | null;
 
   @Field(() => TransactionStatus)
   status!: TransactionStatus;

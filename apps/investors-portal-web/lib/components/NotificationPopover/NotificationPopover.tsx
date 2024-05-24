@@ -1,8 +1,4 @@
-import {
-  Popper,
-  PopperProps,
-  Typography
-} from '@mui/material';
+import { Popper, PopperProps, Typography } from '@mui/material';
 import { ButtonTab, ButtonTabs, HStack, VStack } from '@nq-capital/nui';
 import { FC, useMemo, useState } from 'react';
 
@@ -41,11 +37,7 @@ const NotificationPopover: FC<NotificationPopoverProps> = ({ ...props }) => {
       return MOCK_NOTIFICATIONS.filter((notification) => !notification.read_at);
     }
 
-    return [
-      ...MOCK_NOTIFICATIONS,
-      ...MOCK_NOTIFICATIONS,
-      ...MOCK_NOTIFICATIONS,
-    ];
+    return [...MOCK_NOTIFICATIONS];
   }, [tab]);
 
   return (
@@ -57,13 +49,15 @@ const NotificationPopover: FC<NotificationPopoverProps> = ({ ...props }) => {
           p: '4px',
           borderRadius: '12px',
           width: '456px',
-          zIndex: 100
+          zIndex: 100,
         }}
         {...props}
       >
         <VStack gap={'8px'}>
           <HStack px="8px" py="8px">
-            <Typography color="#F1F1F1" fontWeight="500">Notifications</Typography>
+            <Typography color="#F1F1F1" fontWeight="500">
+              Notifications
+            </Typography>
           </HStack>
 
           <ButtonTabs

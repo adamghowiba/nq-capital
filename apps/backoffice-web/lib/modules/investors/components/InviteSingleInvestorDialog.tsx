@@ -36,6 +36,9 @@ const InviteSingleInvestorDialog: FC<InviteSingleInvestorDialogProps> = ({
   ...props
 }) => {
   const form = useForm<InviteInvestorSchema>({
+    defaultValues: {
+      email: ''
+    },
     reValidateMode: 'onChange',
     mode: 'all',
     resolver: zodResolver(inviteInvestorSchema),
@@ -119,8 +122,7 @@ const InviteSingleInvestorDialog: FC<InviteSingleInvestorDialogProps> = ({
         <DialogActions>
           <Button
             onClick={() => props?.onClose?.({}, 'backdropClick')}
-            variant="contained"
-            color="secondary"
+            variant="text"
           >
             Cancel
           </Button>
@@ -130,6 +132,9 @@ const InviteSingleInvestorDialog: FC<InviteSingleInvestorDialogProps> = ({
             color="primary"
             variant="contained"
             loading={isLoading}
+            sx={{
+              width: '30%'
+            }}
           >
             {existingInvitation ? 'Resent' : 'Invite'}
           </LoadingButton>

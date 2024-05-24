@@ -1,0 +1,16 @@
+query ListTransactions {
+  transactions {
+    investor {
+      first_name
+      last_name
+      email
+      id
+      avatar
+    }
+    fund {
+      name
+      balance
+    }
+    ...TransactionsAllFragment
+  }
+}

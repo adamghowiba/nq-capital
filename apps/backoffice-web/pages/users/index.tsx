@@ -14,12 +14,13 @@ import {
   MenuButton,
   MenuList,
   NAvatar,
+  NLink,
   NMenu,
   NMenuItem,
   PageHeader,
   StyledTab,
   StyledTabs,
-  VStack
+  VStack,
 } from '@nq-capital/nui';
 import { formatISOForTable } from '@nq-capital/utils';
 import { useMemo, useState } from 'react';
@@ -30,7 +31,7 @@ import {
   useDeleteInvitationMutation,
   useInviteInvestorMutation,
   useListInvestorsQuery,
-  useListInvitationsQuery
+  useListInvitationsQuery,
 } from '../../lib/gql/gql-client';
 import InviteSingleInvestorDialog from '../../lib/modules/investors/components/InviteSingleInvestorDialog';
 import { NextPageWithLayout } from '../_app';
@@ -78,22 +79,26 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
         width: 250,
         renderCell: (params) => {
           return (
-            <HStack gap={2} align="center">
-              <NAvatar size="sm">
-                {params.row.first_name.substring(0, 1)}
-              </NAvatar>
+            <NLink href={`/users/${params.row.id}`} underline={'none'}>
+              <HStack gap={2} align="center">
+                <NAvatar size="sm">
+                  {params.row.first_name.substring(0, 1)}
+                </NAvatar>
 
-              <VStack gap={0}>
-                <Typography fontSize="13px">
-                  {params.row.first_name} {params.row.last_name}
-                </Typography>
-                <Typography color="grey.500" fontSize="13px">
-                  {params.row.email}
-                </Typography>
-              </VStack>
-            </HStack>
+                <VStack gap={0}>
+                  <Typography fontSize="13px">
+                    {params.row.first_name} {params.row.last_name}
+                  </Typography>
+                  <Typography color="grey.500" fontSize="13px">
+                    {params.row.email}
+                  </Typography>
+                </VStack>
+              </HStack>
+            </NLink>
           );
         },
+        valueGetter: (params) =>
+          `${params.row?.first_name} ${params.row?.last_name}`,
       },
       {
         field: 'bank',

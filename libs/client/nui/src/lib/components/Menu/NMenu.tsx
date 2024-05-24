@@ -4,7 +4,7 @@ import {
   ListItemIcon,
   MenuItem,
   MenuItemProps,
-  Popper
+  Popper,
 } from '@mui/material';
 import Link from 'next/link';
 import React, {
@@ -48,47 +48,45 @@ export const NMenu: FC<NMenuProps> = ({ children, ...props }) => {
   }, [children]);
 
   return (
-    <>
-      <ClickAwayListener
-        onClickAway={() => {
-          if (isOpen) setIsOpen(false);
-        }}
-      >
-        <Box>
-          <MenuContext.Provider
-            value={{
-              isOpen: isOpen,
-              closeMenu: () => setIsOpen(false),
-              openMenu: () => setIsOpen(true),
-              toggle: () => setIsOpen((open) => !open),
-              setAnchorElement: (element) =>
-                setAnchorEl(element as HTMLDivElement),
-              anchorElement: anchorEl,
+    <ClickAwayListener
+      onClickAway={() => {
+        if (isOpen) setIsOpen(false);
+      }}
+    >
+      <Box>
+        <MenuContext.Provider
+          value={{
+            isOpen: isOpen,
+            closeMenu: () => setIsOpen(false),
+            openMenu: () => setIsOpen(true),
+            toggle: () => setIsOpen((open) => !open),
+            setAnchorElement: (element) =>
+              setAnchorEl(element as HTMLDivElement),
+            anchorElement: anchorEl,
+          }}
+        >
+          {MenuButtonComponent}
+
+          <Popper
+            open={isOpen}
+            anchorEl={anchorEl}
+            placement="bottom-start"
+            popperOptions={{
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, 2],
+                  },
+                },
+              ],
             }}
           >
-            {MenuButtonComponent}
-
-            <Popper
-              open={isOpen}
-              anchorEl={anchorEl}
-              placement="bottom-start"
-              popperOptions={{
-                modifiers: [
-                  {
-                    name: 'offset',
-                    options: {
-                      offset: [0, 2],
-                    },
-                  },
-                ],
-              }}
-            >
-              {MenuListComponent}
-            </Popper>
-          </MenuContext.Provider>
-        </Box>
-      </ClickAwayListener>
-    </>
+            {MenuListComponent}
+          </Popper>
+        </MenuContext.Provider>
+      </Box>
+    </ClickAwayListener>
   );
 };
 

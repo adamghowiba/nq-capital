@@ -117,6 +117,7 @@ export {
   INVITATION_STATUS_COLOR_MAP,
   TICKET_STATUS_COLOR_MAP,
   TICKET_TYPE_COLOR_MAP,
+  TRANSACTION_TYPE_COLOR_MAP
 } from './lib/constants/color-map.constants';
 
 // HOOKS

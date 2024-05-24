@@ -1,25 +1,24 @@
 import {
   Args,
-  Context,
   Int,
   Mutation,
   Parent,
   Query,
   ResolveField,
-  Resolver,
+  Resolver
 } from '@nestjs/graphql';
+import { Permission } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { InvestorSession } from '../../common/decorators/auth/session.decorator';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
 import { FundsService } from '../funds/funds.service';
 import { CreateInvestorInput } from './dto/create-investor.input';
+import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
 import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
-import { AppAbility, UserAbility, Permission } from '@nq-capital/iam';
-import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {

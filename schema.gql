@@ -67,10 +67,14 @@ type TransactionEntity {
   description: String
   fee: Float
   external_id: String
+  notes: String
   investor_id: Int
+  fund_id: Int
   status: TransactionStatus!
   created_at: DateTime!
   updated_at: DateTime!
+  investor: InvestorEntity
+  fund: FundEntity
 }
 
 enum TransactionType {
@@ -87,6 +91,36 @@ enum TransactionStatus {
   CANCELLED
   REVERSED
   FAILED
+}
+
+type InvestorEntity {
+  id: Int!
+  first_name: String!
+  middle_name: String
+  last_name: String!
+  email: String!
+  password: String
+  passport_number: String
+  national_id: String
+  date_of_birth: DateTime
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  avatar: String
+  mobile_number: String
+  account_status: InvestorAccountStatus
+  address_id: Int
+  created_at: DateTime!
+  updated_at: DateTime!
+  address: AddressEntity
+  bank_accounts: [BankAccountEntity!]
+}
+
+enum InvestorAccountStatus {
+  ONBOARDING
+  ACTIVE
+  DISABLED
 }
 
 type AddressEntity {
@@ -146,36 +180,6 @@ type InvestorPortfolioEntity {
   previous_month: PortfolioTotalEntity!
   balance_change_percentage: Float!
   balance_change_amount: Float!
-}
-
-type InvestorEntity {
-  id: Int!
-  first_name: String!
-  middle_name: String
-  last_name: String!
-  email: String!
-  password: String
-  passport_number: String
-  national_id: String
-  date_of_birth: DateTime
-  nationality: String
-  company_name: String
-  company_tax_id: String
-  is_accredited: Boolean
-  avatar: String
-  mobile_number: String
-  account_status: InvestorAccountStatus
-  address_id: Int
-  created_at: DateTime!
-  updated_at: DateTime!
-  address: AddressEntity
-  bank_accounts: [BankAccountEntity!]
-}
-
-enum InvestorAccountStatus {
-  ONBOARDING
-  ACTIVE
-  DISABLED
 }
 
 type InvestorFundEntity {
@@ -529,6 +533,12 @@ input AddInvestmentInput {
   fund_id: Int!
   investor_id: Int!
   amount: Float!
+
+  """Custom reference ID for the investment"""
+  reference_id: String
+
+  """Additional notes about the investment"""
+  notes: String
 }
 
 input UpdateFundInput {
@@ -552,6 +562,7 @@ input CreateTransactionInput {
   description: Int
   fee: Float
   external_id: String
+  notes: String
   status: TransactionStatus!
 }
 
@@ -563,6 +574,7 @@ input UpdateTransactionInput {
   description: Int
   fee: Float
   external_id: String
+  notes: String
   status: TransactionStatus
   id: Int!
 }

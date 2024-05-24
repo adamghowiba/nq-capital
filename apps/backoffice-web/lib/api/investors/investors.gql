@@ -1,5 +1,13 @@
 query RetrieveInvestor($id: Int!) {
   investor(id: $id) {
+    bank_accounts {
+      id
+      account_number
+      bank_name
+      bank_country
+      currency
+      is_primary
+    }
     ...InvestorAllFragment
   }
 }

@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab';
 import {
   Autocomplete,
   AutocompleteProps,
@@ -13,8 +14,7 @@ import {
   TextField,
 } from '@mui/material';
 import { DialogHeader, VStack } from '@nq-capital/nui';
-import React, { ChangeEvent, FC, KeyboardEvent, useState } from 'react';
-import { LoadingButton } from '@mui/lab';
+import { FC, useState } from 'react';
 
 export interface InviteInvestorDialogProps extends DialogProps {
   onInvite: (emails: string[]) => void;
@@ -31,7 +31,7 @@ const InviteInvestorDialog: FC<InviteInvestorDialogProps> = ({
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleInvite = () => {
-    onInvite(emails)
+    onInvite(emails);
   };
 
   const handleValidation: AutocompleteProps<
@@ -79,8 +79,8 @@ const InviteInvestorDialog: FC<InviteInvestorDialogProps> = ({
                   <TextField {...params} placeholder="Email" type="email" />
                 )}
               />
+
               <FormHelperText>
-                {' '}
                 You can invite up to 5 investors at a time
               </FormHelperText>
             </FormControl>

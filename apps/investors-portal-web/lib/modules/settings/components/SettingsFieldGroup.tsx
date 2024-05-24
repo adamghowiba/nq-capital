@@ -18,7 +18,7 @@ const SettingsFieldGroup: FC<SettingsFieldGroupProps> = ({
           ':last-child': {
             borderBottom: 'none',
           },
-          ':first-child': {
+          ':first-of-type': {
             pt: 0
           },
         }}

@@ -26,6 +26,10 @@ export type AddInvestmentInput = {
   amount: Scalars['Float']['input'];
   fund_id: Scalars['Int']['input'];
   investor_id: Scalars['Int']['input'];
+  /** Additional notes about the investment */
+  notes?: InputMaybe<Scalars['String']['input']>;
+  /** Custom reference ID for the investment */
+  reference_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AddressEntity = {
@@ -201,6 +205,7 @@ export type CreateTransactionInput = {
   description?: InputMaybe<Scalars['Int']['input']>;
   external_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
   status: TransactionStatus;
   type: TransactionType;
 };
@@ -744,8 +749,12 @@ export type TransactionEntity = {
   description?: Maybe<Scalars['String']['output']>;
   external_id?: Maybe<Scalars['String']['output']>;
   fee?: Maybe<Scalars['Float']['output']>;
+  fund?: Maybe<FundEntity>;
+  fund_id?: Maybe<Scalars['Int']['output']>;
   id: Scalars['Int']['output'];
+  investor?: Maybe<InvestorEntity>;
   investor_id?: Maybe<Scalars['Int']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
   status: TransactionStatus;
   type: TransactionType;
   updated_at: Scalars['DateTime']['output'];
@@ -843,6 +852,7 @@ export type UpdateTransactionInput = {
   external_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
   id: Scalars['Int']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<TransactionStatus>;
   type?: InputMaybe<TransactionType>;
 };
@@ -930,7 +940,7 @@ export type RetrieveInvestorQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveInvestorQuery = { __typename?: 'Query', investor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
+export type RetrieveInvestorQuery = { __typename?: 'Query', investor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, bank_accounts?: Array<{ __typename?: 'BankAccountEntity', id: number, account_number: string, bank_name: string, bank_country: string, currency: string, is_primary: boolean }> | null, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
 
 export type InvestorPortfolioQueryVariables = Exact<{
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -1040,6 +1050,13 @@ export type RetrieveTicketQueryVariables = Exact<{
 
 
 export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets?: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any }> | null, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
+
+export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
+
+export type ListTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any, investor?: { __typename?: 'InvestorEntity', first_name: string, last_name: string, email: string, id: number, avatar?: string | null } | null, fund?: { __typename?: 'FundEntity', name: string, balance: number } | null }> };
 
 
 export const FundAllFragmentFragmentDoc = `
@@ -1163,6 +1180,21 @@ export const TicketsAllFragmentFragmentDoc = `
   status
   investor_id
   assigned_to_user_id
+  updated_at
+  created_at
+}
+    `;
+export const TransactionsAllFragmentFragmentDoc = `
+    fragment TransactionsAllFragment on TransactionEntity {
+  id
+  type
+  amount
+  currency_code
+  balance_after
+  description
+  fee
+  external_id
+  status
   updated_at
   created_at
 }
@@ -1367,6 +1399,14 @@ useGetFundInvestorsOverviewQuery.fetcher = (variables?: GetFundInvestorsOverview
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($id: Int!) {
   investor(id: $id) {
+    bank_accounts {
+      id
+      account_number
+      bank_name
+      bank_country
+      currency
+      is_primary
+    }
     ...InvestorAllFragment
   }
 }
@@ -1825,3 +1865,45 @@ useRetrieveTicketQuery.getKey = (variables: RetrieveTicketQueryVariables) => ['R
 
 
 useRetrieveTicketQuery.fetcher = (variables: RetrieveTicketQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables, options);
+
+export const ListTransactionsDocument = `
+    query ListTransactions {
+  transactions {
+    investor {
+      first_name
+      last_name
+      email
+      id
+      avatar
+    }
+    fund {
+      name
+      balance
+    }
+    ...TransactionsAllFragment
+  }
+}
+    ${TransactionsAllFragmentFragmentDoc}`;
+
+export const useListTransactionsQuery = <
+      TData = ListTransactionsQuery,
+      TError = unknown
+    >(
+      variables?: ListTransactionsQueryVariables,
+      options?: Omit<UseQueryOptions<ListTransactionsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListTransactionsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListTransactionsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListTransactions'] : ['ListTransactions', variables],
+    queryFn: gqlFetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables),
+    ...options
+  }
+    )};
+
+useListTransactionsQuery.document = ListTransactionsDocument;
+
+useListTransactionsQuery.getKey = (variables?: ListTransactionsQueryVariables) => variables === undefined ? ['ListTransactions'] : ['ListTransactions', variables];
+
+
+useListTransactionsQuery.fetcher = (variables?: ListTransactionsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListTransactionsQuery, ListTransactionsQueryVariables>(ListTransactionsDocument, variables, options);

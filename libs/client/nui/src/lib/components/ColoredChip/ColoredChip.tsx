@@ -7,6 +7,7 @@ export type ChipColorSchema =
   | 'blue'
   | 'neutral'
   | 'yellow'
+  | 'purple'
   | 'orange';
 
 export interface ColoredChipProps extends ChipProps {
@@ -40,6 +41,10 @@ export const CHIP_COLOR_MAP: Record<
   neutral: {
     color: '#646464',
     bgColor: '#F9F9F9',
+  },
+  purple: {
+    color: '#3A5CCC',
+    bgColor: 'rgba(1, 68, 255, 0.06)',
   },
 };
 

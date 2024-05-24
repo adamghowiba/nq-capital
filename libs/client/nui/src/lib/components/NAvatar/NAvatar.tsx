@@ -1,5 +1,5 @@
 import { Avatar, AvatarProps } from '@mui/material';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 export type AvatarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -23,7 +23,7 @@ export const NAvatar: FC<NAvatarProps> = ({
       fontSize?: string | number;
     }
   > = {
-    xs: { width: '22px', height: '22px' },
+    xs: { width: '22px', height: '22px', fontSize: '12px' },
     sm: { width: '28px', height: '28px', fontSize: '13px' },
     md: { width: '32px', height: '32px', fontSize: '16px' },
     lg: { width: '40px', height: '40px' },
@@ -43,8 +43,7 @@ export const NAvatar: FC<NAvatarProps> = ({
         ...props.sx,
       }}
     >
-      {' '}
-      {children}{' '}
+      {children}
     </Avatar>
   );
 };
