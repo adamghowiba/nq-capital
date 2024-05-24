@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
-import { StackPropsExtended } from '@nq-capital/nui';
 import { FC, PropsWithChildren } from 'react';
+import { StackPropsExtended } from '../Stack/Stack';
 
 export type DrawerSize = 'sm' | 'md' | 'lg' | 'full';
 export interface DrawerContentProps
@@ -19,7 +19,7 @@ export interface DrawerContentProps
   size?: DrawerSize;
 }
 
-const DrawerContent: FC<DrawerContentProps> = ({
+export const DrawerContent: FC<DrawerContentProps> = ({
   children,
   isFloating = true,
   size = 'md',
@@ -51,4 +51,3 @@ const DrawerContent: FC<DrawerContentProps> = ({
   );
 };
 
-export default DrawerContent;

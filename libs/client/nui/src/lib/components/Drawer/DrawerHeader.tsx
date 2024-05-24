@@ -4,8 +4,8 @@ import minimizeFilledIcon from '@iconify/icons-fluent/minimize-16-filled';
 import { Icon } from '@iconify/react';
 import { IconButton, Tooltip } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
-import Box from '../Box/Box';
-import { HStack, StackPropsExtended } from '@nq-capital/nui';
+import { Box } from '../Box/Box';
+import { HStack, StackPropsExtended } from '../Stack/Stack';
 
 export interface DrawerHeaderProps
   extends PropsWithChildren,
@@ -15,7 +15,7 @@ export interface DrawerHeaderProps
   onClose?: () => void;
 }
 
-const DrawerHeader: FC<DrawerHeaderProps> = ({
+export const DrawerHeader: FC<DrawerHeaderProps> = ({
   isExpanded,
   children,
   onClickExpand,
@@ -23,7 +23,6 @@ const DrawerHeader: FC<DrawerHeaderProps> = ({
   ...props
 }) => {
   return (
-    <>
       <HStack p={3} pt={2} pb={'12px'} align="start" {...props}>
         <Box alignSelf="center">{children}</Box>
 
@@ -43,7 +42,6 @@ const DrawerHeader: FC<DrawerHeaderProps> = ({
           )}
         </HStack>
       </HStack>
-    </>
   );
 };
 

@@ -2,22 +2,23 @@ import caretDown12Filled from '@iconify/icons-fluent/caret-down-12-filled';
 import { Icon } from '@iconify/react';
 import { Button } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import { ColoredChip, TICKET_TYPE_COLOR_MAP } from '@nq-capital/nui';
-import { useMemo, useState } from 'react';
-import Box from '../../lib/components/Box/Box';
-import NLink from '../../lib/components/Link/Link';
 import {
+  Box,
+  ColoredChip,
   MenuButton,
   MenuList,
   NMenu,
   NMenuItem,
-} from '../../lib/components/Menu/NMenu';
+  TICKET_TYPE_COLOR_MAP,
+} from '@nq-capital/nui';
+import { useMemo, useState } from 'react';
+import NLink from '../../lib/components/Link/Link';
 import PageHeader from '../../lib/components/PageHeader/PageHeader';
 import Screen from '../../lib/components/Screen/Screen';
 import CustomDataGrid from '../../lib/components/StyledDataGrid/CustomDataGrid';
 import {
   ListTickersQuery,
-  useListTickersQuery
+  useListTickersQuery,
 } from '../../lib/gql/gql-client';
 import TickerMutationDrawer from '../../lib/modules/tickets/components/TicketMutationDrawer';
 import { formatISOForTable } from '../../lib/utils/date.utils';

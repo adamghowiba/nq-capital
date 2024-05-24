@@ -9,14 +9,13 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { HStack, NDateField, NTextField, VStack } from '@nq-capital/nui';
+import { Box, HStack, NDateField, NTextField, VStack } from '@nq-capital/nui';
 import { DateTime } from 'luxon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
-import Box from '../../../lib/components/Box/Box';
 import { useAddInvestmentMutation } from '../../../lib/gql/gql-client';
 import { useInvestor } from '../../../lib/hooks/use-investor';
 import OnboardingTopbar from '../../../lib/modules/onboarding/components/OnboardingTopbar';

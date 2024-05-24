@@ -1,12 +1,9 @@
-import { Box, Button } from '@mui/material';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { OneTextField } from '../../../utils/OneTextField';
-import StepHeader from './StepHeader';
+import { Box } from '@mui/material';
+import { NTextField } from '@nq-capital/nui';
 import { FC } from 'react';
 import { useFormContext } from 'react-hook-form';
 import { PersonalInformationSchema } from '../onboarding.schema';
-import { NTextField } from '@nq-capital/nui';
+import StepHeader from './StepHeader';
 
 export interface PersonalInformationData {
   first_name: string;

@@ -1,25 +1,17 @@
 import {
   Autocomplete,
   Box,
-  Button,
   FormControl,
   FormHelperText,
   FormLabel,
-  TextField,
-  Typography,
+  TextField
 } from '@mui/material';
-import { MobileDatePicker } from '@mui/x-date-pickers';
-import dayjs, { Dayjs } from 'dayjs';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { NATIONALITIES } from '../../../constants/nationalities.constants';
-import { OneTextField } from '../../../utils/OneTextField';
-import StepHeader from './StepHeader';
+import { HStack, NDateField, NTextField } from '@nq-capital/nui';
 import { FC } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
+import { NATIONALITIES } from '../../../constants/nationalities.constants';
 import { IdentitySchema } from '../onboarding.schema';
-import { HStack, NDateField, NTextField } from '@nq-capital/nui';
-import { DateTime } from 'luxon';
+import StepHeader from './StepHeader';
 
 export interface IdentityVerificationProps {}
 
@@ -36,7 +28,6 @@ export const IdentityVerification: FC<IdentityVerificationProps> = ({
       />
       <Box
         component="form"
-        // onSubmit={formik.handleSubmit}
         sx={{ display: 'grid', rowGap: 8 }}
       >
         <Box sx={{ display: 'grid', rowGap: 3 }}>

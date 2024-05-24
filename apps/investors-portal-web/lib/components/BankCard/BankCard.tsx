@@ -13,7 +13,7 @@ import {
 import { FC } from 'react';
 import { theme } from '../../theme';
 import OneIcon from '../../utils/OneIcon';
-import { MenuButton, MenuList, NMenu, NMenuItem } from '../Menu/NMenu';
+import { MenuButton, MenuList, NMenu, NMenuItem } from '@nq-capital/nui';
 
 export interface BankCardProps {
   bankName: string;

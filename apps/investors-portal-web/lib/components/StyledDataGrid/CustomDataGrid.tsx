@@ -1,6 +1,6 @@
 import { DataGrid, DataGridProps, GridValidRowModel } from '@mui/x-data-grid';
+import { Box } from '@nq-capital/nui';
 import { ReactNode, useRef } from 'react';
-import Box from '../Box/Box';
 
 export interface CustomDataGridProps<R extends GridValidRowModel = any>
   extends DataGridProps<R> {

@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
-import { HStack, Stat } from '@nq-capital/nui';
+import { Box, HStack, Stat } from '@nq-capital/nui';
 import { useState } from 'react';
-import Box from '../lib/components/Box/Box';
 import NLink from '../lib/components/Link/Link';
 import PageHeader from '../lib/components/PageHeader/PageHeader';
 import Screen from '../lib/components/Screen/Screen';

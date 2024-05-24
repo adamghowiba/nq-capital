@@ -1,5 +1,6 @@
+import { Box } from '@mui/material';
 import { FC, PropsWithChildren } from 'react';
-import Box, { BoxPropsExtended } from '../Box/Box';
+import { BoxPropsExtended } from '../Box/Box';
 
 export interface DrawerBodyProps extends PropsWithChildren, BoxPropsExtended {}
 

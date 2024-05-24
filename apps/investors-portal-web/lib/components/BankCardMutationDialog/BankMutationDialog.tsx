@@ -12,6 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DialogHeader, HStack, NTextField } from '@nq-capital/nui';
 import { FC } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NATIONALITIES } from '../../constants/nationalities.constants';
@@ -19,9 +20,6 @@ import {
   BankAccountSchema,
   bankAccountSchema,
 } from '../../modules/payment-source/payment-source.schema';
-import DialogHeader from '../Dialog/DialogHeader';
-import NTextField from '../Fields/NTextField';
-import { HStack } from '@nq-capital/nui';
 
 export interface BankMutationDialogProps extends DialogProps {
   onSave: (type: 'edit' | 'create', bank: BankAccountSchema) => void;

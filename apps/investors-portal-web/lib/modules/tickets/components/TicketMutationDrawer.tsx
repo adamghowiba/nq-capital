@@ -13,19 +13,15 @@ import {
   Typography,
   useRadioGroup,
 } from '@mui/material';
+import { DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, HStack, NTextField } from '@nq-capital/nui';
+import { useQueryClient } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { DrawerBody } from '../../../../lib/components/Drawer/DrawerBody';
-import DrawerContent from '../../../../lib/components/Drawer/DrawerContent';
-import DrawerFooter from '../../../../lib/components/Drawer/DrawerFooter';
-import DrawerHeader from '../../../../lib/components/Drawer/DrawerHeader';
-import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
 import {
   useCreateTickerMutation,
   useListTickersQuery,
 } from '../../../../lib/gql/gql-client';
-import { useQueryClient } from '@tanstack/react-query';
-import { HStack, NTextField } from '@nq-capital/nui';
+import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
 
 export interface TickerMutationDrawerProps extends DrawerProps {
   mode:
