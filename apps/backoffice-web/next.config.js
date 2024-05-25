@@ -12,7 +12,7 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
-  distDir: "../../dist/apps/backoffice-web"
+  distDir: "../../dist/apps/backoffice-web/.next"
 };
 
 const plugins = [
