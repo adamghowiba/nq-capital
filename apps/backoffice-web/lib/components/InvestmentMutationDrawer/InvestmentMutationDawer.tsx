@@ -75,7 +75,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
     addInvestmentMutation.mutate({
       addInvestmentInput: {
         amount: data.amount,
-        // TODO: Handle this being required, but shouldn't be required
+        // @ts-expect-error TODO: Handle this being required, but shouldn't be required
         fund_id: data.fund_id,
         investor_id: data.investor_id,
         notes: data.notes,

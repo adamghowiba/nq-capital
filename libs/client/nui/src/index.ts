@@ -48,13 +48,13 @@ export type {
 } from './lib/components/Menu/NMenu';
 
 export { DrawerBody } from './lib/components/Drawer/DrawerBody';
-export { DrawerBodyProps } from './lib/components/Drawer/DrawerBody';
+export type { DrawerBodyProps } from './lib/components/Drawer/DrawerBody';
 export { DrawerContent } from './lib/components/Drawer/DrawerContent';
-export { DrawerContentProps } from './lib/components/Drawer/DrawerContent';
+export type { DrawerContentProps } from './lib/components/Drawer/DrawerContent';
 export { DrawerFooter } from './lib/components/Drawer/DrawerFooter';
-export { DrawerFooterProps } from './lib/components/Drawer/DrawerFooter';
+export type { DrawerFooterProps } from './lib/components/Drawer/DrawerFooter';
 export { DrawerHeader } from './lib/components/Drawer/DrawerHeader';
-export { DrawerHeaderProps } from './lib/components/Drawer/DrawerHeader';
+export type { DrawerHeaderProps } from './lib/components/Drawer/DrawerHeader';
 
 export { DialogHeader } from './lib/components/Dialog/DialogHeader';
 export type { DialogHeaderProps } from './lib/components/Dialog/DialogHeader';
@@ -67,7 +67,8 @@ export type { ButtonTabProps } from './lib/components/Tabs/ButtonTabs';
 
 export { StyledTab, StyledTabs } from './lib/components/Tabs/StyledTabs';
 
-export { BarList, BarListProps } from './lib/components/BarList/BarList';
+export { BarList } from './lib/components/BarList/BarList';
+export type { BarListProps } from './lib/components/BarList/BarList';
 
 export {
   KPICard,
@@ -76,7 +77,6 @@ export {
   KPICardValue,
   Stat,
 } from './lib/components/KPICard/KPICard';
-
 export type {
   KPICardChangeProps,
   KPICardProps,
@@ -85,7 +85,8 @@ export type {
   StatProps,
 } from './lib/components/KPICard/KPICard';
 
-export { NLink, NLinkProps } from './lib//components/Link/Link';
+export { NLink } from './lib//components/Link/Link';
+export type { NLinkProps } from './lib//components/Link/Link';
 
 export { MessageCard } from './lib/components/MessageCard/MessageCard';
 export type { MessageCardProps } from './lib/components/MessageCard/MessageCard';
@@ -109,10 +110,8 @@ export type {
 export { ChatBoxTextField } from './lib/components/Chatbox/ChatBoxTextField';
 export type { ChatBoxTextFieldProps } from './lib/components/Chatbox/ChatBoxTextField';
 
-export {
-  UploadIconButton,
-  UploadIconButtonProps,
-} from './lib/components/Chatbox/UploadIconButton';
+export { UploadIconButton } from './lib/components/Chatbox/UploadIconButton';
+export type { UploadIconButtonProps } from './lib/components/Chatbox/UploadIconButton';
 
 // CONSTANTS
 export {
@@ -120,7 +119,7 @@ export {
   INVITATION_STATUS_COLOR_MAP,
   TICKET_STATUS_COLOR_MAP,
   TICKET_TYPE_COLOR_MAP,
-  TRANSACTION_TYPE_COLOR_MAP
+  TRANSACTION_TYPE_COLOR_MAP,
 } from './lib/constants/color-map.constants';
 
 // HOOKS

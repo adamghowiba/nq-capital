@@ -32,7 +32,11 @@ const CustomToolbar: FC<CustomToolbarProps> = ({
   return (
     <GridToolbarContainer sx={{ alignItems: 'center' }}>
       <HStack gap={1} justify="space-between" w="full">
-        {title && <Box color="text.primary" fontSize="20px">{title}</Box>}
+        {title && (
+          <Box color="text.primary" fontSize="20px">
+            {title}
+          </Box>
+        )}
 
         <HStack>
           {renderSelectActions &&
@@ -89,8 +93,8 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
             renderSelectActions: props.renderSelectActions,
             selectedRows: selectedRows,
             autoHideSelectActions,
-            title: title,
-          } as CustomToolbarProps,
+            title: title as string,
+          },
           baseCheckbox: {
             size: 'small',
             sx: {
@@ -124,3 +128,8 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
     </>
   );
 };
+
+declare module '@mui/x-data-grid' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface ToolbarPropsOverrides extends CustomToolbarProps {}
+}
