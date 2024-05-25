@@ -4,7 +4,7 @@ query ListFunds {
   }
 }
 
-query FundOverview($fund_ids: [Int!]!) {
+query FundOverview($fund_ids: [Int!]) {
   fundOverview(fund_ids: $fund_ids) {
     invested_amount
     current_amount

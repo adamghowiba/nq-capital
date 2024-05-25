@@ -10,6 +10,9 @@ export type { NDateFieldProps } from './lib/components/Fields/NDatePickerField';
 export { NTextField } from './lib/components/Fields/NTextField';
 export type { NTextFieldProps } from './lib/components/Fields/NTextField';
 
+export { NCurrencyField } from './lib/components/Fields/NCurrencyField';
+export type { NCurrencyFieldProps } from './lib/components/Fields/NCurrencyField';
+
 export { CustomDataGrid } from './lib/components/DataTable/CustomDataGrid';
 export type { CustomDataGridProps } from './lib/components/DataTable/CustomDataGrid';
 export { formatGridColumns } from './lib/components/DataTable/helpers/data-grid.utils';

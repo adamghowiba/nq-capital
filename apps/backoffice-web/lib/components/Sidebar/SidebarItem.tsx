@@ -1,13 +1,13 @@
-import { BoxPropsExtended, HStack, StackPropsExtended } from '@nq-capital/nui';
-import React, { FC, ReactNode } from 'react';
-import { IconifyIcon } from '@iconify/react';
-import { Box } from '@mui/material';
+import { Box, Chip } from '@mui/material';
+import { HStack, StackPropsExtended } from '@nq-capital/nui';
 import Link from 'next/link';
+import { FC, ReactNode } from 'react';
 
 export interface SidebarItemProps extends StackPropsExtended {
   icon: ReactNode;
   isActive?: boolean;
   href?: string;
+  isBeta?: boolean;
 }
 
 const SidebarItem: FC<SidebarItemProps> = ({
@@ -15,6 +15,7 @@ const SidebarItem: FC<SidebarItemProps> = ({
   icon,
   isActive,
   href,
+  isBeta,
   ...props
 }) => {
   return (
@@ -50,6 +51,19 @@ const SidebarItem: FC<SidebarItemProps> = ({
         <Box color={isActive ? '#5B5BD6' : '#646464'}>{icon}</Box>
 
         {children}
+
+        {isBeta && (
+          <Chip
+            label="Beta"
+            size="small"
+            sx={{
+              bgcolor: '#5b5bd696',
+              color: 'white',
+              fontSize: '12px',
+              height: '20px',
+            }}
+          />
+        )}
       </HStack>
     </>
   );

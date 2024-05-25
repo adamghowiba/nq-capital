@@ -17,7 +17,7 @@ export type RenderSelectedActionsHandler = (params: {
 }) => ReactNode;
 
 export interface CustomToolbarProps
-  extends Pick<CustomDataGridProps, 'autoHideSelectActions'> {
+  extends Pick<CustomDataGridProps, 'autoHideSelectActions' | 'title'> {
   renderSelectActions?: RenderSelectedActionsHandler;
   selectedRows: GridRowSelectionModel;
 }
@@ -26,16 +26,21 @@ const CustomToolbar: FC<CustomToolbarProps> = ({
   selectedRows,
   renderSelectActions,
   autoHideSelectActions = true,
+  title,
   ...props
 }) => {
   return (
     <GridToolbarContainer sx={{ alignItems: 'center' }}>
-      <HStack ml="auto" gap={1}>
-        {renderSelectActions &&
-          (autoHideSelectActions ? !!selectedRows.length : true) &&
-          renderSelectActions({ selectedRows })}
-        <GridToolbarColumnsButton />
-        <GridToolbarDensitySelector />
+      <HStack gap={1} justify="space-between" w="full">
+        {title && <Box color="text.primary" fontSize="20px">{title}</Box>}
+
+        <HStack>
+          {renderSelectActions &&
+            (autoHideSelectActions ? !!selectedRows.length : true) &&
+            renderSelectActions({ selectedRows })}
+          <GridToolbarColumnsButton />
+          <GridToolbarDensitySelector />
+        </HStack>
       </HStack>
     </GridToolbarContainer>
   );
@@ -62,13 +67,14 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
 
   return (
     <>
-      {title && (
-        <Box fontSize="24px" mb={1}>
-          {title}
-        </Box>
-      )}
-
-      <Box ref={toolbarRef}></Box>
+      <HStack>
+        {/* {title && (
+          <Box fontSize="24px" mb={1}>
+            {title}
+          </Box>
+        )} */}
+        {/* <Box ref={toolbarRef}></Box> */}
+      </HStack>
 
       <DataGrid
         classes={{
@@ -83,6 +89,7 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
             renderSelectActions: props.renderSelectActions,
             selectedRows: selectedRows,
             autoHideSelectActions,
+            title: title,
           } as CustomToolbarProps,
           baseCheckbox: {
             size: 'small',

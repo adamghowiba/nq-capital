@@ -1,24 +1,28 @@
-import { subject } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { AppAbility } from '@nq-capital/iam';
+import { InvestorEntity } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
+import { Transaction } from '@prisma/client';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
-import { InvestorEntity } from './entities/investor.entity';
-import { Investor, Transaction } from '@prisma/client';
-import { ApiError } from '../../common/exceptions/api.error';
-import { accessibleBy } from '@casl/prisma';
+import { hashSync } from 'bcrypt';
 
 @Injectable()
 export class InvestorsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createInvestorInput: CreateInvestorInput) {
+  async create(
+    createInvestorInput: CreateInvestorInput
+  ): Promise<InvestorEntity> {
+    const hashedPassword = createInvestorInput.password
+      ? hashSync(createInvestorInput.password, 10)
+      : undefined;
+
     const investor = await this.prisma.investor.create({
       data: {
         ...createInvestorInput,
         bank_accounts: createInvestorInput.bankAccountsCreateMany,
+        password: hashedPassword
       },
     });
 
@@ -33,7 +37,7 @@ export class InvestorsService {
     return investors;
   }
 
-  async retrieve(id: number) {
+  async retrieve(id: number): Promise<InvestorEntity> {
     const investor = await this.prisma.investor.findUniqueOrThrow({
       where: { id },
     });
@@ -54,15 +58,7 @@ export class InvestorsService {
     return investor;
   }
 
-  async invite(id: number) {
-    const investor = await this.prisma.investor.findUniqueOrThrow({
-      where: { id },
-    });
-
-    return investor;
-  }
-
-  async getTransactionTotal(transactions: Transaction[]) {
+  private getTransactionTotal(transactions: Transaction[]) {
     const totals = transactions.reduce(
       (
         acc: Pick<
@@ -89,6 +85,14 @@ export class InvestorsService {
     return totals;
   }
 
+  /**
+   * Get an investors aggregated portfolio value across different funds
+   * Achieves this through searching for all transactions made by the investor.
+   *
+   * **The main issue with this approach is it assumes there will be a transaction for the user
+   * when a fund adjustment happens**
+   * @returns
+   */
   async getInvestorPortfolio(id: number): Promise<InvestorPortfolioEntity> {
     const transactions = await this.prisma.transaction.findMany({
       where: { investor_id: id },
@@ -102,16 +106,17 @@ export class InvestorsService {
       return transaction.created_at > monthAgo;
     });
 
-    const previousMonthTotals = await this.getTransactionTotal(
+    const previousMonthTotals = this.getTransactionTotal(
       previousMonthTransactions
     );
-    const overallTotals = await this.getTransactionTotal(transactions);
+    const overallTotals = this.getTransactionTotal(transactions);
 
     const balanceChangePercentage =
       (overallTotals.total_balance - previousMonthTotals.total_balance) /
       previousMonthTotals.total_balance;
 
-    const balanceChangeAmount = overallTotals.total_balance - previousMonthTotals.total_balance;
+    const balanceChangeAmount =
+      overallTotals.total_balance - previousMonthTotals.total_balance;
 
     return {
       total_balance: overallTotals.total_balance,
@@ -123,7 +128,43 @@ export class InvestorsService {
     };
   }
 
-  async update(id: number, updateInvestorInput: UpdateInvestorInput) {
+  /**
+   * Get investor portfolio by taking the current value of a portfolio by there stake in the portfolio
+   */
+  async getInvestorPortfolioWithStake(
+    investorId: number
+  ): Promise<InvestorPortfolioEntity> {
+    const investorFunds = await this.prisma.investorFund.findMany({
+      where: { investor_id: investorId },
+    });
+
+    const totalInvested = investorFunds.reduce(
+      (acc, curr) => acc + curr.invested_amount,
+      0
+    );
+    const totalBalance = investorFunds.reduce(
+      (acc, curr) => acc + curr.balance,
+      0
+    );
+
+    return {
+      total_invested: totalInvested,
+      balance_change_amount: 0,
+      balance_change_percentage: 0,
+      total_balance: totalBalance,
+      total_pending_transactions: 0,
+      previous_month: {
+        total_balance: 0,
+        total_invested: 0,
+        total_pending_transactions: 0,
+      },
+    };
+  }
+
+  async update(
+    id: number,
+    updateInvestorInput: UpdateInvestorInput
+  ): Promise<InvestorEntity> {
     const investor = await this.prisma.investor.update({
       where: { id },
       data: {
@@ -134,7 +175,7 @@ export class InvestorsService {
     return investor;
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<InvestorEntity> {
     const investor = await this.prisma.investor.delete({ where: { id } });
 
     return investor;

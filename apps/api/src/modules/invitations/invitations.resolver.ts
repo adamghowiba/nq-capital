@@ -5,8 +5,9 @@ import { CreateInvitationInput } from './dto/create-invitation.input';
 import { UpdateInvitationInput } from './dto/update-invitation.input';
 import { ApiError } from '../../common/exceptions/api.error';
 import { UserSession } from '../../common/decorators/auth/session.decorator';
-import { UserEntity } from '../users/entities/user.entity';
 import { ListInvitationArgs } from './dto/get-invitations.input';
+import { InvestorEntity, UserEntity } from '@nq-capital/iam';
+import { AcceptInvestorInvitationInput } from './dto/accept-invitation.input';
 
 @Resolver(() => InvitationEntity)
 export class InvitationsResolver {
@@ -21,6 +22,16 @@ export class InvitationsResolver {
       ...invitationInput,
       invited_by_user_id: 1,
     });
+  }
+
+  @Mutation(() => InvestorEntity, { name: 'acceptInvestorInvitation' })
+  acceptInvitation(
+    @Args('acceptInvestorInvitationInput')
+    createInvestorInput: AcceptInvestorInvitationInput
+  ) {
+    return this.invitationsService.acceptInvestorInvitation(
+      createInvestorInput
+    );
   }
 
   @Mutation(() => InvitationEntity)

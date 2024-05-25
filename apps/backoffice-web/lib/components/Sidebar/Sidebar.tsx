@@ -9,12 +9,18 @@ import infoIcon from '@iconify/icons-fluent/info-16-filled';
 import drawerIcon from '@iconify/icons-fluent/drawer-20-filled';
 import creditCardIcon from '@iconify/icons-fluent/wallet-credit-card-16-filled';
 import people20FilledIcon from '@iconify/icons-fluent/people-20-filled';
+import listBar16FilledIcon from '@iconify/icons-fluent/list-bar-16-filled';
 import { Icon } from '@iconify/react';
 import { useRouter } from 'next/router';
 
-export type SidebarProps = StackPropsExtended
+export type SidebarProps = StackPropsExtended;
 
-const NAVBAR_ITEMS: { name: string; href: string; icon: ReactNode }[] = [
+const NAVBAR_ITEMS: {
+  name: string;
+  href: string;
+  icon: ReactNode;
+  isBeta?: boolean;
+}[] = [
   {
     name: 'Overview',
     href: '/',
@@ -34,6 +40,12 @@ const NAVBAR_ITEMS: { name: string; href: string; icon: ReactNode }[] = [
     name: 'Users',
     href: '/users',
     icon: <Icon icon={people20FilledIcon} width={18} height={18} />,
+  },
+  {
+    name: 'Adjustments',
+    href: '/adjustments',
+    icon: <Icon icon={listBar16FilledIcon} width={18} height={18} />,
+    isBeta: true,
   },
 ];
 
@@ -77,13 +89,14 @@ const Sidebar: FC<SidebarProps> = ({ children, ...props }) => {
               icon={item.icon}
               key={item.href}
               isActive={activeItem?.name === item.name}
+              isBeta={item.isBeta}
             >
               {item.name}
             </SidebarItem>
           ))}
 
           <VStack gap="inherit" mt="auto" py={1.5}>
-            <SidebarItem icon={<Icon icon={infoIcon} width={18} height={18} />} >
+            <SidebarItem icon={<Icon icon={infoIcon} width={18} height={18} />}>
               Help
             </SidebarItem>
 

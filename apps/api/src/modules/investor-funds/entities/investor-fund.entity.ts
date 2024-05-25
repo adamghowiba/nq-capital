@@ -8,8 +8,8 @@ import {
 } from '@nestjs/graphql';
 import { InvestorFund } from '@prisma/client';
 import { FundEntity } from '../../funds/entities/fund.entity';
-import { InvestorEntity } from '../../investors/entities/investor.entity';
 import { Paginated } from '../../../common/entities/api-pagination.entity';
+import { InvestorEntity } from '@nq-capital/iam';
 
 @ObjectType()
 export class InvestorFundEntity

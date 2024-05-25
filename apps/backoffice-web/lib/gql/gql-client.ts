@@ -22,6 +22,27 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type AcceptInvestorInvitationInput = {
+  address_id?: InputMaybe<Scalars['Int']['input']>;
+  bank_accounts?: InputMaybe<Array<BankAccountWithoutInvestorInput>>;
+  company_name?: InputMaybe<Scalars['String']['input']>;
+  company_tax_id?: InputMaybe<Scalars['String']['input']>;
+  date_of_birth?: InputMaybe<Scalars['DateTime']['input']>;
+  email: Scalars['String']['input'];
+  /** Investor first name */
+  first_name: Scalars['String']['input'];
+  invitation_code: Scalars['String']['input'];
+  is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
+  last_name: Scalars['String']['input'];
+  /** Investor middle name */
+  middle_name?: InputMaybe<Scalars['String']['input']>;
+  mobile_number?: InputMaybe<Scalars['String']['input']>;
+  national_id?: InputMaybe<Scalars['String']['input']>;
+  nationality?: InputMaybe<Scalars['String']['input']>;
+  passport_number?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type AddInvestmentInput = {
   amount: Scalars['Float']['input'];
   fund_id: Scalars['Int']['input'];
@@ -157,9 +178,7 @@ export type CreateFundInput = {
 };
 
 export type CreateInvestorInput = {
-  account_status?: InputMaybe<InvestorAccountStatus>;
   address_id?: InputMaybe<Scalars['Int']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
   bank_accounts?: InputMaybe<Array<BankAccountWithoutInvestorInput>>;
   company_name?: InputMaybe<Scalars['String']['input']>;
   company_tax_id?: InputMaybe<Scalars['String']['input']>;
@@ -167,7 +186,6 @@ export type CreateInvestorInput = {
   email: Scalars['String']['input'];
   /** Investor first name */
   first_name: Scalars['String']['input'];
-  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name: Scalars['String']['input'];
   /** Investor middle name */
@@ -218,6 +236,19 @@ export type CreateUserInput = {
   middle_name?: InputMaybe<Scalars['String']['input']>;
   mobile_number?: InputMaybe<Scalars['String']['input']>;
   password: Scalars['String']['input'];
+};
+
+export type FundAdjustmentEntity = {
+  __typename?: 'FundAdjustmentEntity';
+  adjusted_by_user_id: Scalars['Int']['output'];
+  amount: Scalars['Float']['output'];
+  balance_after: Scalars['Float']['output'];
+  balance_before: Scalars['Float']['output'];
+  created_at: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  fund_id: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  updated_at: Scalars['DateTime']['output'];
 };
 
 export type FundEntity = {
@@ -361,6 +392,7 @@ export type MessageEntity = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptInvestorInvitation: InvestorEntity;
   addInvestment: FundEntity;
   adjustFund: FundEntity;
   createBankAccount: BankAccountEntity;
@@ -393,6 +425,11 @@ export type Mutation = {
   updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
+};
+
+
+export type MutationAcceptInvestorInvitationArgs = {
+  acceptInvestorInvitationInput: AcceptInvestorInvitationInput;
 };
 
 
@@ -582,13 +619,15 @@ export type Query = {
   bankAccount: BankAccountEntity;
   bankAccounts: Array<BankAccountEntity>;
   fund: FundEntity;
+  fundAdjustments: Array<FundAdjustmentEntity>;
   fundInvestorsOverview: Array<FundInvestorOverview>;
-  fundOverview: Array<FundOverviewEntity>;
+  fundOverview: FundOverviewEntity;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
   investorPortfolio: InvestorPortfolioEntity;
+  investorPortfolioWithStake: InvestorPortfolioEntity;
   investors: Array<InvestorEntity>;
   invitation: InvitationEntity;
   invitations: Array<InvitationEntity>;
@@ -650,6 +689,11 @@ export type QueryInvestorFundsArgs = {
 
 
 export type QueryInvestorPortfolioArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryInvestorPortfolioWithStakeArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -800,9 +844,7 @@ export type UpdateFundInput = {
 };
 
 export type UpdateInvestorInput = {
-  account_status?: InputMaybe<InvestorAccountStatus>;
   address_id?: InputMaybe<Scalars['Int']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
   company_name?: InputMaybe<Scalars['String']['input']>;
   company_tax_id?: InputMaybe<Scalars['String']['input']>;
   date_of_birth?: InputMaybe<Scalars['DateTime']['input']>;
@@ -810,7 +852,6 @@ export type UpdateInvestorInput = {
   /** Investor first name */
   first_name?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
-  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
   /** Investor middle name */
@@ -910,6 +951,18 @@ export type MeUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeUserQuery = { __typename?: 'Query', meUser: { __typename?: 'UserEntity', id: number, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, first_name: string, last_name: string, email: string, created_at: any, updated_at: any } };
 
+export type AdjustFundMutationVariables = Exact<{
+  adjustFundInput: AdjustFundInput;
+}>;
+
+
+export type AdjustFundMutation = { __typename?: 'Mutation', adjustFund: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
+
+export type ListFundAdjustmentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListFundAdjustmentsQuery = { __typename?: 'Query', fundAdjustments: Array<{ __typename?: 'FundAdjustmentEntity', id: number, description?: string | null, amount: number, balance_before: number, balance_after: number, fund_id: number, adjusted_by_user_id: number, created_at: any, updated_at: any }> };
+
 export type FundAllFragmentFragment = { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any };
 
 export type ListFundsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -918,11 +971,11 @@ export type ListFundsQueryVariables = Exact<{ [key: string]: never; }>;
 export type ListFundsQuery = { __typename?: 'Query', funds: Array<{ __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any }> };
 
 export type FundOverviewQueryVariables = Exact<{
-  fund_ids: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
 }>;
 
 
-export type FundOverviewQuery = { __typename?: 'Query', fundOverview: Array<{ __typename?: 'FundOverviewEntity', invested_amount: number, current_amount: number, net_returns: number }> };
+export type FundOverviewQuery = { __typename?: 'Query', fundOverview: { __typename?: 'FundOverviewEntity', invested_amount: number, current_amount: number, net_returns: number } };
 
 export type GetFundInvestorsOverviewQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -941,13 +994,6 @@ export type RetrieveInvestorQueryVariables = Exact<{
 
 
 export type RetrieveInvestorQuery = { __typename?: 'Query', investor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, bank_accounts?: Array<{ __typename?: 'BankAccountEntity', id: number, account_number: string, bank_name: string, bank_country: string, currency: string, is_primary: boolean }> | null, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
-
-export type InvestorPortfolioQueryVariables = Exact<{
-  id?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-
-export type InvestorPortfolioQuery = { __typename?: 'Query', investorPortfolio: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number, balance_change_percentage: number, balance_change_amount: number, previous_month: { __typename?: 'PortfolioTotalEntity', total_invested: number, total_balance: number, total_pending_transactions: number } } };
 
 export type ListInvestorsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1296,6 +1342,73 @@ useMeUserQuery.getKey = (variables?: MeUserQueryVariables) => variables === unde
 
 useMeUserQuery.fetcher = (variables?: MeUserQueryVariables, options?: RequestInit['headers']) => gqlFetcher<MeUserQuery, MeUserQueryVariables>(MeUserDocument, variables, options);
 
+export const AdjustFundDocument = `
+    mutation AdjustFund($adjustFundInput: AdjustFundInput!) {
+  adjustFund(adjustFundInput: $adjustFundInput) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useAdjustFundMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<AdjustFundMutation, TError, AdjustFundMutationVariables, TContext>) => {
+    
+    return useMutation<AdjustFundMutation, TError, AdjustFundMutationVariables, TContext>(
+      {
+    mutationKey: ['AdjustFund'],
+    mutationFn: (variables?: AdjustFundMutationVariables) => gqlFetcher<AdjustFundMutation, AdjustFundMutationVariables>(AdjustFundDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useAdjustFundMutation.fetcher = (variables: AdjustFundMutationVariables, options?: RequestInit['headers']) => gqlFetcher<AdjustFundMutation, AdjustFundMutationVariables>(AdjustFundDocument, variables, options);
+
+export const ListFundAdjustmentsDocument = `
+    query ListFundAdjustments {
+  fundAdjustments {
+    id
+    description
+    amount
+    balance_before
+    balance_after
+    fund_id
+    adjusted_by_user_id
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useListFundAdjustmentsQuery = <
+      TData = ListFundAdjustmentsQuery,
+      TError = unknown
+    >(
+      variables?: ListFundAdjustmentsQueryVariables,
+      options?: Omit<UseQueryOptions<ListFundAdjustmentsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListFundAdjustmentsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListFundAdjustmentsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListFundAdjustments'] : ['ListFundAdjustments', variables],
+    queryFn: gqlFetcher<ListFundAdjustmentsQuery, ListFundAdjustmentsQueryVariables>(ListFundAdjustmentsDocument, variables),
+    ...options
+  }
+    )};
+
+useListFundAdjustmentsQuery.document = ListFundAdjustmentsDocument;
+
+useListFundAdjustmentsQuery.getKey = (variables?: ListFundAdjustmentsQueryVariables) => variables === undefined ? ['ListFundAdjustments'] : ['ListFundAdjustments', variables];
+
+
+useListFundAdjustmentsQuery.fetcher = (variables?: ListFundAdjustmentsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListFundAdjustmentsQuery, ListFundAdjustmentsQueryVariables>(ListFundAdjustmentsDocument, variables, options);
+
 export const ListFundsDocument = `
     query ListFunds {
   funds {
@@ -1328,7 +1441,7 @@ useListFundsQuery.getKey = (variables?: ListFundsQueryVariables) => variables ==
 useListFundsQuery.fetcher = (variables?: ListFundsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListFundsQuery, ListFundsQueryVariables>(ListFundsDocument, variables, options);
 
 export const FundOverviewDocument = `
-    query FundOverview($fund_ids: [Int!]!) {
+    query FundOverview($fund_ids: [Int!]) {
   fundOverview(fund_ids: $fund_ids) {
     invested_amount
     current_amount
@@ -1341,13 +1454,13 @@ export const useFundOverviewQuery = <
       TData = FundOverviewQuery,
       TError = unknown
     >(
-      variables: FundOverviewQueryVariables,
+      variables?: FundOverviewQueryVariables,
       options?: Omit<UseQueryOptions<FundOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FundOverviewQuery, TError, TData>['queryKey'] }
     ) => {
     
     return useQuery<FundOverviewQuery, TError, TData>(
       {
-    queryKey: ['FundOverview', variables],
+    queryKey: variables === undefined ? ['FundOverview'] : ['FundOverview', variables],
     queryFn: gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables),
     ...options
   }
@@ -1355,10 +1468,10 @@ export const useFundOverviewQuery = <
 
 useFundOverviewQuery.document = FundOverviewDocument;
 
-useFundOverviewQuery.getKey = (variables: FundOverviewQueryVariables) => ['FundOverview', variables];
+useFundOverviewQuery.getKey = (variables?: FundOverviewQueryVariables) => variables === undefined ? ['FundOverview'] : ['FundOverview', variables];
 
 
-useFundOverviewQuery.fetcher = (variables: FundOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables, options);
+useFundOverviewQuery.fetcher = (variables?: FundOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables, options);
 
 export const GetFundInvestorsOverviewDocument = `
     query GetFundInvestorsOverview {
@@ -1435,46 +1548,6 @@ useRetrieveInvestorQuery.getKey = (variables: RetrieveInvestorQueryVariables) =>
 
 
 useRetrieveInvestorQuery.fetcher = (variables: RetrieveInvestorQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveInvestorQuery, RetrieveInvestorQueryVariables>(RetrieveInvestorDocument, variables, options);
-
-export const InvestorPortfolioDocument = `
-    query InvestorPortfolio($id: Int) {
-  investorPortfolio(id: $id) {
-    total_invested
-    total_balance
-    total_pending_transactions
-    balance_change_percentage
-    balance_change_amount
-    previous_month {
-      total_invested
-      total_balance
-      total_pending_transactions
-    }
-  }
-}
-    `;
-
-export const useInvestorPortfolioQuery = <
-      TData = InvestorPortfolioQuery,
-      TError = unknown
-    >(
-      variables?: InvestorPortfolioQueryVariables,
-      options?: Omit<UseQueryOptions<InvestorPortfolioQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvestorPortfolioQuery, TError, TData>['queryKey'] }
-    ) => {
-    
-    return useQuery<InvestorPortfolioQuery, TError, TData>(
-      {
-    queryKey: variables === undefined ? ['InvestorPortfolio'] : ['InvestorPortfolio', variables],
-    queryFn: gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables),
-    ...options
-  }
-    )};
-
-useInvestorPortfolioQuery.document = InvestorPortfolioDocument;
-
-useInvestorPortfolioQuery.getKey = (variables?: InvestorPortfolioQueryVariables) => variables === undefined ? ['InvestorPortfolio'] : ['InvestorPortfolio', variables];
-
-
-useInvestorPortfolioQuery.fetcher = (variables?: InvestorPortfolioQueryVariables, options?: RequestInit['headers']) => gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables, options);
 
 export const ListInvestorsDocument = `
     query ListInvestors {

@@ -11,9 +11,8 @@ import { MessagesService } from './messages.service';
 import { MessageEntity } from './entities/message.entity';
 import { UpdateMessageInput } from './dto/update-message.input';
 import { SendMessageInput } from './dto/create-message.input';
-import { InvestorEntity } from '../investors/entities/investor.entity';
-import { UserEntity } from '../users/entities/user.entity';
 import { AssetEntity } from '../assets/entities/asset.entity';
+import { InvestorEntity, UserEntity } from '@nq-capital/iam';
 
 @Resolver(() => MessageEntity)
 export class MessagesResolver {

@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@nq-capital/service-database';
-import { GraphQLError } from 'graphql';
+import { hash } from 'bcrypt';
+import { ApiError } from '../../common/exceptions/api.error';
 import { CreateUserInput } from './dto/create-user.input';
 import { ListUserArgs } from './dto/get-user.args';
 import { UpdateUserInput } from './dto/update-user.input';
-import { UserEntity } from './entities/user.entity';
-import { hash } from 'bcrypt';
-import { ApiError } from '../../common/exceptions/api.error';
+import { UserEntity } from '@nq-capital/iam';
 
 @Injectable()
 export class UsersService {

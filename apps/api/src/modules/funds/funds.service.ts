@@ -10,6 +10,7 @@ import {
 } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
+import { FundAdjustmentEntity } from './entities/fund-adjustment.entity';
 
 @Injectable()
 export class FundsService {
@@ -55,10 +56,10 @@ export class FundsService {
     const fund = await this.prisma.fund.update({
       where: { id: adjustFundInput.fund_id },
       data: {
-        balance:
-          adjustFundInput.amount > 0
-            ? { increment: adjustFundInput.amount }
-            : { decrement: adjustFundInput.amount },
+        balance: {
+          // The the amount is negative prisma will automatically subtract
+          increment: adjustFundInput.amount,
+        },
       },
     });
 
@@ -77,7 +78,22 @@ export class FundsService {
       },
     });
 
+    this.transactionsEmitter.emit('fund_adjustment', {
+      adjusted_by_user_id: adjustFundInput.adjusted_by_user_id,
+      amount: adjustFundInput.amount,
+      fund_id: adjustFundInput.fund_id,
+      description: adjustFundInput.description,
+    });
+
     return fund;
+  }
+
+  async listFundAdjustments(): Promise<FundAdjustmentEntity[]> {
+    const fundAdjustments = await this.prisma.fundAdjustment.findMany({
+      orderBy: { created_at: 'desc' },
+    });
+
+    return fundAdjustments;
   }
 
   async addInvestment(addFundInvestorInput: AddInvestmentInput) {
@@ -136,7 +152,7 @@ export class FundsService {
     const fundBalance = fund.balance;
 
     const investors = fund.investors.map((investor) => {
-      const stakePercentage = investor.invested_amount / fundBalance;
+      const stakePercentage = investor.balance / fundBalance;
 
       return { ...investor, stake_percentage: stakePercentage };
     });

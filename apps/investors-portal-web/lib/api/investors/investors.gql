@@ -18,3 +18,18 @@ query InvestorPortfolio($id: Int) {
     }
   }
 }
+
+query InvestorPortfolioWithStake($id: Int) {
+  investorPortfolioWithStake(id: $id) {
+    total_invested
+    total_balance
+    total_pending_transactions
+    balance_change_percentage
+    balance_change_amount
+    previous_month {
+      total_invested
+      total_balance
+      total_pending_transactions
+    }
+  }
+}

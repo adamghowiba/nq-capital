@@ -3,12 +3,12 @@ import { PrismaService } from '@nq-capital/service-database';
 import { ApiError } from '../../common/exceptions/api.error';
 import { AssetsService } from '../assets/assets.service';
 import { MulterFile } from '../assets/entities/multer-file.entity';
-import { ApplicationSessionEntity } from '../auth/entities/session.entity';
 import { SendTicketMessageInput } from './dto/create-ticket-message.input';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { UploadTicketFileDto } from './dto/upload-ticket-file.dto';
 import { TicketEntity } from './entities/ticket.entity';
+import { ApplicationSessionEntity } from '@nq-capital/iam';
 
 @Injectable()
 export class TicketsService {

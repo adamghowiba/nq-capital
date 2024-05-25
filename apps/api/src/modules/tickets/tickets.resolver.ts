@@ -11,16 +11,13 @@ import {
   GqlSession,
   InvestorSession,
 } from '../../common/decorators/auth/session.decorator';
-import {
-  ApplicationSessionEntity
-} from '../auth/entities/session.entity';
-import { InvestorEntity } from '../investors/entities/investor.entity';
 import { MessageEntity } from '../messages/entities/message.entity';
 import { SendTicketMessageInput } from './dto/create-ticket-message.input';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketEntity } from './entities/ticket.entity';
 import { TicketsService } from './tickets.service';
+import { ApplicationSessionEntity, InvestorEntity } from '@nq-capital/iam';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {

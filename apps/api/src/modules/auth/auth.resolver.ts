@@ -5,15 +5,13 @@ import {
   InvestorSession,
   UserSession,
 } from '../../common/decorators/auth/session.decorator';
-import { UserEntity } from '../users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { LoginInput } from './dto/login.input';
 import { LogoutEntity } from './entities/logout.entity';
 import { GqlAuthGuard } from './guards/graphql-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { InvestorEntity } from '../investors/entities/investor.entity';
-import { SessionEntity } from './entities/session.entity';
 import { Request } from 'express';
+import { InvestorEntity, SessionEntity, UserEntity } from '@nq-capital/iam';
 
 @Resolver(() => UserEntity)
 export class AuthResolver {

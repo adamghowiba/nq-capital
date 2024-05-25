@@ -1,9 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { InvestorEntity } from '../../investors/entities/investor.entity';
 import { InvestorsService } from '../../investors/investors.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
+import { InvestorEntity, UserEntity } from '@nq-capital/iam';
 
 /**
  * Serialized session object that is stored in the session store

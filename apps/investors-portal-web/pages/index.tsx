@@ -8,19 +8,21 @@ import CustomDataGrid from '../lib/components/StyledDataGrid/CustomDataGrid';
 import TransactionTypeChip from '../lib/components/TransactionTypeBadge/TransactionTypeBadge';
 import {
   useInvestorPortfolioQuery,
+  useInvestorPortfolioWithStakeQuery,
   useListTransactionsQuery,
 } from '../lib/gql/gql-client';
 import AccountValueChart from '../lib/modules/home/AccountValueChart';
 import { EmptyTransactions } from '../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../lib/utils/currency.utils';
 import { formatISOForTable } from '../lib/utils/date.utils';
+import InvestorFundsDataTable from '../lib/components/InvestorFundsDataTable/InvestorFundsDataTable';
 
 const Index = () => {
   const [dateFilter, setDateFilter] = useState<'year' | 'month'>('month');
 
-  const investorPortfolio = useInvestorPortfolioQuery(
+  const investorPortfolio = useInvestorPortfolioWithStakeQuery(
     {},
-    { select: (data) => data.investorPortfolio }
+    { select: (data) => data.investorPortfolioWithStake }
   );
 
   const transactionsQuery = useListTransactionsQuery(
@@ -140,6 +142,8 @@ const Index = () => {
             ]}
           />
         </Box>
+
+        <InvestorFundsDataTable />
       </Screen>
     </>
   );

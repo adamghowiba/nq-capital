@@ -25,6 +25,7 @@ import { formatUSDCurrency } from '@nq-capital/utils';
 import { useState } from 'react';
 import { Screen } from '../lib/components/Screen/Screen';
 import {
+  useFundOverviewQuery,
   useGetFundInvestorsOverviewQuery,
   useListFundsQuery,
 } from '../lib/gql/gql-client';
@@ -32,6 +33,8 @@ import InvestmentOverviewChart from '../lib/modules/overview/components/Investme
 
 export function Index() {
   const [selectedFundIds, setSelectedFundIds] = useState<number[]>([]);
+
+  const fundOverview = useFundOverviewQuery({}, {select: data => data.fundOverview});
   const funds = useListFundsQuery({}, { select: (data) => data.funds });
 
   const fundInvestorsOverview = useGetFundInvestorsOverviewQuery(
@@ -94,7 +97,7 @@ export function Index() {
             </KPICardTitle>
 
             <HStack gap={1}>
-              <KPICardValue>$150,736</KPICardValue>
+              <KPICardValue>{formatUSDCurrency(fundOverview.data?.invested_amount || 0)}</KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
             <Typography variant="subtitle2">vs last month</Typography>
@@ -106,7 +109,7 @@ export function Index() {
             </KPICardTitle>
 
             <HStack gap={1}>
-              <KPICardValue>$150,736</KPICardValue>
+              <KPICardValue>{formatUSDCurrency(fundOverview.data?.current_amount || 0)}</KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
             <Typography variant="subtitle2">vs last month</Typography>
@@ -116,7 +119,7 @@ export function Index() {
             <KPICardTitle>Net Returns</KPICardTitle>
 
             <HStack gap={1}>
-              <KPICardValue>$150,736</KPICardValue>
+              <KPICardValue>{formatUSDCurrency(fundOverview.data?.net_returns || 0)}</KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
 

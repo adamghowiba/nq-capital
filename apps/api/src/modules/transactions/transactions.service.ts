@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTransactionInput } from './dto/create-transaction.input';
-import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { GraphQLError } from 'graphql';
+import { CreateTransactionInput } from './dto/create-transaction.input';
+import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { TransactionEntity } from './entities/transaction.entity';
-import { AppAbility } from '@nq-capital/iam';
-import { accessibleBy } from '@casl/prisma';
+import { SessionEntity } from '@nq-capital/iam';
 
 /**
  * Events that trigger a transaction:
@@ -48,8 +47,11 @@ export class TransactionsService {
     return transaction;
   }
 
-  async list(): Promise<TransactionEntity[]> {
+  async list(params: unknown, session: SessionEntity): Promise<TransactionEntity[]> {
     const transactions = await this.prisma.transaction.findMany({
+      where: {
+        investor_id: session.investor?.id || undefined,
+      },
       orderBy: {
         created_at: 'desc',
       },

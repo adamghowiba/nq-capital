@@ -108,7 +108,7 @@ model BankAccount {
   branch_code         String? // Specific branch code if applicable
   branch_address      String? // Physical address of the bank's branch
   is_primary          Boolean          @default(false)
-  investor            Investor         @relation(fields: [investor_id], references: [id])
+  investor            Investor         @relation(fields: [investor_id], references: [id], onDelete: Cascade)
   investor_id         Int
   created_at          DateTime         @default(now())
   updated_at          DateTime         @updatedAt
@@ -139,8 +139,6 @@ model FundAdjustment {
   id                  Int      @id @default(autoincrement())
   description         String?
   amount              Float    @db.DoublePrecision()
-  // change_type ChangeType (Negative or Positive)
-  // type FundAdjustmentType (Could be used to specify where the fund adjustment originated)
   balance_before      Float    @db.DoublePrecision()
   balance_after       Float    @db.DoublePrecision()
   fund                Fund     @relation(fields: [fund_id], references: [id])

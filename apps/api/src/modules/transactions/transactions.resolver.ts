@@ -7,14 +7,14 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Permission } from '@nq-capital/iam';
+import { InvestorEntity, Permission, SessionEntity } from '@nq-capital/iam';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { TransactionEntity } from './entities/transaction.entity';
 import { TransactionsService } from './transactions.service';
 import { PrismaService } from '@nq-capital/service-database';
-import { InvestorEntity } from '../investors/entities/investor.entity';
 import { FundEntity } from '../funds/entities/fund.entity';
+import { GqlSession } from '../../common/decorators/auth/session.decorator';
 
 @Resolver(() => TransactionEntity)
 export class TransactionsResolver {
@@ -33,8 +33,8 @@ export class TransactionsResolver {
 
   @Permission('read', 'Transaction')
   @Query(() => [TransactionEntity], { name: 'transactions' })
-  findAll() {
-    return this.transactionsService.list();
+  list(@GqlSession() session: SessionEntity) {
+    return this.transactionsService.list({}, session);
   }
 
   @Query(() => TransactionEntity, { name: 'transaction' })

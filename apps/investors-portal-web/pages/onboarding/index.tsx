@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import {
   InvitationStatus,
+  useAcceptInvestorInvitationMutation,
   useCreateInvestorMutation,
   useRetrieveInvitationQuery,
 } from '../../lib/gql/gql-client';
@@ -62,7 +63,7 @@ const Onboarding: NextPageWithLayout<
 
   const currentStepIndex = FORM_STEPS.indexOf(currentStep);
 
-  const createInvestorMutation = useCreateInvestorMutation({
+  const acceptInvitationMutation = useAcceptInvestorInvitationMutation({
     onSuccess: async () => {
       await router.push('/login');
     },
@@ -97,15 +98,17 @@ const Onboarding: NextPageWithLayout<
   };
 
   const handleValidSubmission: SubmitHandler<OnboardingSchema> = (data) => {
-    createInvestorMutation.mutate({
-      createInvestorInput: {
+    if (!props.isValid || !props.code) return;
+
+    acceptInvitationMutation.mutate({
+      acceptInvestorInvitationInput: {
         email: data.email,
         first_name: data.first_name,
         last_name: data.last_name,
         mobile_number: data.mobile_number,
         national_id: data.national_id_number,
         password: data.password,
-        invitation_code: props.isValid ? props.code : null,
+        invitation_code: props.code,
         nationality: data.nationality,
         passport_number: data.passport_number,
         bank_accounts: data.bank_accounts?.map(transformBankSchemaToInput),

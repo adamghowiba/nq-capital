@@ -30,6 +30,7 @@ export class CreateInvestorInput
    * Investor first name
    */
   @IsString()
+  @Field(() => String)
   first_name!: string;
 
   /**
@@ -37,29 +38,30 @@ export class CreateInvestorInput
    */
   @IsString()
   @IsOptional()
+  @Field(() => String, { nullable: true })
   middle_name?: string | null;
 
   @IsString()
+  @Field(() => String)
   last_name!: string;
 
   @IsEmail()
+  @Field(() => String)
   email!: string;
 
   @IsString()
   @IsOptional()
-  @Field(() => String, { nullable: true })
-  invitation_code!: string | null;
-
-  @IsString()
-  @IsOptional()
+  @Field(() => String)
   password?: string | null;
 
   @IsString()
   @IsOptional()
+  @Field(() => String, { nullable: true })
   passport_number?: string | null;
 
   @IsString()
   @IsOptional()
+  @Field(() => String, { nullable: true })
   national_id?: string | null;
 
   @IsString()
@@ -69,31 +71,28 @@ export class CreateInvestorInput
 
   @IsString()
   @IsOptional()
+  @Field(() => String, { nullable: true })
   nationality?: string | null;
 
   @IsString()
   @IsOptional()
+  @Field(() => String, { nullable: true })
   company_name?: string | null;
 
   @IsString()
   @IsOptional()
+  @Field(() => String, { nullable: true })
   company_tax_id?: string | null;
 
   @IsBoolean()
   @IsOptional()
+  @Field(() => Boolean, { nullable: true })
   is_accredited?: boolean | null;
 
   @IsString()
   @IsOptional()
-  avatar?: string | null;
-
-  @IsString()
-  @IsOptional()
+  @Field(() => String, { nullable: true })
   mobile_number?: string | null;
-
-  @HideField()
-  @Field(() => InvestorAccountStatus)
-  account_status?: InvestorAccountStatus;
 
   @IsNumber()
   @IsOptional()
@@ -120,6 +119,12 @@ export class CreateInvestorInput
 
   @HideField()
   updated_at?: string | Date;
+
+  @HideField()
+  avatar?: string | null;
+
+  @HideField()
+  account_status?: InvestorAccountStatus;
 
   @HideField()
   get bankAccountsCreateMany():

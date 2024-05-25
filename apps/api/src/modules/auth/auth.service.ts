@@ -5,9 +5,8 @@ import { ApiError } from '../../common/exceptions/api.error';
 import { UsersService } from '../users/users.service';
 import { LoginInput } from './dto/login.input';
 import { PrismaService } from '@nq-capital/service-database';
-import { InvestorEntity } from '../investors/entities/investor.entity';
-import { UserEntity } from '../users/entities/user.entity';
 import { SerializeSessionPayload } from './session/session.serializer';
+import { InvestorEntity, UserEntity } from '@nq-capital/iam';
 
 @Injectable()
 export class AuthService {

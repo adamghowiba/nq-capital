@@ -7,7 +7,7 @@ import {
   ResolveField,
   Resolver
 } from '@nestjs/graphql';
-import { Permission } from '@nq-capital/iam';
+import { InvestorEntity, Permission } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { InvestorSession } from '../../common/decorators/auth/session.decorator';
 import { AddressEntity } from '../addresses/entities/address.entity';
@@ -17,7 +17,6 @@ import { CreateInvestorInput } from './dto/create-investor.input';
 import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
-import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
 
 @Resolver(() => InvestorEntity)
@@ -55,6 +54,15 @@ export class InvestorsResolver {
     @InvestorSession() investor: InvestorEntity
   ) {
     return this.investorsService.getInvestorPortfolio(args?.id || investor?.id);
+  }
+
+  @Permission('read', 'Investor')
+  @Query(() => InvestorPortfolioEntity, { name: 'investorPortfolioWithStake' })
+  retrieveInvestorPortfolioWithStake(
+    @Args() args: GetInvestorPortfolioArgs,
+    @InvestorSession() investor: InvestorEntity
+  ) {
+    return this.investorsService.getInvestorPortfolioWithStake(args?.id || investor?.id);
   }
 
   @Mutation(() => InvestorEntity)
