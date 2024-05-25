@@ -14,9 +14,9 @@ export const getTimespanDates = (params?: { timespan?: Timespan }) => {
   const timespan = params?.timespan ?? 'month';
 
   if (timespan === 'year') {
-    const start = now.minus({ year: 1 });
+    const start = now.endOf('month').minus({ year: 1 });
 
-    return Array.from({ length: 12 }, (_, i) => start.plus({ month: i }));
+    return Array.from({ length: 13 }, (_, i) => start.plus({ month: i }));
   }
 
   const start = now.minus({ month: 1 });

@@ -1,0 +1,23 @@
+fragment MessageBaseFragment on MessageEntity {
+  id
+  content
+  type
+  sent_by_user_id
+  sent_by_investor_id
+  sent_by_user {
+    id
+    first_name
+    last_name
+    avatar
+    role
+  }
+  sent_by_investor {
+    id
+    first_name
+    last_name
+    avatar
+  }
+  edit_count
+  updated_at
+  created_at
+}

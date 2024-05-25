@@ -12,24 +12,18 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { DialogHeader, HStack, NTextField } from '@nq-capital/nui';
 import { FC } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { BANK_ACCOUNT_TYPES } from '../../constants/bank.constants';
 import { NATIONALITIES } from '../../constants/nationalities.constants';
 import {
   BankAccountSchema,
   bankAccountSchema,
 } from '../../modules/payment-source/payment-source.schema';
-import DialogHeader from '../Dialog/DialogHeader';
-import NTextField from '../Fields/NTextField';
-import { HStack } from '../Stack/Stack';
-import { BankAccountAllFragmentFragment } from '../../gql/gql-client';
 
 export interface BankMutationDialogProps extends DialogProps {
   onSave: (type: 'edit' | 'create', bank: BankAccountSchema) => void;
-  mode?:
-    | { type: 'create' }
-    | { type: 'edit'; data: BankAccountAllFragmentFragment };
+  mode?: { type: 'create' } | { type: 'edit'; data: BankAccountSchema };
 }
 
 export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
@@ -46,7 +40,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
       bank_name: modeData?.bank_name || '',
       account_number: modeData?.account_number || '',
       account_holder_name: modeData?.account_holder_name || '',
-      account_type: modeData?.type || 'CHECKING',
+      account_type: modeData?.account_type || 'CHECKING',
       bank_country: modeData?.bank_country || '',
       currency: modeData?.currency || '',
       routing_number: modeData?.routing_number || '',
@@ -59,6 +53,7 @@ export const BankCardMutationDialog: FC<BankMutationDialogProps> = ({
       branch_address: modeData?.branch_address || '',
       is_primary: modeData?.is_primary || false,
     },
+    values: modeData,
     shouldUnregister: true,
     resolver: zodResolver(bankAccountSchema),
   });

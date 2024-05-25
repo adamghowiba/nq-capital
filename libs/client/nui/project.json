@@ -1,0 +1,21 @@
+{
+  "name": "nui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/client/nui/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "codegen": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "graphql-codegen",
+        "cwd": "libs/client/nui"
+      },
+      "configurations": {
+        "watch": {
+          "command": "graphql-codegen --watch"
+        }
+      }
+    }
+  }
+}

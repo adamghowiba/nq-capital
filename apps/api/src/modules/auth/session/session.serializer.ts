@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PassportSerializer } from '@nestjs/passport';
-import { InvestorEntity } from '../../investors/entities/investor.entity';
 import { InvestorsService } from '../../investors/investors.service';
-import { UserEntity } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/users.service';
+import { InvestorEntity, UserEntity } from '@nq-capital/iam';
 
 /**
  * Serialized session object that is stored in the session store
@@ -20,6 +19,11 @@ export type SerializeSessionPayload =
   | { type: 'INVESTOR'; investor: InvestorEntity }
   | { type: 'ADMIN'; user: UserEntity };
 
+export type SerializeSessionPayloadV2 = {
+  userId?: number;
+  investorId?: number;
+};
+
 /**
  * Deserialized session object that is attached to the request object
  */
@@ -30,6 +34,8 @@ interface DeserializedSessionResponse {
 
 @Injectable()
 export class SessionSerializer extends PassportSerializer {
+  private logger = new Logger('SessionSerializer');
+
   constructor(
     private readonly userService: UsersService,
     private readonly investorService: InvestorsService
@@ -38,12 +44,12 @@ export class SessionSerializer extends PassportSerializer {
   }
 
   serializeUser(
-    payload: SerializeSessionPayload,
+    payload: SerializeSessionPayloadV2,
     done: (err: Error | null, user: SerializedSession) => void
   ) {
     done(null, {
-      investorId: payload.type === 'INVESTOR' ? payload?.investor?.id : null,
-      userId: payload.type === 'ADMIN' ? payload?.user?.id : null,
+      investorId: payload.investorId || null,
+      userId: payload.userId || null,
     });
   }
 
@@ -57,15 +63,23 @@ export class SessionSerializer extends PassportSerializer {
     };
 
     if (payload?.userId) {
-      const user = await this.userService.retrieve({ id: payload.userId });
-
-      sessionObject['user'] = user;
+      try {
+        const user = await this.userService.retrieve({ id: payload.userId });
+        sessionObject['user'] = user;
+      } catch (error) {
+        this.logger.error('Attempted to deserialize investor but failed');
+      }
     }
 
     if (payload?.investorId) {
-      const investor = await this.investorService.retrieve(payload.investorId);
-
-      sessionObject['investor'] = investor;
+      try {
+        const investor = await this.investorService.retrieve(
+          payload.investorId
+        );
+        sessionObject['investor'] = investor;
+      } catch (error) {
+        this.logger.error('Attempted to deserialize investor but failed');
+      }
     }
 
     done(null, sessionObject);

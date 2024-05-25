@@ -1,28 +1,28 @@
 import { Button } from '@mui/material';
+import { Box, HStack, Stat } from '@nq-capital/nui';
 import { useState } from 'react';
-import Box from '../lib/components/Box/Box';
-import { Stat } from '../lib/components/KPICard/KPICard';
 import NLink from '../lib/components/Link/Link';
 import PageHeader from '../lib/components/PageHeader/PageHeader';
 import Screen from '../lib/components/Screen/Screen';
-import { HStack } from '../lib/components/Stack/Stack';
 import CustomDataGrid from '../lib/components/StyledDataGrid/CustomDataGrid';
 import TransactionTypeChip from '../lib/components/TransactionTypeBadge/TransactionTypeBadge';
 import {
   useInvestorPortfolioQuery,
+  useInvestorPortfolioWithStakeQuery,
   useListTransactionsQuery,
 } from '../lib/gql/gql-client';
 import AccountValueChart from '../lib/modules/home/AccountValueChart';
 import { EmptyTransactions } from '../lib/modules/transactions/components/EmpyTransactions';
 import { formatUSDCurrency } from '../lib/utils/currency.utils';
 import { formatISOForTable } from '../lib/utils/date.utils';
+import InvestorFundsDataTable from '../lib/components/InvestorFundsDataTable/InvestorFundsDataTable';
 
 const Index = () => {
   const [dateFilter, setDateFilter] = useState<'year' | 'month'>('month');
 
-  const investorPortfolio = useInvestorPortfolioQuery(
+  const investorPortfolio = useInvestorPortfolioWithStakeQuery(
     {},
-    { select: (data) => data.investorPortfolio }
+    { select: (data) => data.investorPortfolioWithStake }
   );
 
   const transactionsQuery = useListTransactionsQuery(
@@ -54,10 +54,6 @@ const Index = () => {
             value={formatUSDCurrency(
               investorPortfolio.data?.total_invested || 0
             )}
-            change={{
-              type: 'increase',
-              value: formatUSDCurrency(1000),
-            }}
           />
           <Stat
             title="Current Value"
@@ -67,7 +63,7 @@ const Index = () => {
             )}
             change={{
               type: 'increase',
-              value: formatUSDCurrency(1000),
+              value: formatUSDCurrency(investorPortfolio.data?.balance_change_amount || 0),
             }}
           />
           <Stat
@@ -146,6 +142,8 @@ const Index = () => {
             ]}
           />
         </Box>
+
+        <InvestorFundsDataTable />
       </Screen>
     </>
   );

@@ -2,22 +2,27 @@ import {
   Args,
   Int,
   Mutation,
-  Parent,
   Query,
-  ResolveField,
-  Resolver,
+  Resolver
 } from '@nestjs/graphql';
-import { InvestorEntity } from '../investors/entities/investor.entity';
-import { CreateFundInput } from './dto/create-fund.input';
-import { UpdateFundInput } from './dto/update-fund.input';
-import { FundEntity } from './entities/fund.entity';
-import { FundsService } from './funds.service';
 import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { AdjustFundInput } from './dto/adjust-fund.input';
+import { CreateFundInput } from './dto/create-fund.input';
+import { GetFundOverViewArgs } from './dto/get-fund-overview.args';
+import { UpdateFundInput } from './dto/update-fund.input';
+import { FundAdjustmentEntity } from './entities/fund-adjustment.entity';
+import { FundInvestorOverview } from './entities/fund-investor-overview.entity';
+import { FundOverviewEntity } from './entities/fund-overview.entity';
+import { FundEntity } from './entities/fund.entity';
+import { FundAggregatorService } from './fund-aggregator.service';
+import { FundsService } from './funds.service';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {
-  constructor(private readonly fundsService: FundsService) {}
+  constructor(
+    private readonly fundsService: FundsService,
+    private readonly fundAggregatorService: FundAggregatorService
+  ) {}
 
   @Mutation(() => FundEntity)
   createFund(@Args('createFundInput') createFundInput: CreateFundInput) {
@@ -36,6 +41,16 @@ export class FundsResolver {
     return this.fundsService.list();
   }
 
+  @Query(() => FundOverviewEntity, { name: 'fundOverview' })
+  fundOverview(@Args() fundOverviewArgs: GetFundOverViewArgs) {
+    return this.fundAggregatorService.getOverview(fundOverviewArgs);
+  }
+
+  @Query(() => [FundInvestorOverview], { name: 'fundInvestorsOverview' })
+  fundInvestorsOverview(@Args() fundOverviewArgs: GetFundOverViewArgs) {
+    return this.fundAggregatorService.getInvestorsOverview(fundOverviewArgs);
+  }
+
   @Query(() => FundEntity, { name: 'fund' })
   retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.fundsService.retrieve(id);
@@ -49,6 +64,11 @@ export class FundsResolver {
   @Mutation(() => FundEntity)
   adjustFund(@Args('adjustFundInput') adjustFundInput: AdjustFundInput) {
     return this.fundsService.adjustFund(adjustFundInput);
+  }
+
+  @Query(() => [FundAdjustmentEntity], { name: 'fundAdjustments' })
+  listFundAdjustments() {
+    return this.fundsService.listFundAdjustments();
   }
 
   @Mutation(() => FundEntity)

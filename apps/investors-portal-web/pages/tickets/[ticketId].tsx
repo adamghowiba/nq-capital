@@ -1,62 +1,59 @@
+import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
+import { Icon } from '@iconify/react';
 import {
   Alert,
   AlertTitle,
-  Box,
   Button,
-  ButtonGroup,
   Chip,
   CircularProgress,
-  IconButton,
-  TextField,
-  Typography,
-  styled,
+  Unstable_Grid2 as Grid,
+  Typography
 } from '@mui/material';
-import Screen from '../../lib/components/Screen/Screen';
-import { HStack, VStack } from '../../lib/components/Stack/Stack';
 import {
-  MessageEntity,
+  ChatBox,
+  ChatBoxBody,
+  ChatBoxFooter,
+  ChatBoxHeader,
+  ChatBoxTextField,
+  FileChip,
+  HStack,
+  MessageCard,
+  UploadIconButton,
+  VStack,
+  useFileUpload,
+} from '@nq-capital/nui';
+import { useMutation } from '@tanstack/react-query';
+import { DateTime } from 'luxon';
+import { useRouter } from 'next/router';
+import React, {
+  ReactNode,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
+import { queryClient } from '../../lib/api/query-client';
+import { nqRestApi } from '../../lib/api/rest-api';
+import Screen from '../../lib/components/Screen/Screen';
+import {
   RetrieveTicketQuery,
   useDeleteTicketMutation,
   useRetrieveTicketQuery,
-  useSendTicketMessageMutation,
+  useSendTicketMessageMutation
 } from '../../lib/gql/gql-client';
+import { useInvestor } from '../../lib/hooks/use-investor';
 import { formatISOForTable } from '../../lib/utils/date.utils';
-import { useRouter } from 'next/router';
-import React, { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
-import { Unstable_Grid2 as Grid } from '@mui/material';
-import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
-import add12Icon from '@iconify/icons-fluent/add-12-filled';
-import send16FilledIcon from '@iconify/icons-fluent/send-16-filled';
-import arrowCircleUp12Filled from '@iconify/icons-fluent/arrow-circle-up-12-filled';
-import { Icon } from '@iconify/react';
-import MessageCard from '../../lib/components/MessageCard/MessageCard';
-import { useMutation } from '@tanstack/react-query';
-import { useInvestor } from 'apps/investors-portal-web/lib/hooks/use-investor';
-import { queryClient } from 'apps/investors-portal-web/lib/api/query-client';
-import { useFileUpload } from 'apps/investors-portal-web/lib/hooks/use-file-upload';
-import FileChip from 'apps/investors-portal-web/lib/components/FileChip/FileChip';
-import { nqRestApi } from 'apps/investors-portal-web/lib/api/rest-api';
-import { DateTime } from 'luxon';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
 
-const VisuallyHiddenInput = styled('input')({
-  clip: 'rect(0 0 0 0)',
-  clipPath: 'inset(50%)',
-  height: 1,
-  overflow: 'hidden',
-  position: 'absolute',
-  bottom: 0,
-  left: 0,
-  whiteSpace: 'nowrap',
-  width: 1,
-});
-
 const getMessageDisplayName = (
   message: TicketMessageQueryData,
-  investor_id?: number
+  investorId?: number
 ) => {
-  if (message?.sent_by_investor_id === investor_id) return 'You';
+  if (
+    message.type === 'INVESTOR' &&
+    message?.sent_by_investor_id === investorId
+  )
+    return 'You';
 
   if (message.sent_by_investor) {
     return `${
@@ -82,6 +79,7 @@ const TickerDetailPage = ({ ...props }) => {
   });
   const router = useRouter();
   const ticketId = parseInt(router.query?.ticketId as string);
+  const chatBoxRef = useRef<HTMLDivElement>(null);
 
   const ticket = useRetrieveTicketQuery(
     {
@@ -173,7 +171,6 @@ const TickerDetailPage = ({ ...props }) => {
       sendTicketMessageInput: {
         content: messageInput,
         ticket_id: ticketId,
-        type: 'INVESTOR',
       },
     });
 
@@ -198,6 +195,15 @@ const TickerDetailPage = ({ ...props }) => {
       handleSendMessage();
     }
   };
+
+  useEffect(() => {
+    if (!ticket.data || !chatBoxRef.current) return;
+
+    chatBoxRef.current.scrollTo({
+      top: chatBoxRef.current?.scrollHeight,
+      behavior: 'instant',
+    });
+  }, [ticket.data, chatBoxRef]);
 
   if (!ticketId) {
     return (
@@ -310,16 +316,10 @@ const TickerDetailPage = ({ ...props }) => {
         </Grid>
 
         <Grid mobile={4} height="calc(100vh - 108px)">
-          <VStack
-            borderLeft="1px solid #EBEBEB"
-            height="100%"
-            sx={{ overflow: 'auto' }}
-          >
-            <Box p={2} borderBottom="1px solid #EBEBEB">
-              <Typography>Conversation</Typography>
-            </Box>
+          <ChatBox>
+            <ChatBoxHeader />
 
-            <VStack p={2} gap={4} sx={{ overflow: 'auto' }}>
+            <ChatBoxBody scrollDependency={ticket.data?.messages}>
               {ticket.data?.messages.map((message, index) => (
                 <MessageCard
                   key={message.id}
@@ -333,11 +333,9 @@ const TickerDetailPage = ({ ...props }) => {
                   files={message?.assets || []}
                 />
               ))}
-            </VStack>
+            </ChatBoxBody>
 
-            {/*  */}
-
-            <VStack p={2} gap={1} borderTop="1px solid #EBEBEB" mt="auto">
+            <ChatBoxFooter>
               {!!fileUploader.files.length && (
                 <HStack gap={1} overflow="auto" sx={{ scrollbarWidth: 'none' }}>
                   {fileUploader.files.map((file, index) => (
@@ -352,62 +350,22 @@ const TickerDetailPage = ({ ...props }) => {
               )}
 
               <HStack gap={1.5}>
-                <IconButton
-                  sx={{ bgcolor: '#F1F1F1' }}
-                  role={undefined}
-                  component="label"
-                >
-                  <VisuallyHiddenInput
-                    type="file"
-                    multiple
-                    accept=".xlsx,.xls,.pdf,.txt,.json,.png,.jpg"
-                    onChange={fileUploader.onFileChange}
-                  />
-                  <Icon icon={add12Icon} width={16} height={16} />
-                </IconButton>
+                <UploadIconButton
+                  enterKeyHint="enter"
+                  accept=".xlsx,.xls,.pdf,.txt,.json,.png,.jpg"
+                  onChange={fileUploader.onFileChange}
+                />
 
-                <TextField
-                  placeholder="Comment.."
+                <ChatBoxTextField
+                  placeholder="Comment"
                   variant="outlined"
-                  multiline
-                  fullWidth
-                  size="medium"
-                  onKeyDown={handleKeydown}
-                  sx={{
-                    '& .MuiInputBase-root.MuiOutlinedInput-root': {
-                      py: 0.5,
-                      pr: 0,
-                    },
-                    '& .MuiInputBase-root': {
-                      bgcolor: 'transparent',
-                    },
-                  }}
-                  maxRows={13}
+                  onSend={handleSendMessage}
                   value={messageInput}
                   onChange={(event) => setMessageInput(event.target.value)}
-                  InputProps={{
-                    endAdornment: (
-                      <IconButton
-                        size="small"
-                        color={messageInput.trim() ? 'primary' : 'secondary'}
-                        sx={{
-                          alignSelf: 'end',
-                          transition: 'color 0.15s ease',
-                        }}
-                        onClick={handleSendMessage}
-                      >
-                        <Icon
-                          icon={arrowCircleUp12Filled}
-                          width={25}
-                          height={25}
-                        />
-                      </IconButton>
-                    ),
-                  }}
                 />
               </HStack>
-            </VStack>
-          </VStack>
+            </ChatBoxFooter>
+          </ChatBox>
         </Grid>
       </Grid>
     </>

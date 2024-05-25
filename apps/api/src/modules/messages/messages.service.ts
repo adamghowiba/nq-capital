@@ -39,7 +39,11 @@ export class MessagesService {
   // }
 
   async list() {
-    const message = await this.prisma.message.findMany();
+    const message = await this.prisma.message.findMany({
+      orderBy: {
+        created_at: 'asc',
+      }
+    });
 
     return message;
   }

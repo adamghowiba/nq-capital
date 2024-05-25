@@ -1,0 +1,9 @@
+mutation AdjustFund($adjustFundInput: AdjustFundInput!) {
+  adjustFund(adjustFundInput: $adjustFundInput) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}

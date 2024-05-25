@@ -13,20 +13,15 @@ import {
   Typography,
   useRadioGroup,
 } from '@mui/material';
+import { DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, HStack, NTextField } from '@nq-capital/nui';
+import { useQueryClient } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { DrawerBody } from '../../../../lib/components/Drawer/DrawerBody';
-import DrawerContent from '../../../../lib/components/Drawer/DrawerContent';
-import DrawerFooter from '../../../../lib/components/Drawer/DrawerFooter';
-import DrawerHeader from '../../../../lib/components/Drawer/DrawerHeader';
-import NTextField from '../../../../lib/components/Fields/NTextField';
-import { HStack } from '../../../../lib/components/Stack/Stack';
-import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
 import {
   useCreateTickerMutation,
   useListTickersQuery,
 } from '../../../../lib/gql/gql-client';
-import { useQueryClient } from '@tanstack/react-query';
+import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
 
 export interface TickerMutationDrawerProps extends DrawerProps {
   mode:
@@ -99,6 +94,7 @@ const TickerMutationDrawer: FC<TickerMutationDrawerProps> = ({
           <DrawerHeader
             onClickExpand={() => setIsExpanded((expanded) => !expanded)}
             isExpanded={isExpanded}
+            onClose={() => props?.onClose?.({}, 'backdropClick')}
           >
             <Typography variant="h4" fontWeight="500">
               Ticket

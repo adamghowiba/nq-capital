@@ -1,13 +1,27 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { TransactionsService } from './transactions.service';
-import { TransactionEntity } from './entities/transaction.entity';
+import {
+  Args,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { InvestorEntity, Permission, SessionEntity } from '@nq-capital/iam';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
-import { AppAbility, Permission, UserAbility } from '@nq-capital/iam';
+import { TransactionEntity } from './entities/transaction.entity';
+import { TransactionsService } from './transactions.service';
+import { PrismaService } from '@nq-capital/service-database';
+import { FundEntity } from '../funds/entities/fund.entity';
+import { GqlSession } from '../../common/decorators/auth/session.decorator';
 
 @Resolver(() => TransactionEntity)
 export class TransactionsResolver {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(
+    private readonly transactionsService: TransactionsService,
+    private readonly prisma: PrismaService
+  ) {}
 
   @Mutation(() => TransactionEntity)
   createTransaction(
@@ -19,8 +33,8 @@ export class TransactionsResolver {
 
   @Permission('read', 'Transaction')
   @Query(() => [TransactionEntity], { name: 'transactions' })
-  findAll(@UserAbility() ability: AppAbility) {
-    return this.transactionsService.list({ ability });
+  list(@GqlSession() session: SessionEntity) {
+    return this.transactionsService.list({}, session);
   }
 
   @Query(() => TransactionEntity, { name: 'transaction' })
@@ -42,5 +56,19 @@ export class TransactionsResolver {
   @Mutation(() => TransactionEntity)
   removeTransaction(@Args('id', { type: () => Int }) id: number) {
     return this.transactionsService.remove(id);
+  }
+
+  @ResolveField(() => InvestorEntity, { name: 'investor', nullable: true })
+  getInvestorField(@Parent() transaction: TransactionEntity) {
+    return this.prisma.transaction
+      .findUnique({ where: { id: transaction.id } })
+      .investor();
+  }
+
+  @ResolveField(() => FundEntity, { name: 'fund', nullable: true })
+  getFundField(@Parent() transaction: TransactionEntity) {
+    return this.prisma.transaction
+      .findUnique({ where: { id: transaction.id } })
+      .fund();
   }
 }

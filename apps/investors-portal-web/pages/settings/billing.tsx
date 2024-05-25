@@ -1,19 +1,19 @@
 import add12FilledIcon from '@iconify/icons-fluent/add-12-filled';
 import { Icon } from '@iconify/react';
 import { IconButton, Typography } from '@mui/material';
+import { HStack, VStack } from '@nq-capital/nui';
 import { useState } from 'react';
 import { BankCard } from '../../lib/components/BankCard/BankCard';
 import {
   BankCardMutationDialog,
   BankMutationDialogProps,
 } from '../../lib/components/BankCardMutationDialog/BankMutationDialog';
-import { HStack, VStack } from '../../lib/components/Stack/Stack';
 import {
   CreateBankAccountInput,
   useCreateBankAccountMutation,
   useDeleteBankAccountMutation,
   useListBankAccountsQuery,
-  useUpdateBankAccountMutation
+  useUpdateBankAccountMutation,
 } from '../../lib/gql/gql-client';
 import SettingsLayout from '../../lib/layouts/SettingsLayout';
 import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
@@ -82,16 +82,17 @@ const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
       });
     }
 
-    if (
-      bankAccountDialogState?.type === 'edit' &&
-      bankAccountDialogState.data.id
-    )
-      updateBankAccountMutation.mutate({
-        updateBankAccountInput: {
-          id: bankAccountDialogState.data.id,
-          ...preparedData,
-        },
-      });
+    // TODO: Reenable editing
+    // if (
+    //   bankAccountDialogState?.type === 'edit' &&
+    //   bankAccountDialogState.data.id
+    // )
+    //   updateBankAccountMutation.mutate({
+    //     updateBankAccountInput: {
+    //       id: bankAccountDialogState.data.id,
+    //       ...preparedData,
+    //     },
+    //   });
   };
 
   return (
@@ -116,7 +117,8 @@ const BillingPage: NextPageWithLayout<InferGetInvestorSSP> = ({
                 onDelete={() =>
                   deleteBankAccountMutation.mutate({ id: bank.id })
                 }
-                onEdit={() => setBankAccountState({ type: 'edit', data: bank })}
+                // onEdit={() => setBankAccountState({ type: 'edit', data: bank })}
+                onEdit={() => null}
                 onMakeDefault={() =>
                   updateBankAccountMutation.mutate({
                     updateBankAccountInput: {

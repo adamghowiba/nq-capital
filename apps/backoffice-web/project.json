@@ -16,8 +16,13 @@
     "codegen": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "graphql-codegen --watch",
+        "command": "graphql-codegen",
         "cwd": "apps/backoffice-web"
+      },
+      "configurations": {
+        "watch": {
+          "command": "graphql-codegen --watch"
+        }
       }
     }
   },

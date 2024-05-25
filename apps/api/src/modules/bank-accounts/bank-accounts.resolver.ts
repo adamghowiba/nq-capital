@@ -4,7 +4,7 @@ import { BankAccountEntity } from './entities/bank-account.entity';
 import { CreateBankAccountInput } from './dto/create-bank-account.input';
 import { UpdateBankAccountInput } from './dto/update-bank-account.input';
 import { InvestorSession } from '../../common/decorators/auth/session.decorator';
-import { InvestorEntity } from '../investors/entities/investor.entity';
+import { InvestorEntity } from '@nq-capital/iam';
 
 @Resolver(() => BankAccountEntity)
 export class BankAccountsResolver {

@@ -1,23 +1,33 @@
 import notification from '@iconify/icons-fluent/alert-24-filled';
 import upDown from '@iconify/icons-fluent/chevron-up-down-24-filled';
 import person from '@iconify/icons-fluent/person-24-filled';
-import questionCircle from '@iconify/icons-fluent/question-circle-24-filled';
 import settings from '@iconify/icons-fluent/settings-24-filled';
 import { Icon, IconifyIcon } from '@iconify/react';
-import { Avatar, Divider, IconButton, Tooltip } from '@mui/material';
+import {
+  Avatar,
+  ClickAwayListener,
+  Divider,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import DContainer from '../DContainer/DContainer';
-import OneIcon from '../../utils/OneIcon';
-import TopbarSearch from './TopbarSearch';
-import Logo from '../Logo/logo';
-import { FC } from 'react';
-import { useInvestor } from '../../hooks/use-investor';
+import { HStack } from '@nq-capital/nui';
 import Link from 'next/link';
-import { HStack } from '../Stack/Stack';
+import { FC, useRef, useState } from 'react';
+import { useInvestor } from '../../hooks/use-investor';
+import OneIcon from '../../utils/OneIcon';
+import DContainer from '../DContainer/DContainer';
+import Logo from '../Logo/logo';
+import NotificationPopover from '../NotificationPopover/NotificationPopover';
+import TopbarSearch from './TopbarSearch';
 
 const Topbar: FC<any> = () => {
   const investor = useInvestor();
+
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const notificationsIconRef = useRef<HTMLButtonElement>(null);
 
   const rightIcons: {
     title: string;
@@ -25,14 +35,6 @@ const Topbar: FC<any> = () => {
     onClick?: () => void;
     href?: string;
   }[] = [
-    {
-      icon: questionCircle,
-      title: 'Help',
-    },
-    {
-      icon: notification,
-      title: 'Notifications',
-    },
     {
       icon: settings,
       title: 'Settings',
@@ -113,6 +115,26 @@ const Topbar: FC<any> = () => {
             <TopbarSearch />
 
             <HStack gap={2} align="center">
+              <ClickAwayListener
+                onClickAway={() => setIsNotificationOpen(false)}
+              >
+                <Box>
+                  <IconButton
+                    size="small"
+                    ref={notificationsIconRef}
+                    onClick={() => setIsNotificationOpen((open) => !open)}
+                  >
+                    <Icon icon={notification} fontSize={20} />
+                  </IconButton>
+
+                  <NotificationPopover
+                    open={isNotificationOpen}
+                    anchorEl={notificationsIconRef.current}
+                    placement="bottom-end"
+                  />
+                </Box>
+              </ClickAwayListener>
+
               {rightIcons.map(({ icon, title, onClick, href }, index) => (
                 <OneIcon
                   key={index}

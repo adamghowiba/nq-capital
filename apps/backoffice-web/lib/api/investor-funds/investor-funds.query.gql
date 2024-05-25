@@ -1,0 +1,10 @@
+query GetFundInvestorsOverview {
+  fundInvestorsOverview {
+    investor_id
+    first_name
+    last_name
+    email
+    invested_amount
+    current_balance
+  }
+}

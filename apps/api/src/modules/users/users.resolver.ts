@@ -2,10 +2,11 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CreateUserInput } from './dto/create-user.input';
 import { ListUserArgs } from './dto/get-user.args';
 import { UpdateUserInput } from './dto/update-user.input';
-import { PaginatedUserEntity, UserEntity } from './entities/user.entity';
+import { PaginatedUserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
 import { UseInterceptors } from '@nestjs/common';
 import { PaginationInterceptor } from '../../common/interceptors/pagination.interceptor';
+import { UserEntity } from '@nq-capital/iam';
 
 @UseInterceptors(PaginationInterceptor)
 @Resolver(() => UserEntity)

@@ -1,0 +1,5 @@
+mutation AcceptInvestorInvitation($acceptInvestorInvitationInput: AcceptInvestorInvitationInput!) {
+  acceptInvestorInvitation(acceptInvestorInvitationInput: $acceptInvestorInvitationInput) {
+    ...InvestorBaseFragment
+  }
+}

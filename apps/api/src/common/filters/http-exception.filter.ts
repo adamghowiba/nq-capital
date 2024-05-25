@@ -6,10 +6,9 @@ import {
   Logger,
 } from '@nestjs/common';
 import { GqlArgumentsHost, GqlContextType } from '@nestjs/graphql';
-import type { Request, Response } from 'express';
-import { GraphQLError, GraphQLResolveInfo } from 'graphql';
+import type { Response } from 'express';
+import { GraphQLResolveInfo } from 'graphql';
 import { ApiError } from '../exceptions/api.error';
-import { error } from 'console';
 
 // TODO: specify HTTP exception & create another filter for catch all;
 @Catch()

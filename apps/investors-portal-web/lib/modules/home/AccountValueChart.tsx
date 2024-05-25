@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { FC } from 'react';
-import { StyledTab, StyledTabs } from '../../components/Tabs/StyledTabs';
 import {
   Timespan,
   usePortfolioPerformance,
 } from '../transactions/use-perfromance.hook';
+import { StyledTab, StyledTabs } from '@nq-capital/nui';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
@@ -63,6 +63,7 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
               },
             ]}
             options={{
+              colors: ['#3E63DD'],
               chart: {
                 toolbar: {
                   show: false,
@@ -73,6 +74,12 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
               },
               stroke: {
                 curve: 'straight',
+                width: 2
+              },
+              fill: {
+                gradient: {
+                  shadeIntensity: 0.9
+                }
               },
               yaxis: {
                 tickAmount: 6,
@@ -83,7 +90,7 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
                     ? date.monthShort
                     : date.toFormat('MM-dd')
                 ),
-                tickAmount: 4,
+                tickAmount: 5,
                 labels: {
                   style: {
                     colors: '#BBBBBB',

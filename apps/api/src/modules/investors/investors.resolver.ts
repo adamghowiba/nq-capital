@@ -1,25 +1,23 @@
 import {
   Args,
-  Context,
   Int,
   Mutation,
   Parent,
   Query,
   ResolveField,
-  Resolver,
+  Resolver
 } from '@nestjs/graphql';
+import { InvestorEntity, Permission } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { InvestorSession } from '../../common/decorators/auth/session.decorator';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
 import { FundsService } from '../funds/funds.service';
 import { CreateInvestorInput } from './dto/create-investor.input';
+import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
-import { InvestorEntity } from './entities/investor.entity';
 import { InvestorsService } from './investors.service';
-import { AppAbility, UserAbility, Permission } from '@nq-capital/iam';
-import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
@@ -38,18 +36,15 @@ export class InvestorsResolver {
 
   @Permission('read', 'Investor')
   @Query(() => [InvestorEntity], { name: 'investors' })
-  list(@UserAbility() ability: AppAbility) {
-    return this.investorsService.list({ ability });
+  list() {
+    return this.investorsService.list();
   }
 
-  @Permission('read', 'Investor')
   @Query(() => InvestorEntity, { name: 'investor' })
   retrieve(
     @Args('id', { type: () => Int }) id: number,
-    @InvestorSession() session: InvestorEntity,
-    @UserAbility() ability: AppAbility
   ) {
-    return this.investorsService.retrieve(id, { ability });
+    return this.investorsService.retrieve(id);
   }
 
   @Permission('read', 'Investor')
@@ -59,6 +54,15 @@ export class InvestorsResolver {
     @InvestorSession() investor: InvestorEntity
   ) {
     return this.investorsService.getInvestorPortfolio(args?.id || investor?.id);
+  }
+
+  @Permission('read', 'Investor')
+  @Query(() => InvestorPortfolioEntity, { name: 'investorPortfolioWithStake' })
+  retrieveInvestorPortfolioWithStake(
+    @Args() args: GetInvestorPortfolioArgs,
+    @InvestorSession() investor: InvestorEntity
+  ) {
+    return this.investorsService.getInvestorPortfolioWithStake(args?.id || investor?.id);
   }
 
   @Mutation(() => InvestorEntity)

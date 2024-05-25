@@ -1,14 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
+import { UserType } from '@prisma/client';
+import { ApiError } from '../../../common/exceptions/api.error';
+import { isEnum } from 'class-validator';
 import {
   IStrategyOptionsWithRequest,
   Strategy,
   VerifyFunctionWithRequest,
 } from 'passport-local';
 import { AuthService } from '../auth.service';
-import { ApiError } from 'apps/api/src/common/exceptions/api.error';
-import { UserType } from '@prisma/client';
-import { isEnum } from 'class-validator';
+import {
+  SerializeSessionPayloadV2
+} from '../session/session.serializer';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
@@ -49,6 +52,9 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    return user;
+    return {
+      investorId: user.type === 'INVESTOR' ? user.investor.id : req?.user?.investor?.id,
+      userId: user.type === 'ADMIN' ? user.user.id : req?.user?.user?.id,
+    } as SerializeSessionPayloadV2;
   };
 }

@@ -1,23 +1,19 @@
+import bookmarkIcon from '@iconify/icons-fluent/bookmark-16-filled';
 import bank from '@iconify/icons-fluent/building-bank-48-regular';
 import dot from '@iconify/icons-fluent/circle-12-filled';
-import more from '@iconify/icons-fluent/more-horizontal-24-regular';
-import editIcon from '@iconify/icons-fluent/edit-12-filled';
 import deleteIcon from '@iconify/icons-fluent/delete-12-filled';
-import bookmarkIcon from '@iconify/icons-fluent/bookmark-16-filled';
+import editIcon from '@iconify/icons-fluent/edit-12-filled';
+import more from '@iconify/icons-fluent/more-horizontal-24-regular';
 import { Icon } from '@iconify/react';
 import {
   Avatar,
   Box,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Typography,
+  Typography
 } from '@mui/material';
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { theme } from '../../theme';
 import OneIcon from '../../utils/OneIcon';
-import BankCardMenu from './BankCardMenu';
-import { MenuButton, MenuList, NMenu, NMenuItem } from '../Menu/NMenu';
+import { MenuButton, MenuList, NMenu, NMenuItem } from '@nq-capital/nui';
 
 export interface BankCardProps {
   bankName: string;

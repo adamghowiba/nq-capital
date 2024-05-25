@@ -5,11 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { FC, useMemo } from 'react';
 import DContainer from '../../../components/DContainer/DContainer';
-import {
-  HStack,
-  StackPropsExtended,
-  VStack,
-} from '../../../components/Stack/Stack';
+import { HStack, StackPropsExtended, VStack } from '@nq-capital/nui';
+
 
 export interface SettingsNavbarProps {
   maxWidth?: string | number;

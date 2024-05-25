@@ -2,20 +2,21 @@ import caretDown12Filled from '@iconify/icons-fluent/caret-down-12-filled';
 import { Icon } from '@iconify/react';
 import { Button } from '@mui/material';
 import { GridToolbarContainer, useGridApiContext } from '@mui/x-data-grid';
-import { FC, useState } from 'react';
-import Box from '../../lib/components/Box/Box';
-import NLink from '../../lib/components/Link/Link';
 import {
+  Box,
+  ButtonTab,
+  ButtonTabs,
+  HStack,
   MenuButton,
   MenuList,
   NMenu,
   NMenuItem,
-} from '../../lib/components/Menu/NMenu';
+} from '@nq-capital/nui';
+import { FC, useState } from 'react';
+import NLink from '../../lib/components/Link/Link';
 import PageHeader from '../../lib/components/PageHeader/PageHeader';
 import Screen from '../../lib/components/Screen/Screen';
-import { HStack } from '../../lib/components/Stack/Stack';
 import CustomDataGrid from '../../lib/components/StyledDataGrid/CustomDataGrid';
-import { ButtonTab, ButtonTabs } from '../../lib/components/Tabs/ButtonTabs';
 import TransactionTypeChip from '../../lib/components/TransactionTypeBadge/TransactionTypeBadge';
 import {
   TransactionType,

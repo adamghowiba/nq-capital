@@ -1,4 +1,4 @@
-import { useMeInvestorQuery, useMeQuery } from '../gql/gql-client';
+import { useMeInvestorQuery } from '../gql/gql-client';
 
 /**
  * Hook to get the investors current session, if any

@@ -1,0 +1,13 @@
+query ListFundAdjustments {
+  fundAdjustments {
+    id
+    description
+    amount
+    balance_before
+    balance_after
+    fund_id
+    adjusted_by_user_id
+    created_at
+    updated_at
+  }
+}

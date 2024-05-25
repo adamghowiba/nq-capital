@@ -3,10 +3,10 @@ import right from '@iconify/icons-fluent/chevron-right-16-regular';
 import { Box, Divider, IconButton, Typography } from '@mui/material';
 import DContainer from '../../../components/DContainer/DContainer';
 import Logo from '../../../components/Logo/logo';
-import { HStack } from '../../../components/Stack/Stack';
 import OneIcon from '../../../utils/OneIcon';
 import dismissIcon from '@iconify/icons-fluent/dismiss-24-filled';
 import { Icon } from '@iconify/react';
+import { HStack } from '@nq-capital/nui';
 
 export interface OnboardingTopbarProps {
   /**

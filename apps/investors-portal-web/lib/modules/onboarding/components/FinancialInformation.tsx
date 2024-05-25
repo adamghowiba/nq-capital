@@ -1,87 +1,75 @@
 import add from '@iconify/icons-fluent/add-24-filled';
-import { Box, Button, CircularProgress, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import { FC, useState } from 'react';
+import { useFieldArray, useFormContext } from 'react-hook-form';
+import { BankCard } from '../../../../lib/components/BankCard/BankCard';
+import {
+  BankCardMutationDialog,
+  BankMutationDialogProps,
+} from '../../../../lib/components/BankCardMutationDialog/BankMutationDialog';
 import OneIcon from '../../../utils/OneIcon';
-import BankCard from '../../../components/BankCard/BankCard';
-import BankCardMutationDialog, { BankSchema } from '../../../components/BankCardMutationDialog/BankMutationDialog';
+import { OnboardingSchema } from '../onboarding.schema';
 import StepHeader from './StepHeader';
 
-export interface FinancialInformationProps {
-  data: BankSchema[];
-  isSubmitting: boolean;
-  onNext: (banks: BankSchema[]) => void;
-  onBack: (banks: BankSchema[]) => void;
-}
-export default function FinancialInformation({
-  data,
-  onNext,
-  onBack,
-  isSubmitting,
-}: FinancialInformationProps) {
-  const [isNewBankDialogOpen, setIsNewBankDialogOpen] =
-    useState<boolean>(false);
+export interface FinancialInformationProps {}
 
-  const [bankAccounts, setBankAccounts] = useState<BankSchema[]>(data);
-  const [editableBank, setEditableBank] = useState<BankSchema>();
+export const FinancialInformation: FC<FinancialInformationProps> = ({
+  ...props
+}) => {
+  const form = useFormContext<OnboardingSchema>();
 
-  function handleAddBank(newBankAccount: BankSchema) {
-    setBankAccounts((prev) => {
-      if (bankAccounts.length === 0)
-        return [
-          { ...newBankAccount, temp_id: crypto.randomUUID(), is_default: true },
-        ];
-      return [...prev, { ...newBankAccount, temp_id: crypto.randomUUID() }];
-    });
-  }
+  const bankAccounts = form.watch('bank_accounts') || [];
 
-  function handleDeleteBank(bank: BankSchema) {
-    setBankAccounts((prev) => {
-      const newBanks = prev.filter(({ temp_id }) => temp_id !== bank.temp_id);
-      const defaultBank = newBanks.find(({ is_default }) => is_default);
-      if (defaultBank) return newBanks;
-      return newBanks.map((nb, index) => {
-        if (index === 0) return { ...nb, is_default: true };
-        return nb;
+  const bankAccountForm = useFieldArray({
+    name: 'bank_accounts',
+    control: form.control,
+  });
+
+  const [isNewBankDialogOpen, setIsNewBankDialogOpen] = useState<
+    undefined | (BankMutationDialogProps['mode'] & { index?: number })
+  >(undefined);
+
+  const handleSaveBankAccount: BankMutationDialogProps['onSave'] = (
+    type,
+    value
+  ) => {
+    if (type === 'create') {
+      bankAccountForm.append(value);
+    }
+
+    if (type === 'edit' && isNewBankDialogOpen?.index !== undefined) {
+      bankAccountForm.update(isNewBankDialogOpen.index, value);
+    }
+
+    setIsNewBankDialogOpen(undefined);
+  };
+
+  const setPrimaryBank = (index: number) => {
+    bankAccounts.forEach((bank, i) => {
+      bankAccountForm.update(i, {
+        ...bank,
+        is_primary: i === index ? true : false,
       });
     });
-  }
-
-  function handleEditBank(bank: BankSchema) {
-    setBankAccounts((prev) => {
-      return prev.map((nb) => {
-        if (nb.temp_id === bank.temp_id) return bank;
-        return nb;
-      });
-    });
-  }
-
-  function handleChangeDefault(newDefaultBank: BankSchema) {
-    setBankAccounts((prev) => {
-      return prev.map((bank) => {
-        if (bank.temp_id === newDefaultBank.temp_id)
-          return { ...newDefaultBank, is_default: true };
-        return { ...bank, is_default: false };
-      });
-    });
-  }
+  };
 
   return (
     <>
       <BankCardMutationDialog
-        data={editableBank}
-        isDialogOpen={isNewBankDialogOpen || !!editableBank}
-        closeDialog={() => {
-          setEditableBank(undefined);
-          setIsNewBankDialogOpen(false);
+        mode={isNewBankDialogOpen}
+        open={!!isNewBankDialogOpen}
+        onClose={() => {
+          setIsNewBankDialogOpen(undefined);
         }}
-        handleAddBank={handleAddBank}
-        handleEditBank={handleEditBank}
+        onSave={handleSaveBankAccount}
       />
+
       <Box width={500} sx={{ display: 'grid', rowGap: 5 }}>
         <StepHeader
           subtitle="Share details about your invested funds and preferred bank accounts."
           title="Financial Information"
         />
+
         <Box sx={{ display: 'grid', rowGap: 8 }}>
           <Box sx={{ display: 'grid', rowGap: 2 }}>
             <Box
@@ -92,23 +80,25 @@ export default function FinancialInformation({
               }}
             >
               <Typography>Bank Details</Typography>
+
               {bankAccounts.length > 0 && (
                 <OneIcon
                   icon={add}
                   title="Add new bank"
                   fontSize={16}
                   iconColor="#808080"
-                  onClick={() => setIsNewBankDialogOpen(true)}
-                  disabled={isSubmitting}
+                  onClick={() => setIsNewBankDialogOpen({ type: 'create' })}
+                  // disabled={isSubmitting}
                 />
               )}
             </Box>
+
             {bankAccounts.length === 0 ? (
               <Box
                 component={Button}
                 fullWidth
                 size="large"
-                onClick={() => setIsNewBankDialogOpen(true)}
+                onClick={() => setIsNewBankDialogOpen({ type: 'create' })}
                 sx={{
                   border: '2px dotted #E4E4E4',
                   color: '#BBBBBB',
@@ -124,47 +114,26 @@ export default function FinancialInformation({
               bankAccounts.map((bank, index) => (
                 <BankCard
                   key={index}
-                  bank={bank}
-                  disabled={isSubmitting}
-                  onDelete={() => handleDeleteBank(bank)}
-                  onEdit={() => setEditableBank(bank)}
-                  onMakeDefault={() => handleChangeDefault(bank)}
+                  accountNumber={bank.account_number}
+                  bankName={bank.bank_name}
+                  isDefault={bank.is_primary}
+                  onDelete={() => bankAccountForm.remove(index)}
+                  onEdit={() => {
+                    console.log('Opening', bank.bank_name, index);
+
+                    setIsNewBankDialogOpen({
+                      type: 'edit',
+                      data: bank,
+                      index,
+                    });
+                  }}
+                  onMakeDefault={() => setPrimaryBank(index)}
                 />
               ))
             )}
-          </Box>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'auto 1fr',
-              columnGap: 1,
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              color="secondary"
-              variant="contained"
-              disabled={isSubmitting}
-              onClick={() => onBack(bankAccounts)}
-            >
-              Back
-            </Button>
-            <Button
-              color="primary"
-              variant="contained"
-              disabled={isSubmitting}
-              onClick={() => onNext(bankAccounts)}
-              endIcon={
-                isSubmitting && (
-                  <CircularProgress color="primary" thickness={5} size={14} />
-                )
-              }
-            >
-              {isSubmitting ? 'Submitting' : 'Next'}
-            </Button>
           </Box>
         </Box>
       </Box>
     </>
   );
-}
+};

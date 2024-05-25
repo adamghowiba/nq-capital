@@ -1,0 +1,11 @@
+fragment TicketsAllFragment on TicketEntity {
+  id
+  data
+  priority
+  type
+  status
+  investor_id
+  assigned_to_user_id
+  updated_at
+  created_at
+}

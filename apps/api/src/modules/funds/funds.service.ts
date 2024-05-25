@@ -1,19 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@nq-capital/service-database';
+import { GraphQLError } from 'graphql';
+import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
+import { TransactionEmitter } from '../transactions/event-manager/transaction-emitter.service';
+import { AdjustFundInput } from './dto/adjust-fund.input';
 import {
   CreateFundInput,
   CreateNestedInvestorFundWithoutFundInput,
 } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
-import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
-import { AdjustFundInput } from './dto/adjust-fund.input';
-import { GraphQLError } from 'graphql';
-import { TransactionEmitter } from '../transactions/event-manager/transaction-emitter.service';
+import { FundAdjustmentEntity } from './entities/fund-adjustment.entity';
 
 @Injectable()
 export class FundsService {
-  constructor(private readonly prisma: PrismaService, private readonly transactionsEmitter: TransactionEmitter) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly transactionsEmitter: TransactionEmitter
+  ) {}
 
   async create(createFundInput: CreateFundInput) {
     const { initial_balance, ...rest } = createFundInput;
@@ -52,10 +56,10 @@ export class FundsService {
     const fund = await this.prisma.fund.update({
       where: { id: adjustFundInput.fund_id },
       data: {
-        balance:
-          adjustFundInput.amount > 0
-            ? { increment: adjustFundInput.amount }
-            : { decrement: adjustFundInput.amount },
+        balance: {
+          // The the amount is negative prisma will automatically subtract
+          increment: adjustFundInput.amount,
+        },
       },
     });
 
@@ -74,7 +78,22 @@ export class FundsService {
       },
     });
 
+    this.transactionsEmitter.emit('fund_adjustment', {
+      adjusted_by_user_id: adjustFundInput.adjusted_by_user_id,
+      amount: adjustFundInput.amount,
+      fund_id: adjustFundInput.fund_id,
+      description: adjustFundInput.description,
+    });
+
     return fund;
+  }
+
+  async listFundAdjustments(): Promise<FundAdjustmentEntity[]> {
+    const fundAdjustments = await this.prisma.fundAdjustment.findMany({
+      orderBy: { created_at: 'desc' },
+    });
+
+    return fundAdjustments;
   }
 
   async addInvestment(addFundInvestorInput: AddInvestmentInput) {
@@ -117,7 +136,7 @@ export class FundsService {
       fundId: addFundInvestorInput.fund_id,
     });
 
-    this.transactionsEmitter.emit('new_investment', addFundInvestorInput)
+    this.transactionsEmitter.emit('new_investment', addFundInvestorInput);
 
     return updatedFund;
   }
@@ -133,7 +152,7 @@ export class FundsService {
     const fundBalance = fund.balance;
 
     const investors = fund.investors.map((investor) => {
-      const stakePercentage = investor.invested_amount / fundBalance;
+      const stakePercentage = investor.balance / fundBalance;
 
       return { ...investor, stake_percentage: stakePercentage };
     });

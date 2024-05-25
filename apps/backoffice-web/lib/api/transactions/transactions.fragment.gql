@@ -1,0 +1,13 @@
+fragment TransactionsAllFragment on TransactionEntity {
+  id
+  type
+  amount
+  currency_code
+  balance_after
+  description
+  fee
+  external_id
+  status
+  updated_at
+  created_at
+}

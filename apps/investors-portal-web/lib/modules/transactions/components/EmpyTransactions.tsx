@@ -1,11 +1,6 @@
 import { Button, Typography } from '@mui/material';
-import Box from '../../../../lib/components/Box/Box';
-import {
-  HStack,
-  StackPropsExtended,
-  VStack,
-} from '../../../../lib/components/Stack/Stack';
-import React, { FC } from 'react';
+import { Box, HStack, StackPropsExtended, VStack } from '@nq-capital/nui';
+import { FC } from 'react';
 
 export interface EmptyTransactionsProps extends StackPropsExtended {}
 

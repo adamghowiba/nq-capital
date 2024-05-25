@@ -4,27 +4,23 @@ import {
   Box,
   Button,
   Unstable_Grid2 as Grid,
-  Stack,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
-import NAvatar from '../../lib/components/NAvatar/NAvatar';
-import { HStack, VStack } from '../../lib/components/Stack/Stack';
-import {
-  useRetrieveInvestorQuery,
-  useUpdateInvestorMutation,
-} from '../../lib/gql/gql-client';
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import { HStack, NAvatar, NTextField, VStack } from '@nq-capital/nui';
+import { InferGetServerSidePropsType } from 'next';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import NTextField from '../../lib/components/Fields/NTextField';
+import {
+  useUpdateInvestorMutation
+} from '../../lib/gql/gql-client';
 import SettingsLayout from '../../lib/layouts/SettingsLayout';
 import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
+import { getInvestorSSP } from '../../lib/modules/settings/get-investor-ssr';
 import {
   GeneralSettingsSchema,
   generalSettingsSchema,
 } from '../../lib/modules/settings/settings.schema';
 import { NextPageWithLayout } from '../_app';
-import { getInvestorSSP } from '../../lib/modules/settings/get-investor-ssr';
 
 const SettingsPage: NextPageWithLayout<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -58,7 +54,7 @@ const SettingsPage: NextPageWithLayout<
       <SettingsFieldGroup>
         <HStack gap={2} align="center">
           <NAvatar size="xl" src={investor?.avatar || undefined}>
-            A
+            {investor.first_name.slice(0, 1)}
           </NAvatar>
 
           <VStack gap={0.5}>

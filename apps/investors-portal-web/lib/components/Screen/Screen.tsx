@@ -1,7 +1,6 @@
-import React, { FC } from 'react';
-import Box, { BoxPropsExtended } from '../Box/Box';
 import { Stack } from '@mui/material';
-import { StackPropsExtended } from '../Stack/Stack';
+import { StackPropsExtended } from '@nq-capital/nui';
+import { FC } from 'react';
 
 export interface ScreenProps extends StackPropsExtended {}
 

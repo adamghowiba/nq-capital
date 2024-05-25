@@ -1,8 +1,8 @@
+import { SessionEntity } from '@nq-capital/iam';
 import { DOMAIN_HOST } from '@nq-capital/utils-constants';
 import { PrismaClient } from '@prisma/client';
 import { PrismaSessionStore } from '@quixo3/prisma-session-store';
 import session from 'express-session';
-import { SessionEntity } from '../modules/auth/entities/session.entity';
 
 const isProduction = process.env['NODE_ENV'] === 'production';
 

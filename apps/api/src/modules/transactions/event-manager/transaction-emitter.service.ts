@@ -2,10 +2,14 @@ import { Injectable, Type } from '@nestjs/common';
 import { EventMappings, createEventHelper } from './transaction-event.helper';
 import { InvestmentEvent } from '../events/investment.event';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { FundAdjustmentEvent } from '../events/fund-adjustment.event';
 
 const helper = createEventHelper();
 
-const events = [helper.addEvent('new_investment', InvestmentEvent)];
+const events = [
+  helper.addEvent('new_investment', InvestmentEvent),
+  helper.addEvent('fund_adjustment', FundAdjustmentEvent),
+];
 
 export const TRANSACTION_EVENTS = helper.getEventKeys(events);
 

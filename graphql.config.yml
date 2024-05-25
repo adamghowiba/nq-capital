@@ -3,3 +3,8 @@ projects:
     schema: "./schema.gql"
     documents: "apps/investors-portal-web/**/*.gql"
     exclude: "apps/investors-portal-web/.next/**/*"
+  backoffice-web:
+    schema: "./schema.gql"
+    documents:
+      - "apps/backoffice-web/**/*.gql"
+    exclude: "apps/backoffice-web/.next/**/*"

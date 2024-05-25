@@ -29,6 +29,7 @@ import { AssetsController } from '../modules/assets/assets.controller';
 import { AssetsModule } from '../modules/assets/assets.module';
 import { BankAccountsModule } from '../modules/bank-accounts/bank-accounts.module';
 import { IamModule } from '@nq-capital/iam';
+import { InvitationsModule } from '../modules/invitations/invitations.module';
 
 const APP_MODULES = [
   UsersModule,
@@ -41,6 +42,7 @@ const APP_MODULES = [
   MessagesModule,
   AssetsModule,
   BankAccountsModule,
+  InvitationsModule
 ];
 
 const APOLLO_PLUGINS: ApolloServerPlugin<any>[] = [];
@@ -83,7 +85,7 @@ if (isDevelopment)
       global: true,
       verboseMemoryLeak: true,
     }),
-    IamModule.forRoot({}),
+    // IamModule.forRoot({}),
     ExceptionFilterModule.forRoot(),
     PassportModule.register({ session: true, defaultStrategy: 'local' }),
   ],

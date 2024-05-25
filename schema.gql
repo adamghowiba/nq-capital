@@ -27,12 +27,74 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type InvestorEntity {
+  id: Int!
+  first_name: String!
+  middle_name: String
+  last_name: String!
+  email: String!
+  password: String
+  passport_number: String
+  national_id: String
+  date_of_birth: DateTime
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  avatar: String
+  mobile_number: String
+  account_status: InvestorAccountStatus
+  address_id: Int
+  created_at: DateTime!
+  updated_at: DateTime!
+  address: AddressEntity
+  bank_accounts: [BankAccountEntity!]
+}
+
+enum InvestorAccountStatus {
+  ONBOARDING
+  ACTIVE
+  DISABLED
+}
+
+type SessionEntity {
+  user: UserEntity
+  investor: InvestorEntity
+}
+
 type PaginatedUserEntity {
   data: [UserEntity!]
   limit: Int!
   page: Int!
   count: Int!
   hasNextPage: Boolean!
+}
+
+type FundAdjustmentEntity {
+  id: Int!
+  description: String
+  amount: Float!
+  balance_before: Float!
+  balance_after: Float!
+  fund_id: Int!
+  adjusted_by_user_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+type FundInvestorOverview {
+  investor_id: Int!
+  first_name: String!
+  last_name: String!
+  email: String!
+  invested_amount: Float!
+  current_balance: Float!
+}
+
+type FundOverviewEntity {
+  invested_amount: Float!
+  current_amount: Float!
+  net_returns: Float!
 }
 
 type FundEntity {
@@ -48,14 +110,18 @@ type TransactionEntity {
   type: TransactionType!
   amount: Int!
   currency_code: String!
-  balance_after: Int!
+  balance_after: Float!
   description: String
   fee: Float
   external_id: String
+  notes: String
   investor_id: Int
+  fund_id: Int
   status: TransactionStatus!
   created_at: DateTime!
   updated_at: DateTime!
+  investor: InvestorEntity
+  fund: FundEntity
 }
 
 enum TransactionType {
@@ -118,40 +184,19 @@ enum BankAccountType {
   SAVINGS
 }
 
-type InvestorPortfolioEntity {
+type PortfolioTotalEntity {
   total_invested: Float!
   total_balance: Float!
   total_pending_transactions: Float!
 }
 
-type InvestorEntity {
-  id: Int!
-  first_name: String!
-  middle_name: String
-  last_name: String!
-  email: String!
-  password: String
-  passport_number: String
-  national_id: String
-  date_of_birth: DateTime
-  nationality: String
-  company_name: String
-  company_tax_id: String
-  is_accredited: Boolean
-  avatar: String
-  mobile_number: String
-  account_status: InvestorAccountStatus
-  address_id: Int
-  created_at: DateTime!
-  updated_at: DateTime!
-  address: AddressEntity
-  bank_accounts: [BankAccountEntity!]
-}
-
-enum InvestorAccountStatus {
-  ONBOARDING
-  ACTIVE
-  DISABLED
+type InvestorPortfolioEntity {
+  total_invested: Float!
+  total_balance: Float!
+  total_pending_transactions: Float!
+  previous_month: PortfolioTotalEntity!
+  balance_change_percentage: Float!
+  balance_change_amount: Float!
 }
 
 type InvestorFundEntity {
@@ -175,11 +220,6 @@ type PaginatedInvestorFundEntity {
   page: Int!
   count: Int!
   hasNextPage: Boolean!
-}
-
-type SessionEntity {
-  user: UserEntity
-  investor: InvestorEntity
 }
 
 type MessageEntity {
@@ -269,6 +309,34 @@ type LogoutEntity {
   status: String!
 }
 
+type InvitationEntity {
+  id: Int!
+  email: String!
+  invitation_code: String!
+  status: InvitationStatus!
+  type: InvitationType!
+  investor_id: Int
+  invited_by_user_id: Int!
+  responded_at: DateTime
+  resent_count: Int!
+  expires_at: DateTime!
+  sent_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  REVOKED
+}
+
+enum InvitationType {
+  INVESTOR
+  USER
+}
+
 """Prisma Decimal Scalar"""
 scalar Decimal
 
@@ -287,8 +355,18 @@ type Query {
   investors: [InvestorEntity!]!
   investor(id: Int!): InvestorEntity!
   investorPortfolio(id: Int): InvestorPortfolioEntity!
+  investorPortfolioWithStake(id: Int): InvestorPortfolioEntity!
   funds: [FundEntity!]!
+  fundOverview(
+    "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
+    fund_ids: [Int!]
+  ): FundOverviewEntity!
+  fundInvestorsOverview(
+    "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
+    fund_ids: [Int!]
+  ): [FundInvestorOverview!]!
   fund(id: Int!): FundEntity!
+  fundAdjustments: [FundAdjustmentEntity!]!
   transactions: [TransactionEntity!]!
   transaction(id: Int!): TransactionEntity!
   investorFunds(
@@ -316,6 +394,15 @@ type Query {
   meUser: UserEntity!
   bankAccounts: [BankAccountEntity!]!
   bankAccount(id: Int!): BankAccountEntity!
+  invitations(
+    """Filter by an array of emails"""
+    emails: [String!]
+
+    """Filter by a list of statuses"""
+    statuses: [InvitationStatus!]
+    status: InvitationStatus
+  ): [InvitationEntity!]!
+  invitation(code: String!): InvitationEntity!
 }
 
 type Mutation {
@@ -347,6 +434,11 @@ type Mutation {
   createBankAccount(createBankAccountInput: CreateBankAccountInput!): BankAccountEntity!
   updateBankAccount(updateBankAccountInput: UpdateBankAccountInput!): BankAccountEntity!
   removeBankAccount(id: Int!): BankAccountEntity!
+  inviteInvestor(invitationInput: CreateInvitationInput!): InvitationEntity!
+  acceptInvestorInvitation(acceptInvestorInvitationInput: AcceptInvestorInvitationInput!): InvestorEntity!
+  inviteUser(invitationInput: CreateInvitationInput!): InvitationEntity!
+  updateInvitation(updateInvitationInput: UpdateInvitationInput!): InvitationEntity!
+  removeInvitation(id: Int!): InvitationEntity!
 }
 
 input CreateUserInput {
@@ -371,10 +463,6 @@ input UpdateUserInput {
 }
 
 input CreateInvestorInput {
-  date_of_birth: DateTime
-  account_status: InvestorAccountStatus
-  bank_accounts: [BankAccountWithoutInvestorInput!]
-
   """Investor first name"""
   first_name: String!
 
@@ -385,12 +473,13 @@ input CreateInvestorInput {
   password: String
   passport_number: String
   national_id: String
+  date_of_birth: DateTime
   nationality: String
   company_name: String
   company_tax_id: String
   is_accredited: Boolean
-  avatar: String
   mobile_number: String
+  bank_accounts: [BankAccountWithoutInvestorInput!]
   address_id: Int
 }
 
@@ -414,9 +503,6 @@ input BankAccountWithoutInvestorInput {
 }
 
 input UpdateInvestorInput {
-  date_of_birth: DateTime
-  account_status: InvestorAccountStatus
-
   """Investor first name"""
   first_name: String
 
@@ -427,11 +513,11 @@ input UpdateInvestorInput {
   password: String
   passport_number: String
   national_id: String
+  date_of_birth: DateTime
   nationality: String
   company_name: String
   company_tax_id: String
   is_accredited: Boolean
-  avatar: String
   mobile_number: String
   address_id: Int
   id: Int!
@@ -454,6 +540,12 @@ input AddInvestmentInput {
   fund_id: Int!
   investor_id: Int!
   amount: Float!
+
+  """Custom reference ID for the investment"""
+  reference_id: String
+
+  """Additional notes about the investment"""
+  notes: String
 }
 
 input UpdateFundInput {
@@ -477,6 +569,7 @@ input CreateTransactionInput {
   description: Int
   fee: Float
   external_id: String
+  notes: String
   status: TransactionStatus!
 }
 
@@ -488,6 +581,7 @@ input UpdateTransactionInput {
   description: Int
   fee: Float
   external_id: String
+  notes: String
   status: TransactionStatus
   id: Int!
 }
@@ -503,7 +597,6 @@ input CreateTicketInput {
 
 input SendTicketMessageInput {
   content: String!
-  type: UserType!
   ticket_id: Int!
 }
 
@@ -574,5 +667,38 @@ input UpdateBankAccountInput {
   branch_code: String
   branch_address: String
   is_primary: Boolean
+  id: Int!
+}
+
+input CreateInvitationInput {
+  email: String!
+  type: InvitationType!
+}
+
+input AcceptInvestorInvitationInput {
+  """Investor first name"""
+  first_name: String!
+
+  """Investor middle name"""
+  middle_name: String
+  last_name: String!
+  email: String!
+  password: String
+  passport_number: String
+  national_id: String
+  date_of_birth: DateTime
+  nationality: String
+  company_name: String
+  company_tax_id: String
+  is_accredited: Boolean
+  mobile_number: String
+  bank_accounts: [BankAccountWithoutInvestorInput!]
+  address_id: Int
+  invitation_code: String!
+}
+
+input UpdateInvitationInput {
+  email: String
+  type: InvitationType
   id: Int!
 }

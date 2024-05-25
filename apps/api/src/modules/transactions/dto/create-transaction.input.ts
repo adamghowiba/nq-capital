@@ -1,18 +1,14 @@
 import {
+  Field,
+  Float,
   InputType,
   Int,
-  Field,
-  registerEnumType,
-  Float,
-  HideField,
-  GraphQLISODateTime,
+  registerEnumType
 } from '@nestjs/graphql';
 import {
-  $Enums,
   Prisma,
-  Transaction,
   TransactionStatus,
-  TransactionType,
+  TransactionType
 } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
 import {
@@ -60,6 +56,11 @@ export class CreateTransactionInput
   @IsString()
   @IsOptional()
   external_id!: string | null;
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  notes!: string | null;
 
   @Field(() => TransactionStatus)
   @IsEnum(TransactionStatus)

@@ -22,10 +22,35 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type AcceptInvestorInvitationInput = {
+  address_id?: InputMaybe<Scalars['Int']['input']>;
+  bank_accounts?: InputMaybe<Array<BankAccountWithoutInvestorInput>>;
+  company_name?: InputMaybe<Scalars['String']['input']>;
+  company_tax_id?: InputMaybe<Scalars['String']['input']>;
+  date_of_birth?: InputMaybe<Scalars['DateTime']['input']>;
+  email: Scalars['String']['input'];
+  /** Investor first name */
+  first_name: Scalars['String']['input'];
+  invitation_code: Scalars['String']['input'];
+  is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
+  last_name: Scalars['String']['input'];
+  /** Investor middle name */
+  middle_name?: InputMaybe<Scalars['String']['input']>;
+  mobile_number?: InputMaybe<Scalars['String']['input']>;
+  national_id?: InputMaybe<Scalars['String']['input']>;
+  nationality?: InputMaybe<Scalars['String']['input']>;
+  passport_number?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type AddInvestmentInput = {
   amount: Scalars['Float']['input'];
   fund_id: Scalars['Int']['input'];
   investor_id: Scalars['Int']['input'];
+  /** Additional notes about the investment */
+  notes?: InputMaybe<Scalars['String']['input']>;
+  /** Custom reference ID for the investment */
+  reference_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AddressEntity = {
@@ -153,9 +178,7 @@ export type CreateFundInput = {
 };
 
 export type CreateInvestorInput = {
-  account_status?: InputMaybe<InvestorAccountStatus>;
   address_id?: InputMaybe<Scalars['Int']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
   bank_accounts?: InputMaybe<Array<BankAccountWithoutInvestorInput>>;
   company_name?: InputMaybe<Scalars['String']['input']>;
   company_tax_id?: InputMaybe<Scalars['String']['input']>;
@@ -172,6 +195,11 @@ export type CreateInvestorInput = {
   nationality?: InputMaybe<Scalars['String']['input']>;
   passport_number?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateInvitationInput = {
+  email: Scalars['String']['input'];
+  type: InvitationType;
 };
 
 export type CreateNestedInvestorFundWithoutFundInput = {
@@ -195,6 +223,7 @@ export type CreateTransactionInput = {
   description?: InputMaybe<Scalars['Int']['input']>;
   external_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
   status: TransactionStatus;
   type: TransactionType;
 };
@@ -209,6 +238,19 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type FundAdjustmentEntity = {
+  __typename?: 'FundAdjustmentEntity';
+  adjusted_by_user_id: Scalars['Int']['output'];
+  amount: Scalars['Float']['output'];
+  balance_after: Scalars['Float']['output'];
+  balance_before: Scalars['Float']['output'];
+  created_at: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  fund_id: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  updated_at: Scalars['DateTime']['output'];
+};
+
 export type FundEntity = {
   __typename?: 'FundEntity';
   balance: Scalars['Float']['output'];
@@ -216,6 +258,23 @@ export type FundEntity = {
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   updated_at: Scalars['DateTime']['output'];
+};
+
+export type FundInvestorOverview = {
+  __typename?: 'FundInvestorOverview';
+  current_balance: Scalars['Float']['output'];
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  invested_amount: Scalars['Float']['output'];
+  investor_id: Scalars['Int']['output'];
+  last_name: Scalars['String']['output'];
+};
+
+export type FundOverviewEntity = {
+  __typename?: 'FundOverviewEntity';
+  current_amount: Scalars['Float']['output'];
+  invested_amount: Scalars['Float']['output'];
+  net_returns: Scalars['Float']['output'];
 };
 
 export type InvestorAccountStatus =
@@ -266,10 +325,40 @@ export type InvestorFundEntity = {
 
 export type InvestorPortfolioEntity = {
   __typename?: 'InvestorPortfolioEntity';
+  balance_change_amount: Scalars['Float']['output'];
+  balance_change_percentage: Scalars['Float']['output'];
+  previous_month: PortfolioTotalEntity;
   total_balance: Scalars['Float']['output'];
   total_invested: Scalars['Float']['output'];
   total_pending_transactions: Scalars['Float']['output'];
 };
+
+export type InvitationEntity = {
+  __typename?: 'InvitationEntity';
+  email: Scalars['String']['output'];
+  expires_at: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  investor_id?: Maybe<Scalars['Int']['output']>;
+  invitation_code: Scalars['String']['output'];
+  invited_by_user_id: Scalars['Int']['output'];
+  resent_count: Scalars['Int']['output'];
+  responded_at?: Maybe<Scalars['DateTime']['output']>;
+  sent_at: Scalars['DateTime']['output'];
+  status: InvitationStatus;
+  type: InvitationType;
+  updated_at: Scalars['DateTime']['output'];
+};
+
+export type InvitationStatus =
+  | 'ACCEPTED'
+  | 'DECLINED'
+  | 'EXPIRED'
+  | 'PENDING'
+  | 'REVOKED';
+
+export type InvitationType =
+  | 'INVESTOR'
+  | 'USER';
 
 /** Login user input */
 export type LoginInput = {
@@ -303,6 +392,7 @@ export type MessageEntity = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptInvestorInvitation: InvestorEntity;
   addInvestment: FundEntity;
   adjustFund: FundEntity;
   createBankAccount: BankAccountEntity;
@@ -313,12 +403,15 @@ export type Mutation = {
   createTransaction: TransactionEntity;
   createUser: UserEntity;
   investorLogin: InvestorEntity;
+  inviteInvestor: InvitationEntity;
+  inviteUser: InvitationEntity;
   login: UserEntity;
   logout: LogoutEntity;
   removeAsset: AssetEntity;
   removeBankAccount: BankAccountEntity;
   removeFund: FundEntity;
   removeInvestor: InvestorEntity;
+  removeInvitation: InvitationEntity;
   removeMessage: MessageEntity;
   removeTicket: TicketEntity;
   removeTransaction: TransactionEntity;
@@ -327,10 +420,16 @@ export type Mutation = {
   updateBankAccount: BankAccountEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
+  updateInvitation: InvitationEntity;
   updateMessage: MessageEntity;
   updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
+};
+
+
+export type MutationAcceptInvestorInvitationArgs = {
+  acceptInvestorInvitationInput: AcceptInvestorInvitationInput;
 };
 
 
@@ -384,6 +483,16 @@ export type MutationInvestorLoginArgs = {
 };
 
 
+export type MutationInviteInvestorArgs = {
+  invitationInput: CreateInvitationInput;
+};
+
+
+export type MutationInviteUserArgs = {
+  invitationInput: CreateInvitationInput;
+};
+
+
 export type MutationLoginArgs = {
   loginInput: LoginInput;
 };
@@ -405,6 +514,11 @@ export type MutationRemoveFundArgs = {
 
 
 export type MutationRemoveInvestorArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveInvitationArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -449,6 +563,11 @@ export type MutationUpdateInvestorArgs = {
 };
 
 
+export type MutationUpdateInvitationArgs = {
+  updateInvitationInput: UpdateInvitationInput;
+};
+
+
 export type MutationUpdateMessageArgs = {
   updateMessageInput: UpdateMessageInput;
 };
@@ -486,6 +605,13 @@ export type PaginatedUserEntity = {
   page: Scalars['Int']['output'];
 };
 
+export type PortfolioTotalEntity = {
+  __typename?: 'PortfolioTotalEntity';
+  total_balance: Scalars['Float']['output'];
+  total_invested: Scalars['Float']['output'];
+  total_pending_transactions: Scalars['Float']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
   asset: AssetEntity;
@@ -493,12 +619,18 @@ export type Query = {
   bankAccount: BankAccountEntity;
   bankAccounts: Array<BankAccountEntity>;
   fund: FundEntity;
+  fundAdjustments: Array<FundAdjustmentEntity>;
+  fundInvestorsOverview: Array<FundInvestorOverview>;
+  fundOverview: FundOverviewEntity;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
   investorPortfolio: InvestorPortfolioEntity;
+  investorPortfolioWithStake: InvestorPortfolioEntity;
   investors: Array<InvestorEntity>;
+  invitation: InvitationEntity;
+  invitations: Array<InvitationEntity>;
   me: SessionEntity;
   meInvestor: InvestorEntity;
   meUser: UserEntity;
@@ -528,6 +660,16 @@ export type QueryFundArgs = {
 };
 
 
+export type QueryFundInvestorsOverviewArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+
+export type QueryFundOverviewArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+
 export type QueryInvestorArgs = {
   id: Scalars['Int']['input'];
 };
@@ -548,6 +690,23 @@ export type QueryInvestorFundsArgs = {
 
 export type QueryInvestorPortfolioArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryInvestorPortfolioWithStakeArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryInvitationArgs = {
+  code: Scalars['String']['input'];
+};
+
+
+export type QueryInvitationsArgs = {
+  emails?: InputMaybe<Array<Scalars['String']['input']>>;
+  status?: InputMaybe<InvitationStatus>;
+  statuses?: InputMaybe<Array<InvitationStatus>>;
 };
 
 
@@ -585,7 +744,6 @@ export type SendMessageInput = {
 export type SendTicketMessageInput = {
   content: Scalars['String']['input'];
   ticket_id: Scalars['Int']['input'];
-  type: UserType;
 };
 
 export type SessionEntity = {
@@ -629,14 +787,18 @@ export type TicketType =
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
   amount: Scalars['Int']['output'];
-  balance_after: Scalars['Int']['output'];
+  balance_after: Scalars['Float']['output'];
   created_at: Scalars['DateTime']['output'];
   currency_code: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   external_id?: Maybe<Scalars['String']['output']>;
   fee?: Maybe<Scalars['Float']['output']>;
+  fund?: Maybe<FundEntity>;
+  fund_id?: Maybe<Scalars['Int']['output']>;
   id: Scalars['Int']['output'];
+  investor?: Maybe<InvestorEntity>;
   investor_id?: Maybe<Scalars['Int']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
   status: TransactionStatus;
   type: TransactionType;
   updated_at: Scalars['DateTime']['output'];
@@ -682,9 +844,7 @@ export type UpdateFundInput = {
 };
 
 export type UpdateInvestorInput = {
-  account_status?: InputMaybe<InvestorAccountStatus>;
   address_id?: InputMaybe<Scalars['Int']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
   company_name?: InputMaybe<Scalars['String']['input']>;
   company_tax_id?: InputMaybe<Scalars['String']['input']>;
   date_of_birth?: InputMaybe<Scalars['DateTime']['input']>;
@@ -701,6 +861,12 @@ export type UpdateInvestorInput = {
   nationality?: InputMaybe<Scalars['String']['input']>;
   passport_number?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateInvitationInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  type?: InputMaybe<InvitationType>;
 };
 
 export type UpdateMessageInput = {
@@ -727,6 +893,7 @@ export type UpdateTransactionInput = {
   external_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
   id: Scalars['Int']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<TransactionStatus>;
   type?: InputMaybe<TransactionType>;
 };
@@ -801,6 +968,11 @@ export type ListBankAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ListBankAccountsQuery = { __typename?: 'Query', bankAccounts: Array<{ __typename?: 'BankAccountEntity', id: number, iban?: string | null, sort_code?: string | null, bsb_number?: string | null, bank_code?: string | null, branch_code?: string | null, branch_address?: string | null, is_primary: boolean, investor_id: number, created_at: any, updated_at: any, nickname?: string | null, bank_name: string, account_number: string, account_holder_name: string, type?: BankAccountType | null, bank_country: string, currency: string, routing_number?: string | null, swift_code?: string | null }> };
 
+export type ListInvestorFundsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListInvestorFundsQuery = { __typename?: 'Query', investorFunds: { __typename?: 'PaginatedInvestorFundEntity', data?: Array<{ __typename?: 'InvestorFundEntity', id: number, stake_percentage: number, invested_amount: number, initial_investment: number, investor_id: number, fund_id: number, balance: number, created_at: any, updated_at: any, investor: { __typename?: 'InvestorEntity', id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any }, fund: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } }> | null } };
+
 export type BankAccountAllFragmentFragment = { __typename?: 'BankAccountEntity', id: number, iban?: string | null, sort_code?: string | null, bsb_number?: string | null, bank_code?: string | null, branch_code?: string | null, branch_address?: string | null, is_primary: boolean, investor_id: number, created_at: any, updated_at: any, nickname?: string | null, bank_name: string, account_number: string, account_holder_name: string, type?: BankAccountType | null, bank_country: string, currency: string, routing_number?: string | null, swift_code?: string | null };
 
 export type InvestorBaseFragmentFragment = { __typename?: 'InvestorEntity', id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any };
@@ -819,7 +991,14 @@ export type InvestorPortfolioQueryVariables = Exact<{
 }>;
 
 
-export type InvestorPortfolioQuery = { __typename?: 'Query', investorPortfolio: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number } };
+export type InvestorPortfolioQuery = { __typename?: 'Query', investorPortfolio: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number, balance_change_percentage: number, balance_change_amount: number, previous_month: { __typename?: 'PortfolioTotalEntity', total_invested: number, total_balance: number, total_pending_transactions: number } } };
+
+export type InvestorPortfolioWithStakeQueryVariables = Exact<{
+  id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type InvestorPortfolioWithStakeQuery = { __typename?: 'Query', investorPortfolioWithStake: { __typename?: 'InvestorPortfolioEntity', total_invested: number, total_balance: number, total_pending_transactions: number, balance_change_percentage: number, balance_change_amount: number, previous_month: { __typename?: 'PortfolioTotalEntity', total_invested: number, total_balance: number, total_pending_transactions: number } } };
 
 export type UpdateInvestorMutationVariables = Exact<{
   updateInvestorInput: UpdateInvestorInput;
@@ -848,6 +1027,29 @@ export type AddInvestmentMutationVariables = Exact<{
 
 
 export type AddInvestmentMutation = { __typename?: 'Mutation', addInvestment: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
+
+export type CreateInvestorMutationVariables = Exact<{
+  createInvestorInput: CreateInvestorInput;
+}>;
+
+
+export type CreateInvestorMutation = { __typename?: 'Mutation', createInvestor: { __typename?: 'InvestorEntity', company_tax_id?: string | null, passport_number?: string | null, national_id?: string | null, date_of_birth?: any | null, nationality?: string | null, id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any, address?: { __typename?: 'AddressEntity', id: number, street: string, street_2?: string | null, city: string, state_province: string, country: string, postal_zip_code?: string | null, verified: number, latitude: number, longitude: number, country_code: string } | null } };
+
+export type InvitationBaseFragmentFragment = { __typename?: 'InvitationEntity', id: number, email: string, invitation_code: string, status: InvitationStatus, type: InvitationType, investor_id?: number | null, invited_by_user_id: number, resent_count: number, sent_at: any, updated_at: any, expires_at: any };
+
+export type AcceptInvestorInvitationMutationVariables = Exact<{
+  acceptInvestorInvitationInput: AcceptInvestorInvitationInput;
+}>;
+
+
+export type AcceptInvestorInvitationMutation = { __typename?: 'Mutation', acceptInvestorInvitation: { __typename?: 'InvestorEntity', id: number, first_name: string, middle_name?: string | null, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, avatar?: string | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any, updated_at: any } };
+
+export type RetrieveInvitationQueryVariables = Exact<{
+  code: Scalars['String']['input'];
+}>;
+
+
+export type RetrieveInvitationQuery = { __typename?: 'Query', invitation: { __typename?: 'InvitationEntity', id: number, email: string, invitation_code: string, status: InvitationStatus, type: InvitationType, investor_id?: number | null, invited_by_user_id: number, resent_count: number, sent_at: any, updated_at: any, expires_at: any } };
 
 export type MessageBaseFragmentFragment = { __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null };
 
@@ -994,6 +1196,21 @@ export const InvestorAllFragmentFragmentDoc = `
   date_of_birth
   nationality
   ...InvestorBaseFragment
+}
+    `;
+export const InvitationBaseFragmentFragmentDoc = `
+    fragment InvitationBaseFragment on InvitationEntity {
+  id
+  email
+  invitation_code
+  status
+  type
+  investor_id
+  invited_by_user_id
+  resent_count
+  sent_at
+  updated_at
+  expires_at
 }
     `;
 export const MessageBaseFragmentFragmentDoc = `
@@ -1249,6 +1466,57 @@ useListBankAccountsQuery.getKey = (variables?: ListBankAccountsQueryVariables) =
 
 useListBankAccountsQuery.fetcher = (variables?: ListBankAccountsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListBankAccountsQuery, ListBankAccountsQueryVariables>(ListBankAccountsDocument, variables, options);
 
+export const ListInvestorFundsDocument = `
+    query ListInvestorFunds {
+  investorFunds {
+    data {
+      id
+      stake_percentage
+      invested_amount
+      initial_investment
+      investor_id
+      fund_id
+      balance
+      created_at
+      updated_at
+      investor {
+        ...InvestorBaseFragment
+      }
+      fund {
+        id
+        name
+        balance
+        created_at
+        updated_at
+      }
+    }
+  }
+}
+    ${InvestorBaseFragmentFragmentDoc}`;
+
+export const useListInvestorFundsQuery = <
+      TData = ListInvestorFundsQuery,
+      TError = unknown
+    >(
+      variables?: ListInvestorFundsQueryVariables,
+      options?: Omit<UseQueryOptions<ListInvestorFundsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListInvestorFundsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListInvestorFundsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListInvestorFunds'] : ['ListInvestorFunds', variables],
+    queryFn: gqlFetcher<ListInvestorFundsQuery, ListInvestorFundsQueryVariables>(ListInvestorFundsDocument, variables),
+    ...options
+  }
+    )};
+
+useListInvestorFundsQuery.document = ListInvestorFundsDocument;
+
+useListInvestorFundsQuery.getKey = (variables?: ListInvestorFundsQueryVariables) => variables === undefined ? ['ListInvestorFunds'] : ['ListInvestorFunds', variables];
+
+
+useListInvestorFundsQuery.fetcher = (variables?: ListInvestorFundsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListInvestorFundsQuery, ListInvestorFundsQueryVariables>(ListInvestorFundsDocument, variables, options);
+
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($id: Int!) {
   investor(id: $id) {
@@ -1287,6 +1555,13 @@ export const InvestorPortfolioDocument = `
     total_invested
     total_balance
     total_pending_transactions
+    balance_change_percentage
+    balance_change_amount
+    previous_month {
+      total_invested
+      total_balance
+      total_pending_transactions
+    }
   }
 }
     `;
@@ -1313,6 +1588,46 @@ useInvestorPortfolioQuery.getKey = (variables?: InvestorPortfolioQueryVariables)
 
 
 useInvestorPortfolioQuery.fetcher = (variables?: InvestorPortfolioQueryVariables, options?: RequestInit['headers']) => gqlFetcher<InvestorPortfolioQuery, InvestorPortfolioQueryVariables>(InvestorPortfolioDocument, variables, options);
+
+export const InvestorPortfolioWithStakeDocument = `
+    query InvestorPortfolioWithStake($id: Int) {
+  investorPortfolioWithStake(id: $id) {
+    total_invested
+    total_balance
+    total_pending_transactions
+    balance_change_percentage
+    balance_change_amount
+    previous_month {
+      total_invested
+      total_balance
+      total_pending_transactions
+    }
+  }
+}
+    `;
+
+export const useInvestorPortfolioWithStakeQuery = <
+      TData = InvestorPortfolioWithStakeQuery,
+      TError = unknown
+    >(
+      variables?: InvestorPortfolioWithStakeQueryVariables,
+      options?: Omit<UseQueryOptions<InvestorPortfolioWithStakeQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<InvestorPortfolioWithStakeQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<InvestorPortfolioWithStakeQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['InvestorPortfolioWithStake'] : ['InvestorPortfolioWithStake', variables],
+    queryFn: gqlFetcher<InvestorPortfolioWithStakeQuery, InvestorPortfolioWithStakeQueryVariables>(InvestorPortfolioWithStakeDocument, variables),
+    ...options
+  }
+    )};
+
+useInvestorPortfolioWithStakeQuery.document = InvestorPortfolioWithStakeDocument;
+
+useInvestorPortfolioWithStakeQuery.getKey = (variables?: InvestorPortfolioWithStakeQueryVariables) => variables === undefined ? ['InvestorPortfolioWithStake'] : ['InvestorPortfolioWithStake', variables];
+
+
+useInvestorPortfolioWithStakeQuery.fetcher = (variables?: InvestorPortfolioWithStakeQueryVariables, options?: RequestInit['headers']) => gqlFetcher<InvestorPortfolioWithStakeQuery, InvestorPortfolioWithStakeQueryVariables>(InvestorPortfolioWithStakeDocument, variables, options);
 
 export const UpdateInvestorDocument = `
     mutation UpdateInvestor($updateInvestorInput: UpdateInvestorInput!) {
@@ -1414,6 +1729,88 @@ export const useAddInvestmentMutation = <
 
 
 useAddInvestmentMutation.fetcher = (variables: AddInvestmentMutationVariables, options?: RequestInit['headers']) => gqlFetcher<AddInvestmentMutation, AddInvestmentMutationVariables>(AddInvestmentDocument, variables, options);
+
+export const CreateInvestorDocument = `
+    mutation CreateInvestor($createInvestorInput: CreateInvestorInput!) {
+  createInvestor(createInvestorInput: $createInvestorInput) {
+    ...InvestorAllFragment
+  }
+}
+    ${InvestorAllFragmentFragmentDoc}
+${InvestorBaseFragmentFragmentDoc}`;
+
+export const useCreateInvestorMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateInvestorMutation, TError, CreateInvestorMutationVariables, TContext>) => {
+    
+    return useMutation<CreateInvestorMutation, TError, CreateInvestorMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateInvestor'],
+    mutationFn: (variables?: CreateInvestorMutationVariables) => gqlFetcher<CreateInvestorMutation, CreateInvestorMutationVariables>(CreateInvestorDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useCreateInvestorMutation.fetcher = (variables: CreateInvestorMutationVariables, options?: RequestInit['headers']) => gqlFetcher<CreateInvestorMutation, CreateInvestorMutationVariables>(CreateInvestorDocument, variables, options);
+
+export const AcceptInvestorInvitationDocument = `
+    mutation AcceptInvestorInvitation($acceptInvestorInvitationInput: AcceptInvestorInvitationInput!) {
+  acceptInvestorInvitation(
+    acceptInvestorInvitationInput: $acceptInvestorInvitationInput
+  ) {
+    ...InvestorBaseFragment
+  }
+}
+    ${InvestorBaseFragmentFragmentDoc}`;
+
+export const useAcceptInvestorInvitationMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<AcceptInvestorInvitationMutation, TError, AcceptInvestorInvitationMutationVariables, TContext>) => {
+    
+    return useMutation<AcceptInvestorInvitationMutation, TError, AcceptInvestorInvitationMutationVariables, TContext>(
+      {
+    mutationKey: ['AcceptInvestorInvitation'],
+    mutationFn: (variables?: AcceptInvestorInvitationMutationVariables) => gqlFetcher<AcceptInvestorInvitationMutation, AcceptInvestorInvitationMutationVariables>(AcceptInvestorInvitationDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useAcceptInvestorInvitationMutation.fetcher = (variables: AcceptInvestorInvitationMutationVariables, options?: RequestInit['headers']) => gqlFetcher<AcceptInvestorInvitationMutation, AcceptInvestorInvitationMutationVariables>(AcceptInvestorInvitationDocument, variables, options);
+
+export const RetrieveInvitationDocument = `
+    query RetrieveInvitation($code: String!) {
+  invitation(code: $code) {
+    ...InvitationBaseFragment
+  }
+}
+    ${InvitationBaseFragmentFragmentDoc}`;
+
+export const useRetrieveInvitationQuery = <
+      TData = RetrieveInvitationQuery,
+      TError = unknown
+    >(
+      variables: RetrieveInvitationQueryVariables,
+      options?: Omit<UseQueryOptions<RetrieveInvitationQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RetrieveInvitationQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RetrieveInvitationQuery, TError, TData>(
+      {
+    queryKey: ['RetrieveInvitation', variables],
+    queryFn: gqlFetcher<RetrieveInvitationQuery, RetrieveInvitationQueryVariables>(RetrieveInvitationDocument, variables),
+    ...options
+  }
+    )};
+
+useRetrieveInvitationQuery.document = RetrieveInvitationDocument;
+
+useRetrieveInvitationQuery.getKey = (variables: RetrieveInvitationQueryVariables) => ['RetrieveInvitation', variables];
+
+
+useRetrieveInvitationQuery.fetcher = (variables: RetrieveInvitationQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveInvitationQuery, RetrieveInvitationQueryVariables>(RetrieveInvitationDocument, variables, options);
 
 export const CreateTickerDocument = `
     mutation CreateTicker($createTicketInput: CreateTicketInput!) {

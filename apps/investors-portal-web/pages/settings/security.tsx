@@ -1,15 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButton } from '@mui/lab';
-import NTextField from '../../lib/components/Fields/NTextField';
-import { VStack } from '../../lib/components/Stack/Stack';
+import { NTextField, VStack } from '@nq-capital/nui';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useUpdateInvestorMutation } from '../../lib/gql/gql-client';
+import SettingsLayout from '../../lib/layouts/SettingsLayout';
+import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
 import {
   InferGetInvestorSSP,
   getInvestorSSP,
 } from '../../lib/modules/settings/get-investor-ssr';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import SettingsLayout from '../../lib/layouts/SettingsLayout';
-import SettingsFieldGroup from '../../lib/modules/settings/components/SettingsFieldGroup';
 import {
   SecuritySettingsSchema,
   securitySettingsSchema,

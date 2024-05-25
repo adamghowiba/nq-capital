@@ -1,0 +1,25 @@
+query ListInvestorFunds {
+  investorFunds {
+    data {
+      id
+      stake_percentage
+      invested_amount
+      initial_investment
+      investor_id
+      fund_id
+      balance
+      created_at
+      updated_at
+      investor {
+        ...InvestorBaseFragment
+      }
+      fund {
+        id
+        name
+        balance
+        created_at
+        updated_at
+      }
+    }
+  }
+}

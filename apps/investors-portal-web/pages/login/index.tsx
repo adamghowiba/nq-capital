@@ -105,7 +105,7 @@ const Login: NextPageWithLayout = () => {
             return (
               <FormControl required>
                 <FormLabel>Password</FormLabel>
-                <TextField {...field} />
+                <TextField type='password' {...field} />
               </FormControl>
             );
           }}
