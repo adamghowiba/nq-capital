@@ -3,6 +3,7 @@ FROM public.ecr.aws/docker/library/node:20.12.2 as builder
 WORKDIR /app
 
 ENV NX_DAEMON=false
+ENV NX_ADD_PLUGINS=false
 
 # COPY & INSTALL PACKGES
 COPY ./package*.json ./
@@ -12,6 +13,8 @@ COPY ./tsconfig.base.json ./
 COPY ./nx.json ./
 COPY ./prisma ./prisma
 COPY /apps/api ./apps/api
+COPY ./.eslintignore ./
+COPY ./.eslintrc.json ./
 
 # COPY REQUIRED PACKAGES
 COPY /libs ./libs
@@ -23,8 +26,10 @@ RUN npx prisma generate
 # RUN npx prisma migrate deploy
 
 # RUN npx prisma migrate deploy
-RUN npx nx build --project=api --configuration=production
+RUN npx nx build --project=api --configuration=production --skipNxCache
 COPY ./prisma ./dist/apps/api
+
+# CMD ["tail", "-f", "/dev/null"]
 
 # PRODUCTION STAGE
 FROM public.ecr.aws/docker/library/node:20.12.2-alpine
