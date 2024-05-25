@@ -42,15 +42,11 @@ const Login: NextPageWithLayout = () => {
   });
 
   const loginMutation = useLoginMutation({
-    onSuccess: (data, variables, context) => {
-      queryClient.setQueriesData(
-        {
-          queryKey: useMeInvestorQuery.getKey(),
-        },
-        data
-      );
-
-      router.push('/');
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: useMeInvestorQuery.getKey({})
+      });
+      await router.push('/');
     },
   });
 

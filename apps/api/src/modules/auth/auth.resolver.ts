@@ -1,4 +1,9 @@
-import { UnauthorizedException, UseGuards } from '@nestjs/common';
+import {
+  Logger,
+  Response,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   GqlSession,
@@ -10,11 +15,13 @@ import { LoginInput } from './dto/login.input';
 import { LogoutEntity } from './entities/logout.entity';
 import { GqlAuthGuard } from './guards/graphql-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { Request } from 'express';
+import { Request, Response as ExpressResponse } from 'express';
 import { InvestorEntity, SessionEntity, UserEntity } from '@nq-capital/iam';
 
 @Resolver(() => UserEntity)
 export class AuthResolver {
+  private readonly logger = new Logger(AuthResolver.name);
+
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(GqlAuthGuard, LocalAuthGuard)
@@ -33,11 +40,17 @@ export class AuthResolver {
     return investor;
   }
 
-  @Mutation(() => LogoutEntity)
-  async logout(@Context('req') request: Request) {
-    request.session.destroy(console.error);
+  @Mutation(() => LogoutEntity, { nullable: true })
+  async logout(
+    @Context('req') request: Request,
+    @Context('res') response: ExpressResponse
+  ) {
+    request.session.destroy((err) => {
+      if (err) this.logger.error('Something went wrong');
+    });
+    response.clearCookie('connect.sid', { path: '/' });
 
-    return { status: 'Success' };
+    return { status: 'success' };
   }
 
   @Query(() => SessionEntity)

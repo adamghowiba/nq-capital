@@ -20,6 +20,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { BoxPropsExtended } from '../Box/Box';
 
 export interface NMenuProps extends PropsWithChildren {}
 
@@ -109,9 +110,9 @@ export const MenuButton: FC<MenuButtonProps> = ({ children }) => {
   );
 };
 
-export interface MenuListProps extends PropsWithChildren {}
+export interface MenuListProps extends PropsWithChildren, BoxPropsExtended {}
 
-export const MenuList: FC<MenuListProps> = ({ children }) => {
+export const MenuList: FC<MenuListProps> = ({ children, sx, ...props }) => {
   const menuContext = useContext(MenuContext);
 
   const handleClick = (event: MouseEvent<HTMLDivElement>) => {
@@ -125,25 +126,19 @@ export const MenuList: FC<MenuListProps> = ({ children }) => {
   return (
     <Box
       onClick={handleClick}
+      padding="6px"
+      borderRadius="8px"
+      bgcolor="#202020"
+      minWidth="150px"
+      boxShadow="0px 4px 8px rgba(0, 0, 0, 0.1)"
       sx={{
-        borderRadius: '12px',
-        padding: '6px',
-        bgcolor: '#202020',
-        minWidth: '150px',
-        '& .MuiMenuItem-root': {
-          color: '#BBBBBB',
-          borderRadius: '4px',
-          minHeight: '30px',
-          lineHeight: '1',
-          fontSize: '13px',
-          fontWeight: '500',
-          py: '0',
-          px: '8px',
+        '& .MuiDivider-root': {
+          borderColor: 'rgb(255, 255, 255, 0.1)',
+          my: '6px'
         },
-        '& .MuiMenuItem-root:hover': {
-          bgcolor: 'rgba(255, 255, 255, 0.1)',
-        },
+        ...sx,
       }}
+      {...props}
     >
       {children}
     </Box>
@@ -160,14 +155,29 @@ export const NMenuItem: FC<NMenuItemProps> = ({
   children,
   color,
   href,
+  sx,
   ...props
 }) => {
   return (
     <MenuItem
-      {...props}
-      sx={{ '&.MuiMenuItem-root': { color: color }, ...props.sx }}
       component={href ? Link : 'li'}
       href={href}
+      {...props}
+      sx={{
+        color: color || '#BBBBBB',
+        borderRadius: '4px',
+        minHeight: '30px',
+        lineHeight: '1',
+        fontSize: '13px',
+        fontWeight: '500',
+        py: '0',
+        px: '8px',
+        transition: 'background-color 0.15s ease',
+        '&:hover': {
+          bgcolor: 'rgba(255, 255, 255, 0.1)',
+        },
+        ...sx,
+      }}
     >
       {leftIcon && (
         <ListItemIcon

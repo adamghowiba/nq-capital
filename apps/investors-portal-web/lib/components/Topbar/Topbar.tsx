@@ -1,8 +1,11 @@
+import alertIcon from '@iconify/icons-fluent/alert-16-filled';
 import notification from '@iconify/icons-fluent/alert-24-filled';
+import arrowExitIcon from '@iconify/icons-fluent/arrow-exit-20-filled';
 import upDown from '@iconify/icons-fluent/chevron-up-down-24-filled';
-import person from '@iconify/icons-fluent/person-24-filled';
-import settings from '@iconify/icons-fluent/settings-24-filled';
-import { Icon, IconifyIcon } from '@iconify/react';
+import personIcon from '@iconify/icons-fluent/person-24-filled';
+import receipt16FilledIcon from '@iconify/icons-fluent/receipt-16-filled';
+import settingsIcon from '@iconify/icons-fluent/settings-24-filled';
+import { Icon } from '@iconify/react';
 import {
   Avatar,
   ClickAwayListener,
@@ -12,39 +15,38 @@ import {
 } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { HStack } from '@nq-capital/nui';
+import {
+  HStack,
+  MenuButton,
+  MenuList,
+  NAvatar,
+  NMenu,
+  NMenuItem,
+  VStack,
+} from '@nq-capital/nui';
 import Link from 'next/link';
 import { FC, useRef, useState } from 'react';
 import { useInvestor } from '../../hooks/use-investor';
-import OneIcon from '../../utils/OneIcon';
 import DContainer from '../DContainer/DContainer';
 import Logo from '../Logo/logo';
 import NotificationPopover from '../NotificationPopover/NotificationPopover';
 import TopbarSearch from './TopbarSearch';
+import { useLogoutMutation } from '../../gql/gql-client';
+import { useRouter } from 'next/router';
 
 const Topbar: FC<any> = () => {
+  const router = useRouter();
   const investor = useInvestor();
 
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
-  const notificationsIconRef = useRef<HTMLButtonElement>(null);
+  const logoutMutation = useLogoutMutation({
+    onSuccess: () => {
+      router.push('/login');
+    },
+  });
 
-  const rightIcons: {
-    title: string;
-    icon: IconifyIcon;
-    onClick?: () => void;
-    href?: string;
-  }[] = [
-    {
-      icon: settings,
-      title: 'Settings',
-      href: '/settings',
-    },
-    {
-      icon: person,
-      title: 'Profile',
-    },
-  ];
+  const notificationsIconRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
@@ -135,18 +137,69 @@ const Topbar: FC<any> = () => {
                 </Box>
               </ClickAwayListener>
 
-              {rightIcons.map(({ icon, title, onClick, href }, index) => (
-                <OneIcon
-                  key={index}
-                  title={title}
-                  icon={icon}
-                  onClick={onClick}
-                  fontSize={20}
-                  LinkComponent={href ? Link : undefined}
-                  // @ts-expect-error MUI doesn't accept slot href
-                  href={href}
-                />
-              ))}
+              <IconButton
+                size="small"
+                component={Link}
+                href="/settings"
+                sx={{ fontSize: '20px' }}
+              >
+                <Icon icon={settingsIcon} />
+              </IconButton>
+
+              <NMenu>
+                <MenuButton>
+                  <IconButton size="small" sx={{ fontSize: '20px' }}>
+                    <Icon icon={personIcon} />
+                  </IconButton>
+                </MenuButton>
+
+                <MenuList width="250px">
+                  <NMenuItem sx={{ py: '6px', pl: '4px' }} href="/settings">
+                    <HStack gap={1}>
+                      <NAvatar>{investor.data?.first_name[0]}</NAvatar>
+
+                      <VStack>
+                        <Typography variant="body2" color="grey.300">
+                          {investor.data?.first_name} {investor.data?.last_name}
+                        </Typography>
+                        <Typography variant="caption" color="grey.400">
+                          {investor.data?.email}
+                        </Typography>
+                      </VStack>
+                    </HStack>
+                  </NMenuItem>
+
+                  <Divider sx={{}} />
+
+                  <NMenuItem
+                    leftIcon={<Icon icon={settingsIcon} fontSize={15} />}
+                    href="/settings"
+                  >
+                    Settings
+                  </NMenuItem>
+                  <NMenuItem
+                    leftIcon={<Icon icon={alertIcon} fontSize={15} />}
+                    href="/settings/notifications"
+                  >
+                    Notifications
+                  </NMenuItem>
+                  <NMenuItem
+                    leftIcon={<Icon icon={receipt16FilledIcon} fontSize={15} />}
+                    href="/settings/billing"
+                  >
+                    Billing
+                  </NMenuItem>
+
+                  <Divider sx={{}} />
+
+                  <NMenuItem
+                    leftIcon={<Icon icon={arrowExitIcon} fontSize={15} />}
+                    onClick={() => logoutMutation.mutate({})}
+                  >
+                    Logout
+                  </NMenuItem>
+                </MenuList>
+              </NMenu>
             </HStack>
           </Box>
         </DContainer>

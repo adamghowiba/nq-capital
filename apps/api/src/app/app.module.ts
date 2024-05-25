@@ -75,6 +75,8 @@ if (isDevelopment)
       buildSchemaOptions: {
         numberScalarMode: 'integer',
       },
+      // @ts-expect-error Not strictly typed
+      context: ({ req, res }) => ({ req, res }),
       plugins: [...APOLLO_PLUGINS],
     }),
     EventEmitterModule.forRoot({
