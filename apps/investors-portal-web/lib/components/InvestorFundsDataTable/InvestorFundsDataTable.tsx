@@ -1,11 +1,11 @@
-import React, { FC, useMemo } from 'react';
+import { GridColDef } from '@mui/x-data-grid';
+import { Box, CustomDataGrid } from '@nq-capital/nui';
+import { FC, useMemo } from 'react';
 import {
   ListInvestorFundsQuery,
   useListInvestorFundsQuery,
 } from '../../gql/gql-client';
-import { GridColDef } from '@mui/x-data-grid';
 import { formatUSDCurrency } from '../../utils/currency.utils';
-import { Box, CustomDataGrid } from '@nq-capital/nui';
 
 export interface InvestorFundsDataTableProps {}
 
@@ -18,6 +18,7 @@ const InvestorFundsDataTable: FC<InvestorFundsDataTableProps> = ({
   );
 
   const columns = useMemo((): GridColDef<
+  // @ts-expect-error TODO Debug this type issue
     ListInvestorFundsQuery['investorFunds']['data'][number]
   >[] => {
     return [
