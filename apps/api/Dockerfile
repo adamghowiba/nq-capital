@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:18.14.0 as builder
+FROM public.ecr.aws/docker/library/node:20.12.2 as builder
 
 WORKDIR /app
 
@@ -27,7 +27,7 @@ RUN npx nx build --project=api --configuration=production
 COPY ./prisma ./dist/apps/api
 
 # PRODUCTION STAGE
-FROM public.ecr.aws/docker/library/node:18.14.0-alpine
+FROM public.ecr.aws/docker/library/node:20.12.2-alpine
 
 ENV NODE_ENV=production
 WORKDIR /app
