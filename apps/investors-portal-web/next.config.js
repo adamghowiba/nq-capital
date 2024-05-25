@@ -14,7 +14,8 @@ const nextConfig = {
   },
   env: {
     APP_ENV: process.env?.APP_ENV || 'staging',
-  }
+  },
+  distDir: "../../dist/apps/investors-portal-web/.next"
 };
 
 const plugins = [
