@@ -429,6 +429,7 @@ type Mutation {
   removeMessage(id: Int!): MessageEntity!
   removeAsset(id: Int!): AssetEntity!
   login(loginInput: LoginInput!): UserEntity!
+  adminLogin(loginInput: LoginInput!): UserEntity!
   investorLogin(loginInput: LoginInput!): InvestorEntity!
   logout: LogoutEntity
   createBankAccount(createBankAccountInput: CreateBankAccountInput!): BankAccountEntity!
@@ -557,7 +558,6 @@ input AdjustFundInput {
   "Amount to adjust the fund by. Can be a negative\r\nor positive value."
   amount: Float!
   fund_id: Int!
-  adjusted_by_user_id: Int!
   description: String
 }
 

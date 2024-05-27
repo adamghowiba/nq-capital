@@ -33,6 +33,14 @@ export class AuthResolver {
   }
 
   @UseGuards(GqlAuthGuard, LocalAuthGuard)
+  @Mutation(() => UserEntity)
+  async adminLogin(@Args('loginInput') loginInput: LoginInput) {
+    const user = await this.authService.loginAdmin(loginInput);
+
+    return user;
+  }
+
+  @UseGuards(GqlAuthGuard, LocalAuthGuard)
   @Mutation(() => InvestorEntity)
   async investorLogin(@Args('loginInput') loginInput: LoginInput) {
     const investor = await this.authService.loginInvestor(loginInput);

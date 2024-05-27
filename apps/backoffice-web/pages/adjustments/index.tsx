@@ -1,5 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Button, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Button,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  TextField,
+  Typography,
+  Box as MUIBox,
+} from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Box, CustomDataGrid, NCurrencyField, VStack } from '@nq-capital/nui';
 import { Screen } from '../../lib/components/Screen/Screen';
@@ -7,15 +16,17 @@ import {
   ListFundAdjustmentsQuery,
   useAdjustFundMutation,
   useListFundAdjustmentsQuery,
+  useListFundsQuery,
 } from '../../lib/gql/gql-client';
 import React, { FC, useMemo } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { formatUSDCurrency } from '@nq-capital/utils';
 
 const adjustmentSchema = z.object({
   amount: z.number(),
   description: z.string().optional(),
+  fund_id: z.number(),
 });
 
 type AdjustmentSchema = z.infer<typeof adjustmentSchema>;
@@ -28,6 +39,11 @@ const Adjustments = ({ ...props }) => {
     },
     resolver: zodResolver(adjustmentSchema),
   });
+
+  const fundsQuery = useListFundsQuery(
+    {},
+    { staleTime: Infinity, select: (data) => data.funds }
+  );
 
   const adjustmentsQuery = useListFundAdjustmentsQuery(
     {},
@@ -48,8 +64,7 @@ const Adjustments = ({ ...props }) => {
       adjustFundInput: {
         amount: data.amount,
         description: data.description,
-        fund_id: 2,
-        adjusted_by_user_id: 1,
+        fund_id: data.fund_id,
       },
     });
   };
@@ -122,6 +137,45 @@ const Adjustments = ({ ...props }) => {
     <Screen>
       <VStack gap={2} mb={4}>
         <Typography variant="h3">Create adjustment (TEST)</Typography>
+
+        <Controller
+          control={form.control}
+          name="fund_id"
+          render={({ field, fieldState }) => (
+            <FormControl error={fieldState.invalid}>
+              <FormLabel>Fund</FormLabel>
+
+              <Autocomplete
+                {...field}
+                options={fundsQuery.data || []}
+                getOptionLabel={(option) => option.name}
+                onChange={(event, fund) => field.onChange(fund?.id)}
+                value={fundsQuery.data?.find((fund) => fund.id === field.value)}
+                renderInput={(params) => (
+                  <TextField placeholder="Select fund" {...params} />
+                )}
+                renderOption={(props, option, state, ownerState) => {
+                  return (
+                    <MUIBox component="li" {...props}>
+                      <VStack>
+                        <Typography>{option.name}</Typography>
+                        <Typography color="gray" fontSize="12px">
+                          Balance: {formatUSDCurrency(option.balance)}
+                        </Typography>
+                      </VStack>
+                    </MUIBox>
+                  );
+                }}
+                fullWidth
+              />
+
+              <FormHelperText>
+                {form.formState?.errors?.amount?.message ||
+                  'Select the fund associated with the investment, if no fund is selected the default fund will be used'}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
 
         <NCurrencyField control={form.control} name="amount" label="Amount" />
         <Button

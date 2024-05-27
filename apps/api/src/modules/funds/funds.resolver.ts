@@ -1,10 +1,4 @@
-import {
-  Args,
-  Int,
-  Mutation,
-  Query,
-  Resolver
-} from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { AdjustFundInput } from './dto/adjust-fund.input';
 import { CreateFundInput } from './dto/create-fund.input';
@@ -16,6 +10,8 @@ import { FundOverviewEntity } from './entities/fund-overview.entity';
 import { FundEntity } from './entities/fund.entity';
 import { FundAggregatorService } from './fund-aggregator.service';
 import { FundsService } from './funds.service';
+import { UserSession } from '../../common/decorators/auth/session.decorator';
+import { UserEntity } from '@nq-capital/iam';
 
 @Resolver(() => FundEntity)
 export class FundsResolver {
@@ -62,8 +58,14 @@ export class FundsResolver {
   }
 
   @Mutation(() => FundEntity)
-  adjustFund(@Args('adjustFundInput') adjustFundInput: AdjustFundInput) {
-    return this.fundsService.adjustFund(adjustFundInput);
+  adjustFund(
+    @Args('adjustFundInput') adjustFundInput: AdjustFundInput,
+    @UserSession() user: UserEntity
+  ) {
+    return this.fundsService.adjustFund({
+      ...adjustFundInput,
+      adjusted_by_user_id: user.id,
+    });
   }
 
   @Query(() => [FundAdjustmentEntity], { name: 'fundAdjustments' })

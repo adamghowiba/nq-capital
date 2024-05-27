@@ -71,7 +71,6 @@ export type AddressEntity = {
 };
 
 export type AdjustFundInput = {
-  adjusted_by_user_id: Scalars['Int']['input'];
   /**
    * Amount to adjust the fund by. Can be a negative
    * or positive value.
@@ -395,6 +394,7 @@ export type Mutation = {
   acceptInvestorInvitation: InvestorEntity;
   addInvestment: FundEntity;
   adjustFund: FundEntity;
+  adminLogin: UserEntity;
   createBankAccount: BankAccountEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
@@ -406,7 +406,7 @@ export type Mutation = {
   inviteInvestor: InvitationEntity;
   inviteUser: InvitationEntity;
   login: UserEntity;
-  logout: LogoutEntity;
+  logout?: Maybe<LogoutEntity>;
   removeAsset: AssetEntity;
   removeBankAccount: BankAccountEntity;
   removeFund: FundEntity;
@@ -440,6 +440,11 @@ export type MutationAddInvestmentArgs = {
 
 export type MutationAdjustFundArgs = {
   adjustFundInput: AdjustFundInput;
+};
+
+
+export type MutationAdminLoginArgs = {
+  loginInput: LoginInput;
 };
 
 
@@ -939,12 +944,12 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserEntity', id: number, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, first_name: string, last_name: string, email: string, created_at: any, updated_at: any } };
+export type LoginMutation = { __typename?: 'Mutation', adminLogin: { __typename?: 'UserEntity', id: number, middle_name?: string | null, avatar?: string | null, mobile_number?: string | null, role: UserRole, first_name: string, last_name: string, email: string, created_at: any, updated_at: any } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutEntity', status: string } };
+export type LogoutMutation = { __typename?: 'Mutation', logout?: { __typename?: 'LogoutEntity', status: string } | null };
 
 export type MeUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1247,7 +1252,7 @@ export const TransactionsAllFragmentFragmentDoc = `
     `;
 export const LoginDocument = `
     mutation Login($loginInput: LoginInput!) {
-  login(loginInput: $loginInput) {
+  adminLogin(loginInput: $loginInput) {
     id
     middle_name
     avatar

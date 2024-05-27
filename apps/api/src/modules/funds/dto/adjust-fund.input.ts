@@ -1,10 +1,5 @@
-import { Field, Float, InputType, Int } from '@nestjs/graphql';
-import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  Min
-} from 'class-validator';
+import { Field, Float, HideField, InputType, Int } from '@nestjs/graphql';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 @InputType()
 export class AdjustFundInput {
@@ -22,9 +17,7 @@ export class AdjustFundInput {
   @Min(1)
   fund_id!: number;
 
-  @Field(() => Int)
-  @IsNumber()
-  @Min(1)
+  @HideField()
   adjusted_by_user_id!: number;
 
   @Field()

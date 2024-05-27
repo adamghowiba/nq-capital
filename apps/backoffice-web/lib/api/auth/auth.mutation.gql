@@ -1,5 +1,5 @@
 mutation Login($loginInput: LoginInput!) {
-  login(loginInput: $loginInput) {
+  adminLogin(loginInput: $loginInput) {
     id
     middle_name
     avatar
