@@ -38,7 +38,7 @@ const CustomToolbar: FC<CustomToolbarProps> = ({
           </Box>
         )}
 
-        <HStack>
+        <HStack ml="auto" gap={1}>
           {renderSelectActions &&
             (autoHideSelectActions ? !!selectedRows.length : true) &&
             renderSelectActions({ selectedRows })}
@@ -71,14 +71,14 @@ export const CustomDataGrid = <R extends GridValidRowModel = any>({
 
   return (
     <>
-      <HStack>
+      {/* <HStack> */}
         {/* {title && (
           <Box fontSize="24px" mb={1}>
             {title}
           </Box>
         )} */}
         {/* <Box ref={toolbarRef}></Box> */}
-      </HStack>
+      {/* </HStack> */}
 
       <DataGrid
         classes={{

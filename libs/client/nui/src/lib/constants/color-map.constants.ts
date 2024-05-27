@@ -13,9 +13,9 @@ export const TICKET_TYPE_COLOR_MAP: Record<TicketType, ChipColorSchema> = {
 };
 
 export const TICKET_STATUS_COLOR_MAP: Record<TicketStatus, ChipColorSchema> = {
-  CLOSED: 'neutral',
+  CLOSED: 'red',
   OPEN: 'green',
-  UNDER_REVIEW: 'blue',
+  UNDER_REVIEW: 'orange',
 };
 
 export const ACCOUNT_STATUS_COLOR_MAP: Record<

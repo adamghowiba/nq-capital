@@ -33,6 +33,8 @@ export class UploadAssetDto {
   @IsOptional()
   meta_data?: Record<string, string>;
 
+  size?: number | null
+
   @IsNumber()
   @IsOptional()
   user_id?: number | null | undefined;

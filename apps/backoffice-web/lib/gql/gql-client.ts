@@ -90,6 +90,7 @@ export type AssetEntity = {
   message_id?: Maybe<Scalars['Int']['output']>;
   mime_type: Scalars['String']['output'];
   original_name: Scalars['String']['output'];
+  size?: Maybe<Scalars['Int']['output']>;
   updated_at: Scalars['DateTime']['output'];
   url: Scalars['String']['output'];
   user_id?: Maybe<Scalars['Int']['output']>;
@@ -759,6 +760,7 @@ export type SessionEntity = {
 
 export type TicketEntity = {
   __typename?: 'TicketEntity';
+  assets?: Maybe<Array<AssetEntity>>;
   assigned_to_user_id?: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['DateTime']['output'];
   data?: Maybe<Scalars['JSON']['output']>;
@@ -791,7 +793,7 @@ export type TicketType =
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
-  amount: Scalars['Int']['output'];
+  amount: Scalars['Float']['output'];
   balance_after: Scalars['Float']['output'];
   created_at: Scalars['DateTime']['output'];
   currency_code: Scalars['String']['output'];

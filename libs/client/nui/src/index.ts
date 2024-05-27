@@ -113,6 +113,12 @@ export type { ChatBoxTextFieldProps } from './lib/components/Chatbox/ChatBoxText
 export { UploadIconButton } from './lib/components/Chatbox/UploadIconButton';
 export type { UploadIconButtonProps } from './lib/components/Chatbox/UploadIconButton';
 
+export { ConfirmationModal } from './lib/components/ConfirmationModal/ConfirmationModal';
+export type { ConfirmationModalProps } from './lib/components/ConfirmationModal/ConfirmationModal';
+
+export { TicketHeader } from './lib/modules/ticket/components/TicketHeader';
+export type { TicketHeaderProps } from './lib/modules/ticket/components/TicketHeader';
+
 // CONSTANTS
 export {
   ACCOUNT_STATUS_COLOR_MAP,
@@ -129,6 +135,7 @@ export type {
   UseFileUploadError,
   UseFileUploadParams,
 } from './lib/hooks/use-file-upload';
+export { useConfirmation } from './lib/hooks/use-confirmation';
 
 export { useDebounce } from './lib/hooks/use-debounce';
 export { useGql } from './lib/hooks/use-gql.hook';

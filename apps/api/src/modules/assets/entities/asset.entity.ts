@@ -42,6 +42,9 @@ export class AssetEntity implements Asset {
   @Field(() => Int, { nullable: true })
   message_id!: number | null;
 
+  @Field(() => Int, { nullable: true })
+  size!: number | null;
+
   @Field(() => GraphQLISODateTime)
   created_at!: Date;
 
@@ -52,6 +55,7 @@ export class AssetEntity implements Asset {
 export interface SuccessfulUploadOutput extends Omit<UploadAssetDto, 'body'> {
   key: string;
   url: string;
+  asset_id?: number;
 }
 
 export type FailedUploadOutput = Omit<UploadAssetDto, 'body'>;

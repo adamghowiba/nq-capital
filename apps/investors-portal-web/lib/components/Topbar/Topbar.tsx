@@ -25,14 +25,14 @@ import {
   VStack,
 } from '@nq-capital/nui';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { FC, useRef, useState } from 'react';
+import { useLogoutMutation } from '../../gql/gql-client';
 import { useInvestor } from '../../hooks/use-investor';
 import DContainer from '../DContainer/DContainer';
 import Logo from '../Logo/logo';
 import NotificationPopover from '../NotificationPopover/NotificationPopover';
 import TopbarSearch from './TopbarSearch';
-import { useLogoutMutation } from '../../gql/gql-client';
-import { useRouter } from 'next/router';
 
 const Topbar: FC<any> = () => {
   const router = useRouter();
@@ -79,7 +79,7 @@ const Topbar: FC<any> = () => {
 
               <Divider orientation="vertical" sx={{ height: '60%' }} />
 
-              <Box
+              {/* <Box
                 sx={{
                   display: 'grid',
                   columnGap: '9px',
@@ -111,7 +111,7 @@ const Topbar: FC<any> = () => {
                     <Icon icon={upDown} fontSize="16px" />
                   </IconButton>
                 </Tooltip>
-              </Box>
+              </Box> */}
             </Box>
 
             <TopbarSearch />
@@ -149,7 +149,19 @@ const Topbar: FC<any> = () => {
               <NMenu>
                 <MenuButton>
                   <IconButton size="small" sx={{ fontSize: '20px' }}>
-                    <Icon icon={personIcon} />
+                    <Avatar
+                      sx={{
+                        bgcolor: '#EBEBEB',
+                        fontWeight: '500',
+                        fontSize: '12px',
+                        color: '#8D8D8D',
+                        width: '32px',
+                        height: '32px',
+                      }}
+                    >
+                      {investor.data?.first_name[0]}
+                      {investor.data?.last_name[0]}
+                    </Avatar>
                   </IconButton>
                 </MenuButton>
 

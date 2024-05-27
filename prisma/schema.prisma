@@ -334,6 +334,7 @@ model Asset {
   key           String    @unique
   url           String    @unique
   mime_type     String
+  size          Int?
   asset_type    AssetType @default(UNKNOWN)
   user          User?     @relation(fields: [user_id], references: [id])
   user_id       Int?

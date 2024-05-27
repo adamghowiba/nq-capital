@@ -11,6 +11,10 @@ export interface FileChipProps
   extends Pick<ChipProps, 'onClick' | 'onDelete' | 'sx'> {
   fileType: FileType;
   fileName: string;
+  /**
+   * Optional href for the file, will open a new tab when clicked
+   */
+  href?: string;
 }
 
 const FILE_TYPE_ICON_MAP: Record<FileType, IconifyIcon> = {
@@ -25,20 +29,25 @@ const FILE_TYPE_ICON_MAP: Record<FileType, IconifyIcon> = {
 export const FileChip: FC<FileChipProps> = ({
   fileType,
   fileName,
+  href,
   ...props
 }) => {
   const fileIcon = FILE_TYPE_ICON_MAP[fileType];
   return (
     <Chip
       size="small"
+      component={href ? 'a' : "div"}
       label={
         <HStack gap={0.5}>
           <Icon icon={fileIcon} />
           <Typography variant="body2">{fileName}</Typography>
         </HStack>
       }
+      href={href}
+      target="_blank"
       sx={{
         flexShrink: 0,
+        cursor: 'pointer'
       }}
       {...props}
     />

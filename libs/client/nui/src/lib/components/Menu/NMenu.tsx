@@ -21,6 +21,7 @@ import React, {
   useState,
 } from 'react';
 import { BoxPropsExtended } from '../Box/Box';
+import { Primitive } from 'type-fest';
 
 export interface NMenuProps extends PropsWithChildren {}
 
@@ -104,7 +105,7 @@ export const MenuButton: FC<MenuButtonProps> = ({ children }) => {
   }, [boxRef.current]);
 
   return (
-    <Box ref={boxRef} onClick={() => menuContext.toggle()}>
+    <Box ref={boxRef} sx={{cursor: 'pointer'}} onClick={() => menuContext.toggle()}>
       {children}
     </Box>
   );
@@ -134,7 +135,7 @@ export const MenuList: FC<MenuListProps> = ({ children, sx, ...props }) => {
       sx={{
         '& .MuiDivider-root': {
           borderColor: 'rgb(255, 255, 255, 0.1)',
-          my: '6px'
+          my: '6px',
         },
         ...sx,
       }}
@@ -148,6 +149,7 @@ export const MenuList: FC<MenuListProps> = ({ children, sx, ...props }) => {
 export interface NMenuItemProps extends PropsWithChildren, MenuItemProps {
   leftIcon?: ReactNode;
   href?: string;
+  colorBadge?: string;
 }
 
 export const NMenuItem: FC<NMenuItemProps> = ({
@@ -156,6 +158,7 @@ export const NMenuItem: FC<NMenuItemProps> = ({
   color,
   href,
   sx,
+  colorBadge,
   ...props
 }) => {
   return (
@@ -189,6 +192,21 @@ export const NMenuItem: FC<NMenuItemProps> = ({
         </ListItemIcon>
       )}
 
+      {colorBadge && (
+        <ListItemIcon
+          sx={{
+            '&.MuiListItemIcon-root': { minWidth: '20px', color: 'inherit' },
+          }}
+        >
+          <Box
+            width="8px"
+            height="8px"
+            bgcolor={colorBadge}
+            borderRadius="2px"
+          />
+        </ListItemIcon>
+      )}
+
       {children}
     </MenuItem>
   );
@@ -201,12 +219,14 @@ export interface MenuContextProps {
   toggle: () => void;
   setAnchorElement: (element: HTMLElement | HTMLDivElement) => void;
   anchorElement: HTMLElement | HTMLDivElement | null;
+  value?: Primitive | null;
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export const MenuContext = createContext<MenuContextProps>({
   isOpen: false,
+  value: null,
   closeMenu: function (): void {
     throw new Error('Function not implemented.');
   },

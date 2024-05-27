@@ -71,7 +71,6 @@ export type AddressEntity = {
 };
 
 export type AdjustFundInput = {
-  adjusted_by_user_id: Scalars['Int']['input'];
   /**
    * Amount to adjust the fund by. Can be a negative
    * or positive value.
@@ -91,6 +90,7 @@ export type AssetEntity = {
   message_id?: Maybe<Scalars['Int']['output']>;
   mime_type: Scalars['String']['output'];
   original_name: Scalars['String']['output'];
+  size?: Maybe<Scalars['Int']['output']>;
   updated_at: Scalars['DateTime']['output'];
   url: Scalars['String']['output'];
   user_id?: Maybe<Scalars['Int']['output']>;
@@ -395,6 +395,7 @@ export type Mutation = {
   acceptInvestorInvitation: InvestorEntity;
   addInvestment: FundEntity;
   adjustFund: FundEntity;
+  adminLogin: UserEntity;
   createBankAccount: BankAccountEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
@@ -406,7 +407,7 @@ export type Mutation = {
   inviteInvestor: InvitationEntity;
   inviteUser: InvitationEntity;
   login: UserEntity;
-  logout: LogoutEntity;
+  logout?: Maybe<LogoutEntity>;
   removeAsset: AssetEntity;
   removeBankAccount: BankAccountEntity;
   removeFund: FundEntity;
@@ -440,6 +441,11 @@ export type MutationAddInvestmentArgs = {
 
 export type MutationAdjustFundArgs = {
   adjustFundInput: AdjustFundInput;
+};
+
+
+export type MutationAdminLoginArgs = {
+  loginInput: LoginInput;
 };
 
 
@@ -754,6 +760,7 @@ export type SessionEntity = {
 
 export type TicketEntity = {
   __typename?: 'TicketEntity';
+  assets?: Maybe<Array<AssetEntity>>;
   assigned_to_user_id?: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['DateTime']['output'];
   data?: Maybe<Scalars['JSON']['output']>;
@@ -786,7 +793,7 @@ export type TicketType =
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
-  amount: Scalars['Int']['output'];
+  amount: Scalars['Float']['output'];
   balance_after: Scalars['Float']['output'];
   created_at: Scalars['DateTime']['output'];
   currency_code: Scalars['String']['output'];
@@ -944,7 +951,7 @@ export type LoginMutation = { __typename?: 'Mutation', investorLogin: { __typena
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
-export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutEntity', status: string } };
+export type LogoutMutation = { __typename?: 'Mutation', logout?: { __typename?: 'LogoutEntity', status: string } | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1093,7 +1100,7 @@ export type RetrieveTicketQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets?: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any }> | null, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets?: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any, size?: number | null }> | null, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
@@ -1952,6 +1959,7 @@ export const RetrieveTicketDocument = `
         asset_type
         created_at
         updated_at
+        size
       }
       ...MessageBaseFragment
     }

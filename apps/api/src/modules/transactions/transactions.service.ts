@@ -47,10 +47,15 @@ export class TransactionsService {
     return transaction;
   }
 
-  async list(params: unknown, session: SessionEntity): Promise<TransactionEntity[]> {
+  async list(
+    params: unknown,
+    session: SessionEntity
+  ): Promise<TransactionEntity[]> {
     const transactions = await this.prisma.transaction.findMany({
       where: {
-        investor_id: session.investor?.id || undefined,
+        investor_id: session.user
+          ? undefined
+          : session.investor?.id || undefined,
       },
       orderBy: {
         created_at: 'desc',

@@ -66,6 +66,7 @@ export class TicketsService {
           body: file.buffer,
           file_name: file.originalname,
           mime_type: file.mimetype,
+          size: file.size,
           meta_data: {
             ticket_id: String(attachFileDto.ticket_id),
             message_id: String(attachFileDto.message_id),
@@ -74,27 +75,6 @@ export class TicketsService {
         };
       })
     );
-
-    // TODO Assets field on ticket itself
-    // const ticket = await this.prisma.ticket.update({
-    //   where: { id: attachFileDto.ticket_id },
-    //   data: {},
-    // });
-
-    // if (attachFileDto.message_id) {
-    //   const message = await this.prisma.message.update({
-    //     where: {
-    //       id: attachFileDto.message_id,
-    //     },
-    //     data: {
-    //       assets: {
-    //         connect: {
-    //           id: upload.asset.id,
-    //         },
-    //       },
-    //     },
-    //   });
-    // }
 
     return upload;
   }

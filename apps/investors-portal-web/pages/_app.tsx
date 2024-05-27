@@ -6,6 +6,7 @@ import DashboardLayout from '../lib/layouts/DashboardLayout';
 import RootLayout from '../lib/layouts/RootLayout';
 import '../styles/global.css';
 import Head from 'next/head';
+import { Toaster } from 'sonner';
 
 export type NextPageWithLayout<P = object, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -38,6 +39,8 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
       >
         <RootLayout>{getLayout(<Component {...pageProps} />)}</RootLayout>
       </main>
+
+      <Toaster richColors expand={true} visibleToasts={4} closeButton={true} />
     </>
   );
 }

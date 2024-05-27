@@ -13,7 +13,14 @@ import {
   Typography,
   useRadioGroup,
 } from '@mui/material';
-import { DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, HStack, NTextField } from '@nq-capital/nui';
+import {
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  HStack,
+  NTextField,
+} from '@nq-capital/nui';
 import { useQueryClient } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -22,6 +29,8 @@ import {
   useListTickersQuery,
 } from '../../../../lib/gql/gql-client';
 import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
+import { toast } from 'sonner';
+import { parseApiError } from 'apps/investors-portal-web/lib/utils/error.utils';
 
 export interface TickerMutationDrawerProps extends DrawerProps {
   mode:
@@ -54,7 +63,12 @@ const TickerMutationDrawer: FC<TickerMutationDrawerProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: useListTickersQuery.getKey() });
 
+      toast.success(`Ticket created successfully!`);
+
       props.onClose?.({}, 'backdropClick');
+    },
+    onError: (error) => {
+      toast.error(parseApiError(error, { allowMessage: false }));
     },
   });
 

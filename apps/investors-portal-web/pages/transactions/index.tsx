@@ -11,6 +11,8 @@ import {
   MenuList,
   NMenu,
   NMenuItem,
+  StyledTab,
+  StyledTabs,
 } from '@nq-capital/nui';
 import { FC, useState } from 'react';
 import NLink from '../../lib/components/Link/Link';
@@ -60,14 +62,14 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
           scrollbarWidth: 'none',
         }}
       >
-        <ButtonTabs
+        <StyledTabs
           onChange={(event, value) =>
             onChangeSelectedType?.(value as TransactionTypeFilter)
           }
           value={selectedType}
         >
           {TRANSACTION_TYPES.map((type) => (
-            <ButtonTab
+            <StyledTab
               key={type}
               value={type}
               sx={(theme) => ({
@@ -76,7 +78,7 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
               label={type.toLowerCase()}
             />
           ))}
-        </ButtonTabs>
+        </StyledTabs>
       </HStack>
 
       <HStack ml="auto" gap={1}>
@@ -105,8 +107,8 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
 
           <MenuList>
             <NMenuItem>Withdrawal</NMenuItem>
-            <NMenuItem>Investment</NMenuItem>
-            <NMenuItem>Support</NMenuItem>
+            {/* <NMenuItem>Investment</NMenuItem> */}
+            {/* <NMenuItem>Support</NMenuItem> */}
           </MenuList>
         </NMenu>
       </HStack>

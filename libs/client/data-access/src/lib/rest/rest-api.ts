@@ -1,6 +1,9 @@
 import { API_URL } from '@nq-capital/utils-constants';
 import axios, { AxiosInstance } from 'axios';
 
+const instance = axios.create({
+  baseURL: API_URL.origin,
+});
 
 export class NqRestApi {
   private instance: AxiosInstance;
@@ -23,9 +26,10 @@ export class NqRestApi {
     params.files.forEach((file) => {
       formData.append('files', file);
     });
+
     if (params.messageId)
       formData.append('message_id', String(params.messageId));
 
-    return this.instance.post(`/tickets/${params.ticketId}/upload`, formData);
+    return instance.post(`/tickets/${params.ticketId}/upload`, formData);
   }
 }

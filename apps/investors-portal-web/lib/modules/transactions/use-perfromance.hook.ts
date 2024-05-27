@@ -60,7 +60,7 @@ export const usePortfolioPerformance = (params: { timespan: Timespan }) => {
 
           acc[timespanIndex] = {
             ...acc[timespanIndex],
-            amount: acc[timespanIndex].amount + transaction.amount,
+            amount: Math.round(acc[timespanIndex].amount + transaction.amount),
           };
 
           return acc;

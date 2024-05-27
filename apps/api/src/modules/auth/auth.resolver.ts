@@ -1,4 +1,5 @@
 import {
+  HttpStatus,
   Logger,
   Response,
   UnauthorizedException,
@@ -16,7 +17,13 @@ import { LogoutEntity } from './entities/logout.entity';
 import { GqlAuthGuard } from './guards/graphql-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Request, Response as ExpressResponse } from 'express';
-import { InvestorEntity, SessionEntity, UserEntity } from '@nq-capital/iam';
+import {
+  ApplicationSessionEntity,
+  InvestorEntity,
+  SessionEntity,
+  UserEntity,
+} from '@nq-capital/iam';
+import { ApiError } from '../../common/exceptions/api.error';
 
 @Resolver(() => UserEntity)
 export class AuthResolver {
@@ -51,12 +58,35 @@ export class AuthResolver {
   @Mutation(() => LogoutEntity, { nullable: true })
   async logout(
     @Context('req') request: Request,
-    @Context('res') response: ExpressResponse
+    @Context('res') response: ExpressResponse,
+    @GqlSession() session: ApplicationSessionEntity
   ) {
-    request.session.destroy((err) => {
-      if (err) this.logger.error('Something went wrong');
-    });
-    response.clearCookie('connect.sid', { path: '/' });
+    if (!session)
+      throw new ApiError("You're not logged in.", {
+        statusCode: HttpStatus.UNAUTHORIZED,
+      });
+
+    if (
+      (session.user_type === 'INVESTOR' && !request.user.user) ||
+      (session.user_type === 'ADMIN' && !request.user.investor)
+    ) {
+      request.session.destroy((err) => {
+        if (err) this.logger.error('Something went wrong');
+      });
+      response.clearCookie('connect.sid', { path: '/' });
+
+      return { status: 'success' };
+    }
+
+    if (session.user_type === 'ADMIN') {
+      // @ts-expect-error Doesn't inherit passport session type
+      request.session.passport.user.userId = null;
+    }
+
+    if (session.user_type === 'INVESTOR') {
+      // @ts-expect-error Doesn't inherit passport session type
+      request.session.passport.user.investorId = null;
+    }
 
     return { status: 'success' };
   }

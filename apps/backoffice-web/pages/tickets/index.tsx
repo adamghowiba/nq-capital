@@ -4,6 +4,7 @@ import { GridColDef, GridFilterModel } from '@mui/x-data-grid';
 import {
   Box,
   ColoredChip,
+  ConfirmationModal,
   CustomDataGrid,
   MenuButton,
   MenuList,
@@ -14,7 +15,8 @@ import {
   StyledTab,
   StyledTabs,
   TICKET_STATUS_COLOR_MAP,
-  TICKET_TYPE_COLOR_MAP
+  TICKET_TYPE_COLOR_MAP,
+  useConfirmation,
 } from '@nq-capital/nui';
 import { formatISOForTable } from '@nq-capital/utils';
 import { useEffect, useMemo, useState } from 'react';
@@ -24,12 +26,15 @@ import {
   TicketStatus,
   useDeleteTicketMutation,
   useListTickersQuery,
-  useUpdateTicketMutation
+  useUpdateTicketMutation,
 } from '../../lib/gql/gql-client';
 import { NextPageWithLayout } from '../_app';
+import { toast } from 'sonner';
+import { parseApiError } from 'apps/backoffice-web/lib/utils/error.utils';
 
 const TickerPage: NextPageWithLayout = ({ ...props }) => {
-  const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
+  const deleteConfirmation = useConfirmation<{ ticketId: number }>();
+
   const [tabValue, setTabValue] = useState<'open' | 'closed'>('open');
   const [filters, setFilters] = useState<GridFilterModel>({
     items: [],
@@ -44,11 +49,36 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
       ticketsQuery.refetch();
     },
   });
-  const deleteTicketMutation = useDeleteTicketMutation();
+  const deleteTicketMutation = useDeleteTicketMutation({
+    onSuccess: () => {
+      ticketsQuery.refetch();
+      deleteConfirmation.onClose()
+    },
+  });
 
   const updateTicketStatus = (ticketId: number, status: TicketStatus) => {
-    updateTicketMutation.mutate({
+    const promise = updateTicketMutation.mutateAsync({
       updateTicketInput: { id: ticketId, status },
+    });
+
+    toast.promise(promise, {
+      loading: 'Updating ticket status...',
+      success: `Ticket status updated to '${status
+        .toLocaleLowerCase()
+        .replace('_', ' ')}'`,
+      error: parseApiError,
+    });
+  };
+
+  const handleDeleteTicket = (ticketId: number) => {
+    const promise = deleteTicketMutation.mutateAsync({
+      id: ticketId,
+    });
+
+    toast.promise(promise, {
+      loading: 'Deleting ticket...',
+      success: 'Ticket deleted successfully!',
+      error: parseApiError,
     });
   };
 
@@ -150,9 +180,7 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
   return (
     <>
       <Screen>
-        <PageHeader
-          title="Tickets"
-        />
+        <PageHeader title="Tickets" />
 
         <TabContext value={tabValue}>
           <StyledTabs
@@ -191,8 +219,11 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
                           color="error"
                           size="small"
                           onClick={() =>
-                            deleteTicketMutation.mutate({
-                              id: selectedRows[0] as number,
+                            // deleteTicketMutation.mutate({
+                            //   id: selectedRows[0] as number,
+                            // })
+                            deleteConfirmation.onOpen({
+                              ticketId: selectedRows[0] as number,
                             })
                           }
                         >
@@ -252,6 +283,18 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
           </Box>
         </TabContext>
       </Screen>
+
+      <ConfirmationModal
+        title="Delete Ticket?"
+        maxWidth={'400px'}
+        content={`Are you sure you want to delete ticket #${deleteConfirmation.open?.ticketId
+          ?.toString()
+          ?.padStart(4, '0')}? This action cannot be undone, and
+        the user will not be notified about this deletion.`}
+        {...deleteConfirmation.getConfirmationProps()}
+        onConfirm={(data) => handleDeleteTicket(data.ticketId)}
+        isLoading={deleteTicketMutation.isPending}
+      />
     </>
   );
 };

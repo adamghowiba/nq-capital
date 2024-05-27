@@ -3,42 +3,42 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import DContainer from '../DContainer/DContainer';
 
+const NAVBAR_ITEMS: {
+  name: string;
+  href: string;
+  isDisabled?: boolean;
+  dropdown?: { name: string; href: string }[];
+}[] = [
+  {
+    name: 'Overview',
+    href: '/',
+  },
+  {
+    name: 'Tickets',
+    href: '/tickets',
+  },
+  {
+    name: 'Transactions',
+    href: '/transactions',
+  },
+];
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface NavbarProps {}
 
 const Navbar: FC<NavbarProps> = ({ ...props }) => {
   const pathname = usePathname();
 
-  const NAVBAR_ITEMS: {
-    name: string;
-    href: string;
-    isDisabled?: boolean;
-    dropdown?: { name: string; href: string }[];
-  }[] = [
-    {
-      name: 'Overview',
-      href: '/',
-    },
-    {
-      name: 'Tickets',
-      href: '/tickets',
-    },
-    {
-      name: 'Transactions',
-      href: '/transactions',
-    },
-  ];
-
-  const getActiveItem = () => {
-    const activeItem = NAVBAR_ITEMS.find((item) => item.href === pathname);
+  const activeItem = useMemo(() => {
+    const pathSplits = pathname?.split('/');
+    const activeItem = NAVBAR_ITEMS.find(
+      (item) => item.href === `/${pathSplits?.[1]}`
+    );
 
     return activeItem;
-  };
-
-  const activeItem = getActiveItem();
+  }, [pathname]);
 
   return (
     <>

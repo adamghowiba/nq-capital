@@ -18,10 +18,16 @@ import { UpdateTicketInput } from './dto/update-ticket.input';
 import { TicketEntity } from './entities/ticket.entity';
 import { TicketsService } from './tickets.service';
 import { ApplicationSessionEntity, InvestorEntity } from '@nq-capital/iam';
+import { AssetEntity } from '../assets/entities/asset.entity';
+import { PrismaService } from '@nq-capital/service-database';
+import { GraphQLJSONObject } from 'graphql-type-json';
 
 @Resolver(() => TicketEntity)
 export class TicketsResolver {
-  constructor(private readonly ticketsService: TicketsService) {}
+  constructor(
+    private readonly ticketsService: TicketsService,
+    private readonly prisma: PrismaService
+  ) {}
 
   @Mutation(() => TicketEntity)
   createTicket(
@@ -73,5 +79,18 @@ export class TicketsResolver {
   @ResolveField('messages', () => [MessageEntity])
   getMessagesField(@Parent() ticket: TicketEntity) {
     return this.ticketsService.getTickerMessagesField(ticket);
+  }
+
+  @ResolveField('assets', () => [AssetEntity], { nullable: true })
+  async getAssetsField(@Parent() ticket: TicketEntity) {
+    const asset = await this.prisma.ticket
+      .findUnique({ where: { id: ticket.id } })
+      .messages({
+        select: {
+          assets: true,
+        },
+      });
+
+    return asset?.filter(Boolean).flatMap((asset) => asset.assets);
   }
 }

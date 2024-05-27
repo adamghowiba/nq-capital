@@ -7,7 +7,7 @@ import {
   Chip,
   CircularProgress,
   Unstable_Grid2 as Grid,
-  Typography
+  Typography,
 } from '@mui/material';
 import {
   ChatBox,
@@ -15,9 +15,11 @@ import {
   ChatBoxFooter,
   ChatBoxHeader,
   ChatBoxTextField,
+  ConfirmationModal,
   FileChip,
   HStack,
   MessageCard,
+  TicketHeader,
   UploadIconButton,
   VStack,
   useFileUpload,
@@ -25,12 +27,7 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
-import React, {
-  ReactNode,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { queryClient } from '../../lib/api/query-client';
 import { nqRestApi } from '../../lib/api/rest-api';
 import Screen from '../../lib/components/Screen/Screen';
@@ -38,10 +35,11 @@ import {
   RetrieveTicketQuery,
   useDeleteTicketMutation,
   useRetrieveTicketQuery,
-  useSendTicketMessageMutation
+  useSendTicketMessageMutation,
 } from '../../lib/gql/gql-client';
 import { useInvestor } from '../../lib/hooks/use-investor';
 import { formatISOForTable } from '../../lib/utils/date.utils';
+import { getFormattedFileSize } from '@nq-capital/utils';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
 
@@ -187,14 +185,11 @@ const TickerDetailPage = ({ ...props }) => {
     deleteTicketMutation.mutate({ id: ticketId });
   };
 
-  const handleKeydown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!messageInput.trim()) return;
-
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      handleSendMessage();
-    }
-  };
+  const ticketMessageAssets = useMemo(() => {
+    return ticket.data?.messages
+      .flatMap((message) => message.assets)
+      .filter(Boolean);
+  }, [ticket.data?.messages]);
 
   useEffect(() => {
     if (!ticket.data || !chatBoxRef.current) return;
@@ -226,23 +221,12 @@ const TickerDetailPage = ({ ...props }) => {
       <Grid container height="100%">
         <Grid mobile={8}>
           <Screen>
-            <HStack>
-              <VStack>
-                <HStack gap={1} alignItems="center">
-                  <Typography variant="h2">Ticket Details</Typography>
-                  <Chip
-                    label={ticket.data?.status}
-                    size="small"
-                    variant="outlined"
-                  />
-                </HStack>
-                <Typography variant="subtitle2">
-                  {formatISOForTable(ticket.data?.created_at)}
-                </Typography>
-              </VStack>
-
-              <HStack ml="auto" alignSelf="start" gap={1}>
-                <Button
+            <TicketHeader
+              status={ticket.data?.status || 'OPEN'}
+              createdIsoDate={ticket.data?.created_at}
+              actions={
+                <>
+                  {/* <Button
                   color="secondary"
                   variant="contained"
                   size="small"
@@ -255,18 +239,20 @@ const TickerDetailPage = ({ ...props }) => {
                   disabled={deleteTicketMutation.isPending}
                 >
                   Delete
-                </Button>
+                </Button> */}
 
-                <Button
+                  {/* TODO: Setup or remove */}
+                  {/* <Button
                   color="secondary"
                   variant="contained"
                   size="small"
                   disabled
                 >
                   Edit
-                </Button>
-              </HStack>
-            </HStack>
+                </Button> */}
+                </>
+              }
+            />
 
             <Grid
               container
@@ -304,13 +290,24 @@ const TickerDetailPage = ({ ...props }) => {
 
             <VStack gap={1.5}>
               <Typography>Attachments</Typography>
-              <HStack color="#646464" gap={1}>
-                <Icon icon={documentIcon} width={16} height={16} />
-                <Typography sx={{ color: '#646464' }} fontWeight="600">
-                  sample_report.pdf
-                </Typography>
-                <Typography sx={{ color: '#BBBBBB' }}>1.2MB</Typography>
-              </HStack>
+              {ticketMessageAssets?.map((asset) => {
+                if (!asset) return;
+
+                return (
+                  <HStack key={asset.id} color="#646464" gap={1}>
+                    <Icon icon={documentIcon} width={16} height={16} />
+                    <Typography sx={{ color: '#646464' }} fontWeight="600">
+                      {asset.original_name}
+                    </Typography>
+
+                    {asset.size && (
+                      <Typography sx={{ color: '#BBBBBB' }}>
+                        {getFormattedFileSize(asset.size)}
+                      </Typography>
+                    )}
+                  </HStack>
+                );
+              })}
             </VStack>
           </Screen>
         </Grid>

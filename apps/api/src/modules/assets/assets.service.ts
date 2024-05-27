@@ -76,24 +76,51 @@ export class AssetsService {
       { successful: [], failed: [] }
     );
 
-    await this.prisma.asset.createMany({
-      data: assetResults.successful.map((asset) => {
-        return {
-          key: asset.key,
-          mime_type: asset.mime_type,
-          original_name: asset.file_name,
-          investor_id: asset.investor_id,
-          message_id: asset.message_id,
-          user_id: asset.user_id,
-          url: asset.url,
-          asset_type: getFileType(asset.mime_type),
-        };
-      }),
+    const assetTransaction = await this.prisma.$transaction(
+      assetResults.successful.map((asset) => {
+        return this.prisma.asset.create({
+          data: {
+            key: asset.key,
+            mime_type: asset.mime_type,
+            original_name: asset.file_name,
+            investor_id: asset.investor_id,
+            message_id: asset.message_id,
+            size: asset.size,
+            user_id: asset.user_id,
+            url: asset.url,
+            asset_type: getFileType(asset.mime_type),
+          },
+        });
+      })
+    );
+
+    // const dbAssets = await this.prisma.asset.createMany({
+    //   data: assetResults.successful.map((asset) => {
+    //     return {
+    //       key: asset.key,
+    //       mime_type: asset.mime_type,
+    //       original_name: asset.file_name,
+    //       investor_id: asset.investor_id,
+    //       message_id: asset.message_id,
+    //       user_id: asset.user_id,
+    //       url: asset.url,
+    //       asset_type: getFileType(asset.mime_type),
+    //     };
+    //   }),
+    // });
+
+    const successfulUploadsWithAsset = assetResults.successful.map((result) => {
+      const asset = assetTransaction.find((asset) => asset.key === result.key);
+
+      return {
+        ...result,
+        asset_id: asset?.id,
+      };
     });
 
     return {
       failed_uploads: assetResults.failed,
-      successful_uploads: assetResults.successful,
+      successful_uploads: successfulUploadsWithAsset,
     };
   }
 

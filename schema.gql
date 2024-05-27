@@ -108,7 +108,7 @@ type FundEntity {
 type TransactionEntity {
   id: Int!
   type: TransactionType!
-  amount: Int!
+  amount: Float!
   currency_code: String!
   balance_after: Float!
   description: String
@@ -254,6 +254,7 @@ type TicketEntity {
   updated_at: DateTime!
   created_at: DateTime!
   messages: [MessageEntity!]!
+  assets: [AssetEntity!]
 }
 
 """
@@ -292,6 +293,7 @@ type AssetEntity {
   user_id: Int
   investor_id: Int
   message_id: Int
+  size: Int
   created_at: DateTime!
   updated_at: DateTime!
 }

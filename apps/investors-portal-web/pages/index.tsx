@@ -35,16 +35,17 @@ const Index = () => {
       <Screen h="100%" w="100%" gap={3}>
         <PageHeader
           title="Overview"
-          actions={
-            <>
-              <Button variant="contained" color="secondary">
-                Filter
-              </Button>
-              <Button variant="contained" color="secondary">
-                Create New
-              </Button>
-            </>
-          }
+          // Not currently in use
+          // actions={
+          //   <>
+          //     <Button variant="contained" color="secondary">
+          //       Filter
+          //     </Button>
+          //     <Button variant="contained" color="secondary">
+          //       Create New
+          //     </Button>
+          //   </>
+          // }
         />
 
         <HStack gap={2}>

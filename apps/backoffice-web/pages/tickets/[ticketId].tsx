@@ -7,40 +7,54 @@ import {
   Chip,
   CircularProgress,
   Unstable_Grid2 as Grid,
-  Typography
+  Typography,
 } from '@mui/material';
 import {
+  Box,
+  CHIP_COLOR_MAP,
   ChatBox,
   ChatBoxBody,
   ChatBoxFooter,
   ChatBoxHeader,
   ChatBoxTextField,
+  ColoredChip,
+  ConfirmationModal,
   FileChip,
   HStack,
+  MenuButton,
+  MenuList,
   MessageCard,
+  NMenu,
+  NMenuItem,
+  TICKET_STATUS_COLOR_MAP,
+  TicketHeader,
   UploadIconButton,
   VStack,
+  useConfirmation,
   useFileUpload,
 } from '@nq-capital/nui';
 import { formatISOForTable } from '@nq-capital/utils';
 import { useMutation } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
-import React, { ReactNode, useState } from 'react';
+import { ReactNode, useState } from 'react';
+import { toast } from 'sonner';
 import { queryClient } from '../../lib/api/query-client';
 import { restApi } from '../../lib/api/rest-client';
 import { Screen } from '../../lib/components/Screen/Screen';
 import { SCREEN_HEIGHT_CALC } from '../../lib/constants/size.constants';
 import {
   RetrieveTicketQuery,
+  TicketStatus,
   useDeleteTicketMutation,
   useRetrieveTicketQuery,
   useSendTicketMessageMutation,
+  useUpdateTicketMutation,
 } from '../../lib/gql/gql-client';
 import { useUser } from '../../lib/hooks/use-user';
+import { parseApiError } from '../../lib/utils/error.utils';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
-
 
 const getMessageDisplayName = (
   message: TicketMessageQueryData,
@@ -66,6 +80,7 @@ const getMessageDisplayName = (
 
 const TickerDetailPage = ({ ...props }) => {
   const [messageInput, setMessageInput] = useState('');
+  const deleteDialog = useConfirmation<{ id: number }>();
 
   const user = useUser();
   const fileUploader = useFileUpload({
@@ -150,6 +165,14 @@ const TickerDetailPage = ({ ...props }) => {
     },
   });
 
+  const updateTickerMutation = useUpdateTicketMutation({
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: useRetrieveTicketQuery.getKey({ id: ticketId }),
+      });
+    },
+  });
+
   const deleteTicketMutation = useDeleteTicketMutation({
     onSuccess: () => {
       router.push('/tickets');
@@ -178,16 +201,28 @@ const TickerDetailPage = ({ ...props }) => {
   };
 
   const handleDeleteTicket = () => {
-    deleteTicketMutation.mutate({ id: ticketId });
+    const promise = deleteTicketMutation.mutateAsync({ id: ticketId });
+
+    toast.promise(promise, {
+      loading: 'Deleting ticket...',
+      success: 'Ticket deleted successfully',
+      error: parseApiError,
+    });
   };
 
-  const handleKeydown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!messageInput.trim()) return;
+  const handleUpdateTicketStatus = (status: TicketStatus) => {
+    const promise = updateTickerMutation.mutateAsync({
+      updateTicketInput: {
+        id: ticketId,
+        status,
+      },
+    });
 
-    if (event.key === 'Enter' && !event.shiftKey) {
-      event.preventDefault();
-      handleSendMessage();
-    }
+    toast.promise(promise, {
+      loading: 'Updating ticket...',
+      success: 'Ticket updated successfully',
+      error: parseApiError,
+    });
   };
 
   if (!ticketId) {
@@ -211,47 +246,75 @@ const TickerDetailPage = ({ ...props }) => {
       <Grid container height={SCREEN_HEIGHT_CALC}>
         <Grid mobile={8}>
           <Screen gap={5}>
-            <HStack>
-              <VStack>
-                <HStack gap={1} alignItems="center">
-                  <Typography variant="h2">Ticket Details</Typography>
-                  <Chip
-                    label={ticket.data?.status}
+            <TicketHeader
+              status={ticket.data?.status || 'OPEN'}
+              createdIsoDate={ticket.data?.created_at}
+              actions={
+                <>
+                  <Button
+                    color="secondary"
+                    variant="contained"
                     size="small"
-                    variant="outlined"
-                  />
-                </HStack>
-                <Typography variant="subtitle2">
-                  {formatISOForTable(ticket.data?.created_at)}
-                </Typography>
-              </VStack>
+                    onClick={() => deleteDialog.onOpen({ id: ticketId })}
+                    startIcon={
+                      deleteTicketMutation.isPending ? (
+                        <CircularProgress size={13} />
+                      ) : undefined
+                    }
+                    disabled={deleteTicketMutation.isPending}
+                  >
+                    Delete
+                  </Button>
 
-              <HStack ml="auto" alignSelf="start" gap={1}>
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="small"
-                  onClick={handleDeleteTicket}
-                  startIcon={
-                    deleteTicketMutation.isPending ? (
-                      <CircularProgress size={13} />
-                    ) : undefined
-                  }
-                  disabled={deleteTicketMutation.isPending}
-                >
-                  Delete
-                </Button>
+                  <NMenu>
+                    <MenuButton>
+                      <Button
+                        color="secondary"
+                        variant="contained"
+                        size="small"
+                        startIcon={
+                          <Box
+                            w="8px"
+                            h="8px"
+                            borderRadius="8px"
+                            bgcolor={
+                              CHIP_COLOR_MAP[
+                                TICKET_STATUS_COLOR_MAP[
+                                  ticket.data?.status || 'OPEN'
+                                ]
+                              ].color
+                            }
+                          />
+                        }
+                      >
+                        Change Status
+                      </Button>
+                    </MenuButton>
 
-                <Button
-                  color="secondary"
-                  variant="contained"
-                  size="small"
-                  disabled
-                >
-                  Edit
-                </Button>
-              </HStack>
-            </HStack>
+                    <MenuList>
+                      <NMenuItem
+                        colorBadge={CHIP_COLOR_MAP['green'].color}
+                        onClick={() => handleUpdateTicketStatus('OPEN')}
+                      >
+                        Open
+                      </NMenuItem>
+                      <NMenuItem
+                        colorBadge={CHIP_COLOR_MAP['red'].color}
+                        onClick={() => handleUpdateTicketStatus('CLOSED')}
+                      >
+                        Closed
+                      </NMenuItem>
+                      <NMenuItem
+                        colorBadge={CHIP_COLOR_MAP['yellow'].color}
+                        onClick={() => handleUpdateTicketStatus('UNDER_REVIEW')}
+                      >
+                        Under Review
+                      </NMenuItem>
+                    </MenuList>
+                  </NMenu>
+                </>
+              }
+            />
 
             <Grid
               container
@@ -350,6 +413,16 @@ const TickerDetailPage = ({ ...props }) => {
           </ChatBox>
         </Grid>
       </Grid>
+
+      <ConfirmationModal
+        {...deleteDialog.getConfirmationProps()}
+        onConfirm={handleDeleteTicket}
+        title="Delete ticket?"
+        content="This action cannot be undone"
+        isLoading={deleteTicketMutation.isPending}
+      >
+        Are you sure you want to delete this user?
+      </ConfirmationModal>
     </>
   );
 };

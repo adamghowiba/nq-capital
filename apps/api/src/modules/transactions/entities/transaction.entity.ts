@@ -22,7 +22,7 @@ export class TransactionEntity implements Transaction {
   @Field(() => TransactionType)
   type!: TransactionType;
 
-  @Field(() => Int)
+  @Field(() => Float)
   amount!: number;
 
   @Field(() => String)

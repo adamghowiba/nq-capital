@@ -16,6 +16,7 @@ query RetrieveTicket($id: Int!) {
         asset_type
         created_at
         updated_at
+        size
       }
       ...MessageBaseFragment
     }

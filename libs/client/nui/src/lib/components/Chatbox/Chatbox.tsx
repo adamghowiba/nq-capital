@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useRef } from 'react';
-import { Box, BoxPropsExtended } from '../Box/Box';
 import { Typography } from '@mui/material';
+import { FC, useEffect, useRef } from 'react';
+import { Box, BoxPropsExtended } from '../Box/Box';
 import { StackPropsExtended, VStack } from '../Stack/Stack';
 
 export interface ChatBoxProps extends StackPropsExtended {}

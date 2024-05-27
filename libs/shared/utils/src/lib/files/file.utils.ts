@@ -34,3 +34,14 @@ export const getFileType = (mimeType: string): FileType => {
   // Default to UNKNOWN
   return 'UNKNOWN';
 };
+
+export const getFormattedFileSize = (sizeInBytes: number): string => {
+  if (sizeInBytes === 0) return '0 B'; // Handle the case where the file size is 0 bytes
+
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+
+  const size = sizeInBytes / Math.pow(1024, i); // Calculate the size in the correct unit
+
+  return `${size.toFixed(2)} ${units[i]}`; // Return the formatted size
+};
