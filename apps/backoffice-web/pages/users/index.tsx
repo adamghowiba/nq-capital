@@ -24,6 +24,7 @@ import {
 } from '@nq-capital/nui';
 import { formatISOForTable } from '@nq-capital/utils';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { Screen } from '../../lib/components/Screen/Screen';
 import {
   ListInvestorsQuery,
@@ -33,7 +34,10 @@ import {
   useListInvestorsQuery,
   useListInvitationsQuery,
 } from '../../lib/gql/gql-client';
-import InviteSingleInvestorDialog from '../../lib/modules/investors/components/InviteSingleInvestorDialog';
+import InviteSingleInvestorDialog, {
+  InviteSingleInvestorDialogProps,
+} from '../../lib/modules/investors/components/InviteSingleInvestorDialog';
+import { parseApiError } from '../../lib/utils/error.utils';
 import { NextPageWithLayout } from '../_app';
 
 const UserListPage: NextPageWithLayout = ({ ...props }) => {
@@ -63,6 +67,42 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
       invitationsQuery.refetch();
     },
   });
+
+  const handleInviteInvestor: InviteSingleInvestorDialogProps['onInvite'] = (
+    data
+  ) => {
+    const invitePromise = inviteInvestorMutation.mutateAsync({
+      invitationInput: {
+        email: data.email,
+        type: 'INVESTOR',
+      },
+    });
+
+    toast.promise(invitePromise, {
+      loading: 'Inviting investor...',
+      success: `Invitation sent to '${data.email}' successfully`,
+      error: (error) => parseApiError(error, { allowMessage: true }),
+      description: (data) => {
+        const isError = data instanceof Error;
+
+        return isError
+          ? `The email has been sent to there inbox. Once they complete the onboarding form they'll be given access to the investors portal`
+          : '';
+      },
+    });
+  };
+
+  const handleDeleteInvitation = (id: number) => {
+    const deletePromise = deleteInvitationMutation.mutateAsync({
+      id: id,
+    });
+
+    toast.promise(deletePromise, {
+      loading: 'Deleting invitation...',
+      success: 'Invitation deleted successfully',
+      error: (error) => parseApiError(error, { allowMessage: true }),
+    });
+  };
 
   const investorColumns = useMemo((): GridColDef<
     ListInvestorsQuery['investors'][number]
@@ -217,11 +257,7 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
 
             <MenuList>
               <NMenuItem disabled>Resend</NMenuItem>
-              <NMenuItem
-                onClick={() =>
-                  deleteInvitationMutation.mutate({ id: params.row.id })
-                }
-              >
+              <NMenuItem onClick={() => handleDeleteInvitation(params.row.id)}>
                 Delete
               </NMenuItem>
             </MenuList>
@@ -317,14 +353,7 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
 
       <InviteSingleInvestorDialog
         open={isInviteDialogOpen}
-        onInvite={(data) =>
-          inviteInvestorMutation.mutate({
-            invitationInput: {
-              email: data.email,
-              type: 'INVESTOR',
-            },
-          })
-        }
+        onInvite={handleInviteInvestor}
         isLoading={inviteInvestorMutation.isPending}
         onClose={() => setIsInviteDialogOpen(false)}
       />

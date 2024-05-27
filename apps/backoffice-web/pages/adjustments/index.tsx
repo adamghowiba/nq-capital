@@ -5,12 +5,18 @@ import {
   FormControl,
   FormHelperText,
   FormLabel,
+  Box as MUIBox,
   TextField,
   Typography,
-  Box as MUIBox,
 } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { Box, CustomDataGrid, NCurrencyField, VStack } from '@nq-capital/nui';
+import { formatUSDCurrency } from '@nq-capital/utils';
+import { useMemo } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { ErrorCard } from '../../lib/components/ErrorCard/ErrorCard';
 import { Screen } from '../../lib/components/Screen/Screen';
 import {
   ListFundAdjustmentsQuery,
@@ -18,10 +24,7 @@ import {
   useListFundAdjustmentsQuery,
   useListFundsQuery,
 } from '../../lib/gql/gql-client';
-import React, { FC, useMemo } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { formatUSDCurrency } from '@nq-capital/utils';
+import { parseApiError } from 'apps/backoffice-web/lib/utils/error.utils';
 
 const adjustmentSchema = z.object({
   amount: z.number(),
@@ -60,12 +63,20 @@ const Adjustments = ({ ...props }) => {
   const handleAdjustFund: SubmitHandler<AdjustmentSchema> = async (
     data: AdjustmentSchema
   ) => {
-    await adjustmentMutation.mutateAsync({
+    const adjustmentPromise = adjustmentMutation.mutateAsync({
       adjustFundInput: {
         amount: data.amount,
         description: data.description,
         fund_id: data.fund_id,
       },
+    });
+
+    toast.promise(adjustmentPromise, {
+      loading: 'Creating adjustment...',
+      success: `Adjustment for ${formatUSDCurrency(
+        data.amount
+      )} created successfully`,
+      error: (error) => parseApiError(error, { allowMessage: true }),
     });
   };
 

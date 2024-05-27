@@ -88,14 +88,16 @@ export class InvitationsService {
    * Retrieve a valid invitation, other it will throw an error
    * @param params
    */
-  async retrieveValidInvitation(params: {invitationCode: string, type: InvitationType}) {
+  async retrieveValidInvitation(params: {
+    invitationCode: string;
+    type: InvitationType;
+  }) {
     const investorInvitation = await this.prisma.invitation.findUnique({
       where: {
         invitation_code: params.invitationCode,
         type: params.type,
       },
     });
-
 
     if (!investorInvitation)
       throw new ApiError('Invitation not found', {
@@ -131,7 +133,7 @@ export class InvitationsService {
     const invitation = await this.retrieveValidInvitation({
       invitationCode: acceptInvestorInvitationInput.invitation_code,
       type: 'INVESTOR',
-    })
+    });
 
     const investor = await this.investorService.create(
       omit(acceptInvestorInvitationInput, ['invitation_code'])

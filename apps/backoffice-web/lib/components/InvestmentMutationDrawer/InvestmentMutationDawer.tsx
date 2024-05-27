@@ -34,6 +34,8 @@ import {
   InvestmentSchema,
   investmentSchema,
 } from '../../modules/investments/investment.schema';
+import { toast } from 'sonner';
+import { parseApiError } from '../../utils/error.utils';
 
 export interface InvestmentMutationDrawerProps extends DrawerProps {}
 
@@ -43,6 +45,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
   const form = useForm<InvestmentSchema>({
     defaultValues: {
       amount: 0,
+      notes: '',
       reference_id: '',
     },
     resolver: zodResolver(investmentSchema),
@@ -72,7 +75,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
   });
 
   const handleValidSubmission: SubmitHandler<InvestmentSchema> = (data) => {
-    addInvestmentMutation.mutate({
+    const promise = addInvestmentMutation.mutateAsync({
       addInvestmentInput: {
         amount: data.amount,
         // @ts-expect-error TODO: Handle this being required, but shouldn't be required
@@ -81,6 +84,12 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
         notes: data.notes,
         reference_id: data.reference_id,
       },
+    });
+
+    toast.promise(promise, {
+      loading: 'Creating investment...',
+      success: 'Investment created',
+      error: parseApiError,
     });
   };
 

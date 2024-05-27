@@ -1,6 +1,6 @@
 import { API_URL } from '@nq-capital/utils-constants';
 
-class GraphQLApiError extends Error {
+export class GraphQLApiError extends Error {
   locations: { line: number; column: number }[];
   explanation?: string;
   path: string[];
