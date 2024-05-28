@@ -1,15 +1,10 @@
 import {
   Alert,
   AlertTitle,
-  Box,
   Card,
   CardContent,
   CardHeader,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
+  Typography
 } from '@mui/material';
 import {
   BarList,
@@ -22,20 +17,20 @@ import {
   VStack,
 } from '@nq-capital/nui';
 import { formatUSDCurrency } from '@nq-capital/utils';
-import { useState } from 'react';
 import { Screen } from '../lib/components/Screen/Screen';
 import {
   useFundOverviewQuery,
-  useGetFundInvestorsOverviewQuery,
-  useListFundsQuery,
+  useGetFundInvestorsOverviewQuery
 } from '../lib/gql/gql-client';
 import InvestmentOverviewChart from '../lib/modules/overview/components/InvestmentOverviewChart';
 
 export function Index() {
-  const [selectedFundIds, setSelectedFundIds] = useState<number[]>([]);
+  const fundOverview = useFundOverviewQuery(
+    {},
+    { select: (data) => data.fundOverview }
+  );
 
-  const fundOverview = useFundOverviewQuery({}, {select: data => data.fundOverview});
-  const funds = useListFundsQuery({}, { select: (data) => data.funds });
+  // const funds = useListFundsQuery({}, { select: (data) => data.funds });
 
   const fundInvestorsOverview = useGetFundInvestorsOverviewQuery(
     {},
@@ -45,59 +40,18 @@ export function Index() {
   return (
     <>
       <Screen gap={3}>
-        <PageHeader
-          title="Overview"
-          actions={
-            <>
-              <FormControl size="small">
-                <InputLabel>Fund</InputLabel>
-                <Select
-                  multiple
-                  value={selectedFundIds}
-                  onChange={(event) =>
-                    setSelectedFundIds(event.target.value as number[])
-                  }
-                  MenuProps={{
-                    BackdropProps: {
-                      sx: {
-                        opacity: 0,
-                      },
-                    },
-                  }}
-                  label="Fund"
-                  placeholder="Fund"
-                  inputProps={{
-                    sx: {
-                      minWidth: '200px',
-                    },
-                  }}
-                  displayEmpty
-                >
-                  <MenuItem value="" sx={{ display: 'none' }}>
-                    All
-                  </MenuItem>
-
-                  {funds.data?.map((fund) => {
-                    return (
-                      <MenuItem key={fund.id} value={fund.id}>
-                        {fund.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </>
-          }
-        />
+        <PageHeader title="Overview" />
 
         <HStack gap={3}>
           <KPICard>
             <KPICardTitle tooltip="Total amount invested across all funds">
-              Total Investment
+              Total Invested
             </KPICardTitle>
 
             <HStack gap={1}>
-              <KPICardValue>{formatUSDCurrency(fundOverview.data?.invested_amount || 0)}</KPICardValue>
+              <KPICardValue>
+                {formatUSDCurrency(fundOverview.data?.invested_amount || 0)}
+              </KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
             <Typography variant="subtitle2">vs last month</Typography>
@@ -109,17 +63,23 @@ export function Index() {
             </KPICardTitle>
 
             <HStack gap={1}>
-              <KPICardValue>{formatUSDCurrency(fundOverview.data?.current_amount || 0)}</KPICardValue>
+              <KPICardValue>
+                {formatUSDCurrency(fundOverview.data?.current_amount || 0)}
+              </KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
             <Typography variant="subtitle2">vs last month</Typography>
           </KPICard>
 
           <KPICard>
-            <KPICardTitle>Net Returns</KPICardTitle>
+            <KPICardTitle tooltip="Total net returns for all funds. e.g PN/L">
+              Net Returns
+            </KPICardTitle>
 
             <HStack gap={1}>
-              <KPICardValue>{formatUSDCurrency(fundOverview.data?.net_returns || 0)}</KPICardValue>
+              <KPICardValue>
+                {formatUSDCurrency(fundOverview.data?.net_returns || 0)}
+              </KPICardValue>
               <KPICardChange type="increase">+ $2,736</KPICardChange>
             </HStack>
 

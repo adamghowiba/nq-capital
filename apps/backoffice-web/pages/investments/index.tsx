@@ -11,7 +11,7 @@ import {
   TRANSACTION_TYPE_COLOR_MAP,
   VStack,
 } from '@nq-capital/nui';
-import { formatISOForTable, formatUSDCurrency } from '@nq-capital/utils';
+import { formatISOForTable, formatUSDCurrency, padId } from '@nq-capital/utils';
 import { useMemo, useState } from 'react';
 import InvestmentMutationDrawer from '../../lib/components/InvestmentMutationDrawer/InvestmentMutationDawer';
 import { Screen } from '../../lib/components/Screen/Screen';
@@ -42,7 +42,7 @@ const InvestmentsPage: NextPageWithLayout = ({ ...props }) => {
         width: 130,
         renderCell: (params) => (
           <NLink href={`/transactions/${params.value}`}>
-            #{params.row.id.toString().padStart(5, '0')}{' '}
+            {padId(params.row.id)}
           </NLink>
         ),
       },

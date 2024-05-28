@@ -24,6 +24,11 @@ import {
   UserEntity,
 } from '@nq-capital/iam';
 import { ApiError } from '../../common/exceptions/api.error';
+import { RequestPasswordResetInput } from './dto/request-password-reset.input';
+import { ResetPasswordInput } from './dto/reset-password.input';
+import { ValidatePasswordResetTokenInput } from './dto/validate-reset-token.input';
+import { ValidatePasswordResetTokenEntity } from './entities/validate-password-reset-token.entity';
+import { ProfileEntity } from './entities/profile.entity';
 
 @Resolver(() => UserEntity)
 export class AuthResolver {
@@ -116,5 +121,34 @@ export class AuthResolver {
       );
 
     return user;
+  }
+
+  @Mutation(() => ProfileEntity)
+  async requestPasswordReset(
+    @Args('requestPasswordResetInput') requestPasswordResetInput: RequestPasswordResetInput,
+    @GqlSession() session: ApplicationSessionEntity
+  ) {
+    const user = await this.authService.requestPasswordReset(requestPasswordResetInput, session)
+
+    return user
+  }
+
+  @Mutation(() => ProfileEntity)
+  async resetPassword(@Args('resetPasswordInput') resetPasswordInput: ResetPasswordInput) {
+    const profile = await this.authService.resetPasswordWithToken(resetPasswordInput)
+
+    return profile
+  }
+
+  @Mutation(() => ValidatePasswordResetTokenEntity)
+  async validatePasswordResetToken(
+    @Args('validatePasswordResetTokenInput')
+    validatePasswordResetTokenInput: ValidatePasswordResetTokenInput
+  ) {
+    const result = await this.authService.validatePasswordResetToken(
+      validatePasswordResetTokenInput
+    )
+
+    return result
   }
 }

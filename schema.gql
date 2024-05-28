@@ -234,7 +234,7 @@ type MessageEntity {
   created_at: DateTime!
   sent_by_investor: InvestorEntity
   sent_by_user: UserEntity
-  assets: [AssetEntity!]
+  assets: [AssetEntity!]!
 }
 
 """Type of user"""
@@ -307,8 +307,23 @@ enum AssetType {
   UNKNOWN
 }
 
+type ProfileEntity {
+  id: Int
+  type: UserType!
+  first_name: String!
+  last_name: String!
+  email: String!
+  middle_name: String
+  password: String
+}
+
 type LogoutEntity {
   status: String!
+}
+
+type ValidatePasswordResetTokenEntity {
+  """Expiration date of password reset token"""
+  expiration_date: DateTime!
 }
 
 type InvitationEntity {
@@ -434,6 +449,9 @@ type Mutation {
   adminLogin(loginInput: LoginInput!): UserEntity!
   investorLogin(loginInput: LoginInput!): InvestorEntity!
   logout: LogoutEntity
+  requestPasswordReset(requestPasswordResetInput: RequestPasswordResetInput!): ProfileEntity!
+  resetPassword(resetPasswordInput: ResetPasswordInput!): ProfileEntity!
+  validatePasswordResetToken(validatePasswordResetTokenInput: ValidatePasswordResetTokenInput!): ValidatePasswordResetTokenEntity!
   createBankAccount(createBankAccountInput: CreateBankAccountInput!): BankAccountEntity!
   updateBankAccount(updateBankAccountInput: UpdateBankAccountInput!): BankAccountEntity!
   removeBankAccount(id: Int!): BankAccountEntity!
@@ -631,6 +649,19 @@ input LoginInput {
   """Password of the user"""
   password: String!
   user_type: UserType!
+}
+
+input RequestPasswordResetInput {
+  email: String!
+}
+
+input ResetPasswordInput {
+  token: String!
+  new_password: String!
+}
+
+input ValidatePasswordResetTokenInput {
+  token: String!
 }
 
 input CreateBankAccountInput {

@@ -16,6 +16,7 @@ import UserDetailHeader from '../../lib/modules/users/components/UserDetailHeade
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { NextPageWithLayout } from '../_app';
+import { padId } from '@nq-capital/utils';
 
 /**
  * @todo
@@ -62,9 +63,7 @@ const UserDetailPage: NextPageWithLayout = ({ ...props }) => {
 
                 <Chip
                   sx={{ lineHeight: '1', position: 'relative', top: '1px' }}
-                  label={`#${investorQuery.data?.id
-                    ?.toString()
-                    ?.padStart(5, '0')}`}
+                  label={padId(investorQuery.data?.id || 0)}
                   size="small"
                 />
               </DetailItemGrid>

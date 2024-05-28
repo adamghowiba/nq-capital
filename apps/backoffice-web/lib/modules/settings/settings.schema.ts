@@ -13,14 +13,5 @@ export const securitySettingsSchema = z
     current_password: z.string().min(1, 'Current password is required'),
     new_password: z.string().min(1, 'New password is required'),
   })
-  .superRefine((args, ctx) => {
-    if (args.current_password !== args.new_password) {
-      return ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        path: ['new_password'],
-        message: 'New password must be the same as current password',
-      });
-    }
-  });
 
 export type SecuritySettingsSchema = z.infer<typeof securitySettingsSchema>;

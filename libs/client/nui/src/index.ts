@@ -119,6 +119,33 @@ export type { ConfirmationModalProps } from './lib/components/ConfirmationModal/
 export { TicketHeader } from './lib/modules/ticket/components/TicketHeader';
 export type { TicketHeaderProps } from './lib/modules/ticket/components/TicketHeader';
 
+export { TicketAttachmentsList } from './lib/modules/ticket/components/TicketAttachmentsList';
+export type { TicketAttachmentsListProps } from './lib/modules/ticket/components/TicketAttachmentsList';
+
+export { TicketDetails } from './lib/modules/ticket/components/TicketDetails';
+export type { TicketDetailsProps } from './lib/modules/ticket/components/TicketDetails';
+
+export { ForgotPasswordForm } from './lib/modules/auth/components/ForgotPasswordForm';
+export type { ForgotPasswordFormProps } from './lib/modules/auth/components/ForgotPasswordForm';
+
+export { ResetPasswordForm } from './lib/modules/auth/components/ResetPasswordForm';
+export type { ResetPasswordFormProps } from './lib/modules/auth/components/ResetPasswordForm';
+
+export { AuthLayout } from './lib/modules/auth/components/AuthLayout';
+export type { AuthLayoutProps } from './lib/modules/auth/components/AuthLayout';
+
+export { AuthPaper } from './lib/modules/auth/components/AuthPaper';
+export type { AuthPaperProps } from './lib/modules/auth/components/AuthPaper';
+
+export {
+  forgotPasswordSchema,
+  resetPasswordSchema,
+} from './lib/modules/auth/auth.schema';
+export type {
+  ForgotPasswordSchema,
+  ResetPasswordSchema,
+} from './lib/modules/auth/auth.schema';
+
 // CONSTANTS
 export {
   ACCOUNT_STATUS_COLOR_MAP,

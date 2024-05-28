@@ -29,6 +29,6 @@ export const INVESTORS_PORTAL_URL = generateUrl({
 });
 
 export const BACKOFFICE_URL = generateUrl({
-  developmentUrl: 'http://localhost:4300',
+  developmentUrl: 'http://localhost:4400',
   productionUrl: 'https://office.saber.dev',
 });

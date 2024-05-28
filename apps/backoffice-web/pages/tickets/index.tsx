@@ -18,7 +18,7 @@ import {
   TICKET_TYPE_COLOR_MAP,
   useConfirmation,
 } from '@nq-capital/nui';
-import { formatISOForTable } from '@nq-capital/utils';
+import { formatISOForTable, padId } from '@nq-capital/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Screen } from '../../lib/components/Screen/Screen';
 import {
@@ -30,7 +30,7 @@ import {
 } from '../../lib/gql/gql-client';
 import { NextPageWithLayout } from '../_app';
 import { toast } from 'sonner';
-import { parseApiError } from 'apps/backoffice-web/lib/utils/error.utils';
+import { parseApiError } from '../../lib/utils/error.utils';
 
 const TickerPage: NextPageWithLayout = ({ ...props }) => {
   const deleteConfirmation = useConfirmation<{ ticketId: number }>();
@@ -52,7 +52,7 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
   const deleteTicketMutation = useDeleteTicketMutation({
     onSuccess: () => {
       ticketsQuery.refetch();
-      deleteConfirmation.onClose()
+      deleteConfirmation.onClose();
     },
   });
 
@@ -91,7 +91,7 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
         headerName: 'ID',
         renderCell: (params) => (
           <NLink href={`/tickets/${params.value}`}>
-            #{params.row.id.toString().padStart(5, '0')}{' '}
+            {padId(params.row.id)}
           </NLink>
         ),
       },
@@ -157,8 +157,8 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
         items: [
           {
             field: 'status',
-            operator: 'equals',
-            value: 'OPEN',
+            operator: 'isAnyOf',
+            value: ['OPEN', 'UNDER_REVIEW'],
           },
         ],
       });
@@ -169,8 +169,8 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
         items: [
           {
             field: 'status',
-            operator: 'isAnyOf',
-            value: ['CLOSED', 'UNDER_REVIEW'],
+            operator: 'equals',
+            value: 'CLOSED',
           },
         ],
       });
@@ -250,7 +250,7 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
                                 )
                               }
                             >
-                              Resolved
+                              Closed
                             </NMenuItem>
                             <NMenuItem
                               onClick={() =>
@@ -287,9 +287,7 @@ const TickerPage: NextPageWithLayout = ({ ...props }) => {
       <ConfirmationModal
         title="Delete Ticket?"
         maxWidth={'400px'}
-        content={`Are you sure you want to delete ticket #${deleteConfirmation.open?.ticketId
-          ?.toString()
-          ?.padStart(4, '0')}? This action cannot be undone, and
+        content={`Are you sure you want to delete ticket #${padId(deleteConfirmation.open?.ticketId || 0)}? This action cannot be undone, and
         the user will not be notified about this deletion.`}
         {...deleteConfirmation.getConfirmationProps()}
         onConfirm={(data) => handleDeleteTicket(data.ticketId)}

@@ -5,23 +5,22 @@ import {
   CircularProgress,
   FormControl,
   FormLabel,
-  Paper,
   Stack,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { queryClient } from '../../lib/api/query-client';
 import {
   useLoginMutation,
-  useMeInvestorQuery,
-  useMeQuery,
+  useMeInvestorQuery
 } from '../../lib/gql/gql-client';
-import Link from 'next/link';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import AuthHeader from '../../lib/modules/auth/components/AuthHeader';
 import { NextPageWithLayout } from '../_app';
-import { useRouter } from 'next/router';
+import { AuthPaper } from '@nq-capital/nui';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -44,7 +43,7 @@ const Login: NextPageWithLayout = () => {
   const loginMutation = useLoginMutation({
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries({
-        queryKey: useMeInvestorQuery.getKey({})
+        queryKey: useMeInvestorQuery.getKey({}),
       });
       await router.push('/');
     },
@@ -70,16 +69,9 @@ const Login: NextPageWithLayout = () => {
     >
       <AuthHeader title="Welcom back to NQ" />
 
-      <Paper
+      <AuthPaper
         component="form"
         onSubmit={form.handleSubmit(handleValidSubmission, console.error)}
-        sx={{
-          width: '400px',
-          padding: 3,
-          boxShadow: '0px 0px 0px 1px #64646414, 0px 1px 2px 0px #6464641A',
-          display: 'grid',
-          rowGap: 3,
-        }}
       >
         <Controller
           control={form.control}
@@ -101,7 +93,7 @@ const Login: NextPageWithLayout = () => {
             return (
               <FormControl required>
                 <FormLabel>Password</FormLabel>
-                <TextField type='password' {...field} />
+                <TextField type="password" {...field} />
               </FormControl>
             );
           }}
@@ -128,7 +120,7 @@ const Login: NextPageWithLayout = () => {
         </Button>
 
         <Box sx={{ display: 'grid', rowGap: 1 }}>
-          <Link href="forgot-password">
+          <Link href="/forgot">
             <Typography>Forgot password ?</Typography>
           </Link>
 
@@ -141,7 +133,7 @@ const Login: NextPageWithLayout = () => {
             </Link>
           </Typography>
         </Box>
-      </Paper>
+      </AuthPaper>
     </Stack>
   );
 };

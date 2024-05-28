@@ -33,6 +33,12 @@ const InvestorFundsDataTable: FC<InvestorFundsDataTableProps> = ({
         flex: 1,
       },
       {
+        field: 'user',
+        headerName: 'Fund',
+        valueGetter: (params) => params.row.investor.first_name + ' ' + params.row.investor.last_name,
+        flex: 1,
+      },
+      {
         field: 'balance',
         headerName: 'Balance',
         valueFormatter: (params) => formatUSDCurrency(params.value || 0),

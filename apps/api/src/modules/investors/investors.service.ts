@@ -165,10 +165,13 @@ export class InvestorsService {
     id: number,
     updateInvestorInput: UpdateInvestorInput
   ): Promise<InvestorEntity> {
+    const hashedPassword = updateInvestorInput.password ? hashSync(updateInvestorInput.password, 10) : undefined;
+
     const investor = await this.prisma.investor.update({
       where: { id },
       data: {
         ...updateInvestorInput,
+        password: hashedPassword
       },
     });
 

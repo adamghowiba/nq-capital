@@ -376,7 +376,7 @@ export type LogoutEntity = {
 
 export type MessageEntity = {
   __typename?: 'MessageEntity';
-  assets?: Maybe<Array<AssetEntity>>;
+  assets: Array<AssetEntity>;
   content: Scalars['String']['output'];
   created_at: Scalars['DateTime']['output'];
   edit_count: Scalars['Int']['output'];
@@ -417,6 +417,8 @@ export type Mutation = {
   removeTicket: TicketEntity;
   removeTransaction: TransactionEntity;
   removeUser: UserEntity;
+  requestPasswordReset: ProfileEntity;
+  resetPassword: ProfileEntity;
   sendTicketMessage: MessageEntity;
   updateBankAccount: BankAccountEntity;
   updateFund: FundEntity;
@@ -426,6 +428,7 @@ export type Mutation = {
   updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
+  validatePasswordResetToken: ValidatePasswordResetTokenEntity;
 };
 
 
@@ -549,6 +552,16 @@ export type MutationRemoveUserArgs = {
 };
 
 
+export type MutationRequestPasswordResetArgs = {
+  requestPasswordResetInput: RequestPasswordResetInput;
+};
+
+
+export type MutationResetPasswordArgs = {
+  resetPasswordInput: ResetPasswordInput;
+};
+
+
 export type MutationSendTicketMessageArgs = {
   sendTicketMessageInput: SendTicketMessageInput;
 };
@@ -593,6 +606,11 @@ export type MutationUpdateUserArgs = {
   updateUserInput: UpdateUserInput;
 };
 
+
+export type MutationValidatePasswordResetTokenArgs = {
+  validatePasswordResetTokenInput: ValidatePasswordResetTokenInput;
+};
+
 export type PaginatedInvestorFundEntity = {
   __typename?: 'PaginatedInvestorFundEntity';
   count: Scalars['Int']['output'];
@@ -616,6 +634,17 @@ export type PortfolioTotalEntity = {
   total_balance: Scalars['Float']['output'];
   total_invested: Scalars['Float']['output'];
   total_pending_transactions: Scalars['Float']['output'];
+};
+
+export type ProfileEntity = {
+  __typename?: 'ProfileEntity';
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  id?: Maybe<Scalars['Int']['output']>;
+  last_name: Scalars['String']['output'];
+  middle_name?: Maybe<Scalars['String']['output']>;
+  password?: Maybe<Scalars['String']['output']>;
+  type: UserType;
 };
 
 export type Query = {
@@ -740,6 +769,15 @@ export type QueryUsersArgs = {
   limit?: Scalars['Int']['input'];
   page?: Scalars['Int']['input'];
   role?: InputMaybe<UserRole>;
+};
+
+export type RequestPasswordResetInput = {
+  email: Scalars['String']['input'];
+};
+
+export type ResetPasswordInput = {
+  new_password: Scalars['String']['input'];
+  token: Scalars['String']['input'];
 };
 
 export type SendMessageInput = {
@@ -941,12 +979,43 @@ export type UserType =
   | 'ADMIN'
   | 'INVESTOR';
 
+export type ValidatePasswordResetTokenEntity = {
+  __typename?: 'ValidatePasswordResetTokenEntity';
+  /** Expiration date of password reset token */
+  expiration_date: Scalars['DateTime']['output'];
+};
+
+export type ValidatePasswordResetTokenInput = {
+  token: Scalars['String']['input'];
+};
+
 export type LoginMutationVariables = Exact<{
   loginInput: LoginInput;
 }>;
 
 
 export type LoginMutation = { __typename?: 'Mutation', investorLogin: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, email: string, company_name?: string | null, is_accredited?: boolean | null, mobile_number?: string | null, account_status?: InvestorAccountStatus | null, created_at: any } };
+
+export type RequestPasswordResetMutationVariables = Exact<{
+  requestPasswordResetInput: RequestPasswordResetInput;
+}>;
+
+
+export type RequestPasswordResetMutation = { __typename?: 'Mutation', requestPasswordReset: { __typename?: 'ProfileEntity', id?: number | null, first_name: string, last_name: string, type: UserType, email: string } };
+
+export type RestPasswordMutationVariables = Exact<{
+  resetPasswordInput: ResetPasswordInput;
+}>;
+
+
+export type RestPasswordMutation = { __typename?: 'Mutation', resetPassword: { __typename?: 'ProfileEntity', id?: number | null, type: UserType, first_name: string, last_name: string, email: string } };
+
+export type ValidatePasswordResetTokenMutationVariables = Exact<{
+  validatePasswordResetTokenInput: ValidatePasswordResetTokenInput;
+}>;
+
+
+export type ValidatePasswordResetTokenMutation = { __typename?: 'Mutation', validatePasswordResetToken: { __typename?: 'ValidatePasswordResetTokenEntity', expiration_date: any } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1100,7 +1169,7 @@ export type RetrieveTicketQueryVariables = Exact<{
 }>;
 
 
-export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets?: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any, size?: number | null }> | null, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
+export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?: 'TicketEntity', id: number, data?: any | null, priority: TicketPriority, type: TicketType, status: TicketStatus, investor_id: number, assigned_to_user_id?: number | null, updated_at: any, created_at: any, messages: Array<{ __typename?: 'MessageEntity', id: number, content: string, type: UserType, sent_by_user_id?: number | null, sent_by_investor_id?: number | null, edit_count: number, updated_at: any, created_at: any, assets: Array<{ __typename?: 'AssetEntity', id: number, original_name: string, key: string, url: string, mime_type: string, asset_type: AssetType, created_at: any, updated_at: any, size?: number | null }>, sent_by_user?: { __typename?: 'UserEntity', id: number, first_name: string, last_name: string, avatar?: string | null, role: UserRole } | null, sent_by_investor?: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, avatar?: string | null } | null }> } };
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
@@ -1318,6 +1387,88 @@ export const useLoginMutation = <
 
 
 useLoginMutation.fetcher = (variables: LoginMutationVariables, options?: RequestInit['headers']) => gqlFetcher<LoginMutation, LoginMutationVariables>(LoginDocument, variables, options);
+
+export const RequestPasswordResetDocument = `
+    mutation RequestPasswordReset($requestPasswordResetInput: RequestPasswordResetInput!) {
+  requestPasswordReset(requestPasswordResetInput: $requestPasswordResetInput) {
+    id
+    first_name
+    last_name
+    type
+    email
+  }
+}
+    `;
+
+export const useRequestPasswordResetMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RequestPasswordResetMutation, TError, RequestPasswordResetMutationVariables, TContext>) => {
+    
+    return useMutation<RequestPasswordResetMutation, TError, RequestPasswordResetMutationVariables, TContext>(
+      {
+    mutationKey: ['RequestPasswordReset'],
+    mutationFn: (variables?: RequestPasswordResetMutationVariables) => gqlFetcher<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(RequestPasswordResetDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useRequestPasswordResetMutation.fetcher = (variables: RequestPasswordResetMutationVariables, options?: RequestInit['headers']) => gqlFetcher<RequestPasswordResetMutation, RequestPasswordResetMutationVariables>(RequestPasswordResetDocument, variables, options);
+
+export const RestPasswordDocument = `
+    mutation RestPassword($resetPasswordInput: ResetPasswordInput!) {
+  resetPassword(resetPasswordInput: $resetPasswordInput) {
+    id
+    type
+    first_name
+    last_name
+    email
+  }
+}
+    `;
+
+export const useRestPasswordMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<RestPasswordMutation, TError, RestPasswordMutationVariables, TContext>) => {
+    
+    return useMutation<RestPasswordMutation, TError, RestPasswordMutationVariables, TContext>(
+      {
+    mutationKey: ['RestPassword'],
+    mutationFn: (variables?: RestPasswordMutationVariables) => gqlFetcher<RestPasswordMutation, RestPasswordMutationVariables>(RestPasswordDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useRestPasswordMutation.fetcher = (variables: RestPasswordMutationVariables, options?: RequestInit['headers']) => gqlFetcher<RestPasswordMutation, RestPasswordMutationVariables>(RestPasswordDocument, variables, options);
+
+export const ValidatePasswordResetTokenDocument = `
+    mutation ValidatePasswordResetToken($validatePasswordResetTokenInput: ValidatePasswordResetTokenInput!) {
+  validatePasswordResetToken(
+    validatePasswordResetTokenInput: $validatePasswordResetTokenInput
+  ) {
+    expiration_date
+  }
+}
+    `;
+
+export const useValidatePasswordResetTokenMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<ValidatePasswordResetTokenMutation, TError, ValidatePasswordResetTokenMutationVariables, TContext>) => {
+    
+    return useMutation<ValidatePasswordResetTokenMutation, TError, ValidatePasswordResetTokenMutationVariables, TContext>(
+      {
+    mutationKey: ['ValidatePasswordResetToken'],
+    mutationFn: (variables?: ValidatePasswordResetTokenMutationVariables) => gqlFetcher<ValidatePasswordResetTokenMutation, ValidatePasswordResetTokenMutationVariables>(ValidatePasswordResetTokenDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useValidatePasswordResetTokenMutation.fetcher = (variables: ValidatePasswordResetTokenMutationVariables, options?: RequestInit['headers']) => gqlFetcher<ValidatePasswordResetTokenMutation, ValidatePasswordResetTokenMutationVariables>(ValidatePasswordResetTokenDocument, variables, options);
 
 export const LogoutDocument = `
     mutation Logout {

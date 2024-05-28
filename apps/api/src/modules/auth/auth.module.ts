@@ -5,9 +5,11 @@ import { UsersModule } from '../users/users.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { SessionSerializer } from './session/session.serializer';
 import { InvestorsModule } from '../investors/investors.module';
+import { PasswordResetListener } from './listeners/password-reset.listener';
+import { EmailModule } from '../../common/services/email/email.module';
 
 @Module({
-  imports: [UsersModule, InvestorsModule],
-  providers: [AuthResolver, AuthService, SessionSerializer, LocalStrategy],
+  imports: [UsersModule, InvestorsModule, EmailModule],
+  providers: [AuthResolver, AuthService, SessionSerializer, LocalStrategy, PasswordResetListener],
 })
 export class AuthModule {}

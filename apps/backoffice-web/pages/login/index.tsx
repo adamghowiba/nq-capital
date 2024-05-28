@@ -15,12 +15,10 @@ import { useRouter } from 'next/router';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { queryClient } from '../../lib/api/query-client';
-import {
-  useLoginMutation,
-  useMeUserQuery,
-} from '../../lib/gql/gql-client';
+import { useLoginMutation, useMeUserQuery } from '../../lib/gql/gql-client';
 import { NextPageWithLayout } from '../_app';
 import AuthHeader from '../../lib/modules/auth/components/AuthHeader';
+import { AuthPaper } from '@nq-capital/nui';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -43,7 +41,7 @@ const Login: NextPageWithLayout = () => {
   const loginMutation = useLoginMutation({
     onSuccess: async (data, variables, context) => {
       await queryClient.invalidateQueries({
-        queryKey: useMeUserQuery.getKey({})
+        queryKey: useMeUserQuery.getKey({}),
       });
       await router.push('/');
     },
@@ -67,18 +65,11 @@ const Login: NextPageWithLayout = () => {
       bgcolor="#FCFCFC"
       height="100vh"
     >
-      <AuthHeader title="Welcom back to NQ" />
+      <AuthHeader title="Welcome back to NQ" />
 
-      <Paper
+      <AuthPaper
         component="form"
         onSubmit={form.handleSubmit(handleValidSubmission, console.error)}
-        sx={{
-          width: '400px',
-          padding: 3,
-          boxShadow: '0px 0px 0px 1px #64646414, 0px 1px 2px 0px #6464641A',
-          display: 'grid',
-          rowGap: 3,
-        }}
       >
         <Controller
           control={form.control}
@@ -100,7 +91,7 @@ const Login: NextPageWithLayout = () => {
             return (
               <FormControl required>
                 <FormLabel>Password</FormLabel>
-                <TextField type='password' {...field} />
+                <TextField type="password" {...field} />
               </FormControl>
             );
           }}
@@ -127,20 +118,11 @@ const Login: NextPageWithLayout = () => {
         </Button>
 
         <Box sx={{ display: 'grid', rowGap: 1 }}>
-          <Link href="forgot-password">
-            <Typography>Forgot password ?</Typography>
+          <Link href="forgot">
+            <Typography>Forgot password?</Typography>
           </Link>
-
-          <Typography sx={{ color: '#8D8D8D' }}>
-            {"Don't have an account? "}
-            <Link href={'signup'}>
-              <Typography component="span" sx={{ color: '#202020' }}>
-                Sign Up
-              </Typography>
-            </Link>
-          </Typography>
         </Box>
-      </Paper>
+      </AuthPaper>
     </Stack>
   );
 };

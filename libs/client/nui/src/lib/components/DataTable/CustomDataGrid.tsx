@@ -42,7 +42,7 @@ const CustomToolbar: FC<CustomToolbarProps> = ({
           {renderSelectActions &&
             (autoHideSelectActions ? !!selectedRows.length : true) &&
             renderSelectActions({ selectedRows })}
-          <GridToolbarColumnsButton />
+          {/* <GridToolbarColumnsButton /> */}
           <GridToolbarDensitySelector />
         </HStack>
       </HStack>

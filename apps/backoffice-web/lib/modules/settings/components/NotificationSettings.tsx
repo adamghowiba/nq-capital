@@ -9,7 +9,7 @@ const NotificationSettingsScreen: FC<NotificationSettingsScreenProps> = ({
   return (
     <>
       <Alert severity="warning">
-        <AlertTitle>Notification settings are currently disabled</AlertTitle>
+        <AlertTitle>Section is under development</AlertTitle>
         We are currently working on this feature. Please check back later.
       </Alert>
     </>

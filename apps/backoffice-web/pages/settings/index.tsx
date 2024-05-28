@@ -5,8 +5,8 @@ import SettingsSidebar, {
   SettingsTab,
 } from '../../lib/modules/settings/components/SettingsSidebar';
 import { ReactNode, useState } from 'react';
-import NotificationSettingsScreen from 'apps/backoffice-web/lib/modules/settings/components/NotificationSettings';
-import { SecuritySettingsTab } from 'apps/backoffice-web/lib/modules/settings/components/SecuritySettings';
+import NotificationSettingsScreen from '../../lib/modules/settings/components/NotificationSettings';
+import { SecuritySettingsTab } from '../../lib/modules/settings/components/SecuritySettings';
 
 const SettingsPage = ({ ...props }) => {
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
@@ -15,8 +15,8 @@ const SettingsPage = ({ ...props }) => {
     general: <GeneralSettingsTab />,
     notifications: <NotificationSettingsScreen />,
     security: <SecuritySettingsTab />,
-    billing: '',
-    team: '',
+    billing: <NotificationSettingsScreen />,
+    team: <NotificationSettingsScreen />,
   };
 
   return (

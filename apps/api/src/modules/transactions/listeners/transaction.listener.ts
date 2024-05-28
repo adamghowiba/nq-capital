@@ -18,7 +18,7 @@ export class TransactionListener {
     const transaction = await this.prisma.transaction.create({
       data: {
         amount: payload.amount,
-        balance_after: investor.total_balance + payload.amount,
+        balance_after: investor.total_balance,
         type: 'DEPOSIT',
         currency_code: 'USD',
         status: 'COMPLETED',

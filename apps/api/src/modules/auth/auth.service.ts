@@ -6,14 +6,30 @@ import { UsersService } from '../users/users.service';
 import { LoginInput } from './dto/login.input';
 import { PrismaService } from '@nq-capital/service-database';
 import { SerializeSessionPayload } from './session/session.serializer';
-import { InvestorEntity, UserEntity } from '@nq-capital/iam';
+import {
+  Application,
+  ApplicationSessionEntity,
+  InvestorEntity,
+  UserEntity,
+} from '@nq-capital/iam';
+import { RequestPasswordResetInput } from './dto/request-password-reset.input';
+import { randomBytes } from 'crypto';
+import { DateTime } from 'luxon';
+import { AUTH_EVENTS } from './constants/event.constants';
+import { RequestPasswordResetEvent } from './events/request-password-reset.event';
+import { ValidatePasswordResetTokenInput } from './dto/validate-reset-token.input';
+import { ResetPasswordInput } from './dto/reset-password.input';
+import { UserType } from '@prisma/client';
+import { ProfileEntity } from './entities/profile.entity';
+import { InvestorsService } from '../investors/investors.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly userService: UsersService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
+    private readonly investorService: InvestorsService
   ) {}
 
   async loginAdmin(loginInput: Omit<LoginInput, 'user_type'>) {
@@ -93,105 +109,158 @@ export class AuthService {
     return { type: 'INVESTOR', investor: profile as InvestorEntity };
   }
 
-  // async requestPasswordReset(resetPasswordInput: RequestPasswordResetInput) {
-  //   const PASSWORD_RESET_TOKEN_LENGTH = 40
+  async retrieveProfile(params: {
+    type: UserType;
+    email: string;
+  }): Promise<ProfileEntity> {
+    const { type, email } = params;
 
-  //   const user = await this.prisma.user.findUnique({
-  //     where: { email: resetPasswordInput.email },
-  //     include: { password_reset_token: true },
-  //   })
+    const profile =
+      type === 'ADMIN'
+        ? await this.prisma.user.findUnique({
+            where: { email },
+          })
+        : await this.prisma.investor.findUnique({
+            where: { email },
+          });
 
-  //   this.eventEmitter.emit('')
+    if (!profile)
+      throw new ApiError(`${type} ${email} not found`, {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        type: 'authenticate_error',
+      });
 
-  //   if (!user)
-  //     throw new ApiError('User with that email does not exist.', {
-  //       statusCode: HttpStatus.UNAUTHORIZED,
-  //       type: 'authenticate_error',
-  //       explanation:
-  //         'Please check the spelling, and formatting of the email to ensure it is correct.',
-  //     })
+    return {
+      id: profile.id,
+      type: params.type,
+      first_name: profile.first_name,
+      middle_name: profile.middle_name,
+      password: profile.password,
+      last_name: profile.last_name,
+      email: profile.email,
+    };
+  }
 
-  //   const generatedToken = randomBytes(PASSWORD_RESET_TOKEN_LENGTH).toString('hex')
+  async requestPasswordReset(
+    resetPasswordInput: RequestPasswordResetInput,
+    session: ApplicationSessionEntity
+  ): Promise<ProfileEntity> {
+    const PASSWORD_RESET_TOKEN_LENGTH = 40;
 
-  //   const passwordResetToken = await this.prisma.passwordResetToken.create({
-  //     data: {
-  //       user_id: user.id,
-  //       token: generatedToken,
-  //       expiration_date: DateTime.utc().plus({ hour: 1 }).toJSDate(),
-  //     },
-  //     include: { user: true },
-  //   })
+    const profile = await this.retrieveProfile({
+      type: session.user_type,
+      email: resetPasswordInput.email,
+    });
 
-  //   await this.prisma.passwordResetToken.updateMany({
-  //     where: { id: { not: passwordResetToken.id } },
-  //     data: { deactivated: true },
-  //   })
+    const generatedToken = randomBytes(PASSWORD_RESET_TOKEN_LENGTH).toString(
+      'hex'
+    );
 
-  //   this.eventEmitter.emit(
-  //     AUTH_EVENTS.requestPasswordReset,
-  //     new RequestPasswordResetEvent({
-  //       requestedByUser: passwordResetToken.user,
-  //       token: generatedToken,
-  //     })
-  //   )
+    const passwordResetToken = await this.prisma.passwordResetToken.create({
+      data: {
+        user_id: session.user_type === 'ADMIN' ? profile.id : undefined,
+        investor_id: session.user_type === 'INVESTOR' ? profile.id : undefined,
+        token: generatedToken,
+        expiration_date: DateTime.utc().plus({ day: 1 }).toJSDate(),
+      },
+      include: { user: true },
+    });
 
-  //   return passwordResetToken.user
-  // }
+    await this.prisma.passwordResetToken.updateMany({
+      where: { id: { not: passwordResetToken.id } },
+      data: { is_deactivated: true },
+    });
 
-  // async validatePasswordResetToken(
-  //   validatePasswordResetTokenInput: ValidatePasswordResetTokenInput
-  // ) {
-  //   const token = await this.prisma.passwordResetToken.findFirst({
-  //     where: {
-  //       token: validatePasswordResetTokenInput.token,
-  //       user_id: validatePasswordResetTokenInput.user_id,
-  //       deactivated: false,
-  //     },
-  //     orderBy: { expiration_date: 'desc' },
-  //   })
+    this.eventEmitter.emit(
+      AUTH_EVENTS.requestPasswordReset,
+      new RequestPasswordResetEvent({
+        requestedByProfile: profile,
+        token: generatedToken,
+      })
+    );
 
-  //   if (!token)
-  //     throw new ApiError(`Password reset token doesn't exist`, {
-  //       statusCode: HttpStatus.UNAUTHORIZED,
-  //       type: 'authenticate_error',
-  //       explanation:
-  //         'The reset token no longer exist or has expired. Try resending the password reset request.',
-  //     })
+    return profile;
+  }
 
-  //   if (DateTime.fromJSDate(token.expiration_date).diffNow(['seconds']).seconds < 0)
-  //     throw new ApiError(`Password reset token has expired`, {
-  //       statusCode: HttpStatus.UNAUTHORIZED,
-  //       type: 'authenticate_error',
-  //       explanation: 'The reset token has expired. Try resending the password reset request.',
-  //     })
+  async validatePasswordResetToken(
+    validatePasswordResetTokenInput: ValidatePasswordResetTokenInput
+  ) {
+    const resetToken = await this.prisma.passwordResetToken.findFirst({
+      where: {
+        token: validatePasswordResetTokenInput.token,
+        is_deactivated: false,
+      },
+      orderBy: { expiration_date: 'desc' },
+    });
 
-  //   return token
-  // }
+    if (!resetToken)
+      throw new ApiError(`Password reset token doesn't exist`, {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        type: 'authenticate_error',
+        explanation:
+          'The reset token no longer exist or has expired. Try resending the password reset request.',
+      });
 
-  // async resetPasswordWithToken(resetPasswordInput: ResetPasswordInput) {
-  //   const validation = await this.validatePasswordResetToken({
-  //     token: resetPasswordInput.token,
-  //     user_id: resetPasswordInput.user_id,
-  //   })
+    if (
+      DateTime.fromJSDate(resetToken.expiration_date).diffNow(['seconds'])
+        .seconds < 0
+    )
+      throw new ApiError(`Password reset token has expired`, {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        type: 'authenticate_error',
+        explanation:
+          'The reset token has expired. Try resending the password reset request.',
+      });
 
-  //   if (!validation)
-  //     throw new ApiError(`Password reset token doesn't exist`, {
-  //       statusCode: HttpStatus.UNAUTHORIZED,
-  //       type: 'authenticate_error',
-  //       explanation:
-  //         'The reset token no longer exist or has expired. Try resending the password reset request.',
-  //     })
+    return resetToken;
+  }
 
-  //   const user = await this.userService.update(resetPasswordInput.user_id, {
-  //     id: resetPasswordInput.user_id,
-  //     password: resetPasswordInput.new_password,
-  //   })
+  async resetPasswordWithToken(resetPasswordInput: ResetPasswordInput) {
+    const resetToken = await this.validatePasswordResetToken({
+      token: resetPasswordInput.token,
+    });
 
-  //   await this.prisma.passwordResetToken.update({
-  //     where: { id: validation.id },
-  //     data: { deactivated: true },
-  //   })
+    if (!resetToken)
+      throw new ApiError(`Password reset token doesn't exist`, {
+        statusCode: HttpStatus.UNAUTHORIZED,
+        type: 'authenticate_error',
+        explanation:
+          'The reset token no longer exist or has expired. Try resending the password reset request.',
+      });
 
-  //   return user
-  // }
+    if (!resetToken.user_id && !resetToken.investor_id)
+      throw new ApiError(
+        'Invalid reset token, no user or investor attached to the token',
+        {
+          statusCode: HttpStatus.UNAUTHORIZED,
+        }
+      );
+
+    const type = resetToken.user_id ? UserType.ADMIN : UserType.INVESTOR;
+
+    const profile = resetToken.user_id
+      ? await this.userService.update(resetToken.user_id, {
+          id: resetToken.user_id,
+          password: resetPasswordInput.new_password,
+        })
+      : await this.investorService.update(resetToken.investor_id as number, {
+          password: resetPasswordInput.new_password,
+          id: resetToken.investor_id as number,
+        });
+
+    await this.prisma.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: { is_deactivated: true },
+    });
+
+    return new ProfileEntity({
+      email: profile.email,
+      first_name: profile.first_name,
+      id: profile.id,
+      type: type,
+      last_name: profile.last_name,
+      middle_name: profile.middle_name,
+      password: profile.password,
+    });
+  }
 }

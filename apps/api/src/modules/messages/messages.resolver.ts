@@ -63,7 +63,7 @@ export class MessagesResolver {
     return this.messagesService.getMessageSentByUserField(message.id);
   }
 
-  @ResolveField(() => [AssetEntity], { name: 'assets', nullable: true })
+  @ResolveField(() => [AssetEntity], { name: 'assets' })
   getAssetsField(@Parent() message: MessageEntity) {
     return this.messagesService.getAssetsField(message.id);
   }

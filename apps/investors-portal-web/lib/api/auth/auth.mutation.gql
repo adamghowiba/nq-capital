@@ -12,6 +12,38 @@ mutation Login($loginInput: LoginInput!) {
   }
 }
 
+mutation RequestPasswordReset(
+  $requestPasswordResetInput: RequestPasswordResetInput!
+) {
+  requestPasswordReset(requestPasswordResetInput: $requestPasswordResetInput) {
+    id
+    first_name
+    last_name
+    type
+    email
+  }
+}
+
+mutation RestPassword($resetPasswordInput: ResetPasswordInput!) {
+  resetPassword(resetPasswordInput: $resetPasswordInput) {
+    id
+    type
+    first_name
+    last_name
+    email
+  }
+}
+
+mutation ValidatePasswordResetToken(
+  $validatePasswordResetTokenInput: ValidatePasswordResetTokenInput!
+) {
+  validatePasswordResetToken(
+    validatePasswordResetTokenInput: $validatePasswordResetTokenInput
+  ) {
+    expiration_date
+  }
+}
+
 mutation Logout {
   logout {
     status

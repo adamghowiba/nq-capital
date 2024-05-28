@@ -1,11 +1,6 @@
-import documentIcon from '@iconify/icons-fluent/document-100-16-filled';
-import { Icon } from '@iconify/react';
 import {
   Alert,
   AlertTitle,
-  Button,
-  Chip,
-  CircularProgress,
   Unstable_Grid2 as Grid,
   Typography,
 } from '@mui/material';
@@ -15,31 +10,32 @@ import {
   ChatBoxFooter,
   ChatBoxHeader,
   ChatBoxTextField,
-  ConfirmationModal,
   FileChip,
   HStack,
   MessageCard,
+  TicketAttachmentsList,
+  TicketDetails,
   TicketHeader,
   UploadIconButton,
   VStack,
   useFileUpload,
 } from '@nq-capital/nui';
 import { useMutation } from '@tanstack/react-query';
-import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
-import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { queryClient } from '../../lib/api/query-client';
 import { nqRestApi } from '../../lib/api/rest-api';
 import Screen from '../../lib/components/Screen/Screen';
 import {
   RetrieveTicketQuery,
+  TicketPriority,
+  TicketStatus,
+  TicketType,
   useDeleteTicketMutation,
   useRetrieveTicketQuery,
   useSendTicketMessageMutation,
 } from '../../lib/gql/gql-client';
 import { useInvestor } from '../../lib/hooks/use-investor';
-import { formatISOForTable } from '../../lib/utils/date.utils';
-import { getFormattedFileSize } from '@nq-capital/utils';
 
 type TicketMessageQueryData = RetrieveTicketQuery['ticket']['messages'][number];
 
@@ -86,39 +82,6 @@ const TickerDetailPage = ({ ...props }) => {
     { enabled: !!ticketId, select: (res) => res.ticket }
   );
 
-  const ticketData: { label: string; value: ReactNode }[] = [
-    {
-      label: 'ID',
-      value: ticket.data?.id,
-    },
-    {
-      label: 'Ticket Type',
-      value: ticket.data?.type,
-    },
-    {
-      label: 'Status',
-      value: ticket.data?.status,
-    },
-    {
-      label: 'Urgency',
-      value: ticket.data?.priority,
-    },
-    {
-      label: 'Last Updated',
-      value: formatISOForTable(ticket.data?.updated_at),
-    },
-    {
-      label: 'Days Open',
-      value: ticket.data?.created_at
-        ? Math.abs(
-            Math.ceil(
-              DateTime.fromISO(ticket.data?.created_at).diffNow('days')?.days
-            )
-          )
-        : '-',
-    },
-  ];
-
   const sendTickerMessageMutation = useSendTicketMessageMutation({
     onSuccess: (data, variables) => {
       queryClient.setQueriesData<TicketMessageQueryData[]>(
@@ -128,7 +91,7 @@ const TickerDetailPage = ({ ...props }) => {
         (oldData) => {
           if (!oldData || !Array.isArray(oldData)) return oldData;
 
-          return [...oldData, data.sendTicketMessage];
+          return [...oldData, { ...data.sendTicketMessage, assets: [] }];
         }
       );
     },
@@ -254,61 +217,23 @@ const TickerDetailPage = ({ ...props }) => {
               }
             />
 
-            <Grid
-              container
-              width="100%"
-              borderTop="1px solid"
-              borderBottom="1px solid"
-              borderColor="#F1F1F1"
-              spacing={3}
-            >
-              {ticketData.map((data) => {
-                return (
-                  <Grid key={data.label} mobile={6}>
-                    <HStack w="100%">
-                      <Typography
-                        variant="body2"
-                        sx={{ width: '140px', color: '#808080' }}
-                      >
-                        {data.label}
-                      </Typography>
-                      <Typography variant="body2" sx={{ color: '#202020' }}>
-                        {data.value}
-                      </Typography>
-                    </HStack>
-                  </Grid>
-                );
-              })}
-            </Grid>
+            <TicketDetails
+              id={ticket.data?.id as number}
+              type={ticket.data?.type as TicketType}
+              status={ticket.data?.status as TicketStatus}
+              priority={ticket.data?.priority as TicketPriority}
+              updated_at={ticket.data?.updated_at}
+              created_at={ticket.data?.created_at}
+            />
 
             <VStack gap={1}>
-              <Typography>Additional Information</Typography>
+              <Typography>Description</Typography>
               <Typography variant="subtitle2" fontSize="13px" color="#646464">
                 {ticket.data?.data?.description || '-'}
               </Typography>
             </VStack>
 
-            <VStack gap={1.5}>
-              <Typography>Attachments</Typography>
-              {ticketMessageAssets?.map((asset) => {
-                if (!asset) return;
-
-                return (
-                  <HStack key={asset.id} color="#646464" gap={1}>
-                    <Icon icon={documentIcon} width={16} height={16} />
-                    <Typography sx={{ color: '#646464' }} fontWeight="600">
-                      {asset.original_name}
-                    </Typography>
-
-                    {asset.size && (
-                      <Typography sx={{ color: '#BBBBBB' }}>
-                        {getFormattedFileSize(asset.size)}
-                      </Typography>
-                    )}
-                  </HStack>
-                );
-              })}
-            </VStack>
+            <TicketAttachmentsList assets={ticketMessageAssets || []} />
           </Screen>
         </Grid>
 

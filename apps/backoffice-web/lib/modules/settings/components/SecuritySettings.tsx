@@ -24,7 +24,9 @@ export const SecuritySettingsTab: FC<SecuritySettingsTabProps> = ({
     resolver: zodResolver(securitySettingsSchema),
   });
 
-  const handleValidSubmit: SubmitHandler<SecuritySettingsSchema> = (data) => {};
+  const handleValidSubmit: SubmitHandler<SecuritySettingsSchema> = (data) => {
+    // TODO: Handle submit
+  };
 
   return (
     <>

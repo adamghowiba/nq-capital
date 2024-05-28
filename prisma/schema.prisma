@@ -45,34 +45,35 @@ enum InvestorAccountStatus {
 // Store payment modes (bank details, paypal, etc)
 // Create separate table for payment modes
 model Investor {
-  id              Int                   @id @default(autoincrement())
-  first_name      String
-  middle_name     String?
-  last_name       String
-  email           String                @unique
-  password        String?
-  passport_number String?
-  national_id     String?
-  date_of_birth   DateTime?
-  nationality     String?
-  company_name    String?
-  company_tax_id  String?
-  is_accredited   Boolean?
-  avatar          String?
-  mobile_number   String?
-  account_status  InvestorAccountStatus @default(ACTIVE)
-  address         Address?              @relation(fields: [address_id], references: [id])
-  address_id      Int?
-  notes           Note[]
-  invitations     Invitation[]
-  invested_funds  InvestorFund[]
-  bank_accounts   BankAccount[]
-  tickets         Ticket[]
-  created_at      DateTime              @default(now())
-  updated_at      DateTime              @updatedAt
-  messages        Message[]
-  assets          Asset[]
-  transactions    Transaction[]
+  id                    Int                   @id @default(autoincrement())
+  first_name            String
+  middle_name           String?
+  last_name             String
+  email                 String                @unique
+  password              String?
+  passport_number       String?
+  national_id           String?
+  date_of_birth         DateTime?
+  nationality           String?
+  company_name          String?
+  company_tax_id        String?
+  is_accredited         Boolean?
+  avatar                String?
+  mobile_number         String?
+  account_status        InvestorAccountStatus @default(ACTIVE)
+  address               Address?              @relation(fields: [address_id], references: [id])
+  address_id            Int?
+  notes                 Note[]
+  invitations           Invitation[]
+  invested_funds        InvestorFund[]
+  bank_accounts         BankAccount[]
+  tickets               Ticket[]
+  created_at            DateTime              @default(now())
+  updated_at            DateTime              @updatedAt
+  messages              Message[]
+  assets                Asset[]
+  transactions          Transaction[]
+  password_reset_tokens PasswordResetToken[]
 }
 
 model Note {
@@ -309,14 +310,16 @@ model Address {
 }
 
 model PasswordResetToken {
-  id              Int      @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   token           String
   expiration_date DateTime
-  is_deactivated  Boolean  @default(false)
-  user            User     @relation(fields: [user_id], references: [id])
-  user_id         Int
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now())
+  is_deactivated  Boolean   @default(false)
+  user            User?     @relation(fields: [user_id], references: [id])
+  user_id         Int?
+  investor        Investor? @relation(fields: [investor_id], references: [id])
+  investor_id     Int?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now())
 }
 
 enum AssetType {

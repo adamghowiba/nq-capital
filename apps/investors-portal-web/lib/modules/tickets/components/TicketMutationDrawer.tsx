@@ -24,13 +24,13 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 import { FC, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import {
   useCreateTickerMutation,
   useListTickersQuery,
 } from '../../../../lib/gql/gql-client';
+import { parseApiError } from '../../../../lib/utils/error.utils';
 import { SupportTicketSchema, supportTicketSchema } from '../ticket.schema';
-import { toast } from 'sonner';
-import { parseApiError } from 'apps/investors-portal-web/lib/utils/error.utils';
 
 export interface TickerMutationDrawerProps extends DrawerProps {
   mode:

@@ -20,10 +20,35 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type AcceptInvestorInvitationInput = {
+  address_id?: InputMaybe<Scalars['Int']['input']>;
+  bank_accounts?: InputMaybe<Array<BankAccountWithoutInvestorInput>>;
+  company_name?: InputMaybe<Scalars['String']['input']>;
+  company_tax_id?: InputMaybe<Scalars['String']['input']>;
+  date_of_birth?: InputMaybe<Scalars['DateTime']['input']>;
+  email: Scalars['String']['input'];
+  /** Investor first name */
+  first_name: Scalars['String']['input'];
+  invitation_code: Scalars['String']['input'];
+  is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
+  last_name: Scalars['String']['input'];
+  /** Investor middle name */
+  middle_name?: InputMaybe<Scalars['String']['input']>;
+  mobile_number?: InputMaybe<Scalars['String']['input']>;
+  national_id?: InputMaybe<Scalars['String']['input']>;
+  nationality?: InputMaybe<Scalars['String']['input']>;
+  passport_number?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type AddInvestmentInput = {
   amount: Scalars['Float']['input'];
   fund_id: Scalars['Int']['input'];
   investor_id: Scalars['Int']['input'];
+  /** Additional notes about the investment */
+  notes?: InputMaybe<Scalars['String']['input']>;
+  /** Custom reference ID for the investment */
+  reference_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type AddressEntity = {
@@ -44,7 +69,6 @@ export type AddressEntity = {
 };
 
 export type AdjustFundInput = {
-  adjusted_by_user_id: Scalars['Int']['input'];
   /**
    * Amount to adjust the fund by. Can be a negative
    * or positive value.
@@ -64,6 +88,7 @@ export type AssetEntity = {
   message_id?: Maybe<Scalars['Int']['output']>;
   mime_type: Scalars['String']['output'];
   original_name: Scalars['String']['output'];
+  size?: Maybe<Scalars['Int']['output']>;
   updated_at: Scalars['DateTime']['output'];
   url: Scalars['String']['output'];
   user_id?: Maybe<Scalars['Int']['output']>;
@@ -151,9 +176,7 @@ export type CreateFundInput = {
 };
 
 export type CreateInvestorInput = {
-  account_status?: InputMaybe<InvestorAccountStatus>;
   address_id?: InputMaybe<Scalars['Int']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
   bank_accounts?: InputMaybe<Array<BankAccountWithoutInvestorInput>>;
   company_name?: InputMaybe<Scalars['String']['input']>;
   company_tax_id?: InputMaybe<Scalars['String']['input']>;
@@ -161,7 +184,6 @@ export type CreateInvestorInput = {
   email: Scalars['String']['input'];
   /** Investor first name */
   first_name: Scalars['String']['input'];
-  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name: Scalars['String']['input'];
   /** Investor middle name */
@@ -199,6 +221,7 @@ export type CreateTransactionInput = {
   description?: InputMaybe<Scalars['Int']['input']>;
   external_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
+  notes?: InputMaybe<Scalars['String']['input']>;
   status: TransactionStatus;
   type: TransactionType;
 };
@@ -213,6 +236,19 @@ export type CreateUserInput = {
   password: Scalars['String']['input'];
 };
 
+export type FundAdjustmentEntity = {
+  __typename?: 'FundAdjustmentEntity';
+  adjusted_by_user_id: Scalars['Int']['output'];
+  amount: Scalars['Float']['output'];
+  balance_after: Scalars['Float']['output'];
+  balance_before: Scalars['Float']['output'];
+  created_at: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  fund_id: Scalars['Int']['output'];
+  id: Scalars['Int']['output'];
+  updated_at: Scalars['DateTime']['output'];
+};
+
 export type FundEntity = {
   __typename?: 'FundEntity';
   balance: Scalars['Float']['output'];
@@ -220,6 +256,16 @@ export type FundEntity = {
   id: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   updated_at: Scalars['DateTime']['output'];
+};
+
+export type FundInvestorOverview = {
+  __typename?: 'FundInvestorOverview';
+  current_balance: Scalars['Float']['output'];
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  invested_amount: Scalars['Float']['output'];
+  investor_id: Scalars['Int']['output'];
+  last_name: Scalars['String']['output'];
 };
 
 export type FundOverviewEntity = {
@@ -344,8 +390,10 @@ export type MessageEntity = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptInvestorInvitation: InvestorEntity;
   addInvestment: FundEntity;
   adjustFund: FundEntity;
+  adminLogin: UserEntity;
   createBankAccount: BankAccountEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
@@ -357,7 +405,7 @@ export type Mutation = {
   inviteInvestor: InvitationEntity;
   inviteUser: InvitationEntity;
   login: UserEntity;
-  logout: LogoutEntity;
+  logout?: Maybe<LogoutEntity>;
   removeAsset: AssetEntity;
   removeBankAccount: BankAccountEntity;
   removeFund: FundEntity;
@@ -379,6 +427,11 @@ export type Mutation = {
 };
 
 
+export type MutationAcceptInvestorInvitationArgs = {
+  acceptInvestorInvitationInput: AcceptInvestorInvitationInput;
+};
+
+
 export type MutationAddInvestmentArgs = {
   addInvestmentInput: AddInvestmentInput;
 };
@@ -386,6 +439,11 @@ export type MutationAddInvestmentArgs = {
 
 export type MutationAdjustFundArgs = {
   adjustFundInput: AdjustFundInput;
+};
+
+
+export type MutationAdminLoginArgs = {
+  loginInput: LoginInput;
 };
 
 
@@ -565,12 +623,15 @@ export type Query = {
   bankAccount: BankAccountEntity;
   bankAccounts: Array<BankAccountEntity>;
   fund: FundEntity;
-  fundOverview: Array<FundOverviewEntity>;
+  fundAdjustments: Array<FundAdjustmentEntity>;
+  fundInvestorsOverview: Array<FundInvestorOverview>;
+  fundOverview: FundOverviewEntity;
   funds: Array<FundEntity>;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
   investorPortfolio: InvestorPortfolioEntity;
+  investorPortfolioWithStake: InvestorPortfolioEntity;
   investors: Array<InvestorEntity>;
   invitation: InvitationEntity;
   invitations: Array<InvitationEntity>;
@@ -603,6 +664,11 @@ export type QueryFundArgs = {
 };
 
 
+export type QueryFundInvestorsOverviewArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+
 export type QueryFundOverviewArgs = {
   fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
@@ -627,6 +693,11 @@ export type QueryInvestorFundsArgs = {
 
 
 export type QueryInvestorPortfolioArgs = {
+  id?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryInvestorPortfolioWithStakeArgs = {
   id?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -687,6 +758,7 @@ export type SessionEntity = {
 
 export type TicketEntity = {
   __typename?: 'TicketEntity';
+  assets?: Maybe<Array<AssetEntity>>;
   assigned_to_user_id?: Maybe<Scalars['Int']['output']>;
   created_at: Scalars['DateTime']['output'];
   data?: Maybe<Scalars['JSON']['output']>;
@@ -719,15 +791,19 @@ export type TicketType =
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
-  amount: Scalars['Int']['output'];
+  amount: Scalars['Float']['output'];
   balance_after: Scalars['Float']['output'];
   created_at: Scalars['DateTime']['output'];
   currency_code: Scalars['String']['output'];
   description?: Maybe<Scalars['String']['output']>;
   external_id?: Maybe<Scalars['String']['output']>;
   fee?: Maybe<Scalars['Float']['output']>;
+  fund?: Maybe<FundEntity>;
+  fund_id?: Maybe<Scalars['Int']['output']>;
   id: Scalars['Int']['output'];
+  investor?: Maybe<InvestorEntity>;
   investor_id?: Maybe<Scalars['Int']['output']>;
+  notes?: Maybe<Scalars['String']['output']>;
   status: TransactionStatus;
   type: TransactionType;
   updated_at: Scalars['DateTime']['output'];
@@ -773,9 +849,7 @@ export type UpdateFundInput = {
 };
 
 export type UpdateInvestorInput = {
-  account_status?: InputMaybe<InvestorAccountStatus>;
   address_id?: InputMaybe<Scalars['Int']['input']>;
-  avatar?: InputMaybe<Scalars['String']['input']>;
   company_name?: InputMaybe<Scalars['String']['input']>;
   company_tax_id?: InputMaybe<Scalars['String']['input']>;
   date_of_birth?: InputMaybe<Scalars['DateTime']['input']>;
@@ -783,7 +857,6 @@ export type UpdateInvestorInput = {
   /** Investor first name */
   first_name?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
-  invitation_code?: InputMaybe<Scalars['String']['input']>;
   is_accredited?: InputMaybe<Scalars['Boolean']['input']>;
   last_name?: InputMaybe<Scalars['String']['input']>;
   /** Investor middle name */
@@ -825,6 +898,7 @@ export type UpdateTransactionInput = {
   external_id?: InputMaybe<Scalars['String']['input']>;
   fee?: InputMaybe<Scalars['Float']['input']>;
   id: Scalars['Int']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<TransactionStatus>;
   type?: InputMaybe<TransactionType>;
 };
