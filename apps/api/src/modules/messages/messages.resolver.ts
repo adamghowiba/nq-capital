@@ -12,7 +12,8 @@ import { MessageEntity } from './entities/message.entity';
 import { UpdateMessageInput } from './dto/update-message.input';
 import { SendMessageInput } from './dto/create-message.input';
 import { AssetEntity } from '../assets/entities/asset.entity';
-import { InvestorEntity, UserEntity } from '@nq-capital/iam';
+import { ApplicationSessionEntity, InvestorEntity, UserEntity } from '@nq-capital/iam';
+import { GqlSession } from '../../common/decorators/auth/session.decorator';
 
 @Resolver(() => MessageEntity)
 export class MessagesResolver {
@@ -20,9 +21,10 @@ export class MessagesResolver {
 
   @Mutation(() => MessageEntity)
   createMessage(
-    @Args('createMessageInput') createMessageInput: SendMessageInput
+    @Args('createMessageInput') createMessageInput: SendMessageInput,
+    @GqlSession() session: ApplicationSessionEntity
   ) {
-    return this.messagesService.create(createMessageInput);
+    return this.messagesService.create(createMessageInput, session);
   }
 
   @Query(() => [MessageEntity], { name: 'messages' })

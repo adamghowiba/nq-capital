@@ -23,6 +23,7 @@ import {
 import TickerMutationDrawer from '../../lib/modules/tickets/components/TicketMutationDrawer';
 import { formatISOForTable } from '../../lib/utils/date.utils';
 import { NextPageWithLayout } from '../_app';
+import { padId } from '@nq-capital/utils';
 
 const TicketsPage: NextPageWithLayout = ({ ...props }) => {
   const [isTicketDrawerOpen, setIsTicketDrawerOpen] = useState(false);
@@ -39,7 +40,7 @@ const TicketsPage: NextPageWithLayout = ({ ...props }) => {
         field: 'id',
         headerName: 'ID',
         renderCell: (params) => (
-          <NLink href={`/tickets/${params.value}`}>#{params.value} </NLink>
+          <NLink href={`/tickets/${params.value}`}>{padId(params.value)} </NLink>
         ),
       },
       {

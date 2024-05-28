@@ -1,20 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { ApplicationSessionEntity } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { ApiError } from '../../common/exceptions/api.error';
 import { AssetsService } from '../assets/assets.service';
 import { MulterFile } from '../assets/entities/multer-file.entity';
+import { MessageEntity } from '../messages/entities/message.entity';
+import { MessagesService } from '../messages/messages.service';
 import { SendTicketMessageInput } from './dto/create-ticket-message.input';
 import { CreateTicketInput } from './dto/create-ticket.input';
 import { UpdateTicketInput } from './dto/update-ticket.input';
 import { UploadTicketFileDto } from './dto/upload-ticket-file.dto';
 import { TicketEntity } from './entities/ticket.entity';
-import { ApplicationSessionEntity } from '@nq-capital/iam';
 
 @Injectable()
 export class TicketsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly assetService: AssetsService
+    private readonly assetService: AssetsService,
+    private readonly messageService: MessagesService
   ) {}
 
   async create(createTicketInput: CreateTicketInput) {
@@ -31,21 +34,29 @@ export class TicketsService {
   async message(
     sendMessageInput: SendTicketMessageInput,
     params: ApplicationSessionEntity
-  ) {
-    const ticketMessage = await this.prisma.message.create({
-      data: {
+  ): Promise<MessageEntity> {
+    const ticketMessage = await this.messageService.create(
+      {
         ...sendMessageInput,
         type: params.user_type,
-        sent_by_investor_id:
-          params.user_type === 'INVESTOR' && params.investor?.id
-            ? params.investor.id
-            : undefined,
-        sent_by_user_id:
-          params.user_type === 'ADMIN' && params.user?.id
-            ? params.user.id
-            : undefined,
       },
-    });
+      params
+    );
+
+    // const ticketMessage = await this.prisma.message.create({
+    //   data: {
+    //     ...sendMessageInput,
+    //     type: params.user_type,
+    //     sent_by_investor_id:
+    //       params.user_type === 'INVESTOR' && params.investor?.id
+    //         ? params.investor.id
+    //         : undefined,
+    //     sent_by_user_id:
+    //       params.user_type === 'ADMIN' && params.user?.id
+    //         ? params.user.id
+    //         : undefined,
+    //   },
+    // });
 
     return ticketMessage;
   }

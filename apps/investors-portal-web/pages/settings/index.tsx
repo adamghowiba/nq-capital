@@ -21,6 +21,8 @@ import {
   generalSettingsSchema,
 } from '../../lib/modules/settings/settings.schema';
 import { NextPageWithLayout } from '../_app';
+import { toast } from 'sonner';
+import { parseApiError } from '../../lib/utils/error.utils';
 
 const SettingsPage: NextPageWithLayout<
   InferGetServerSidePropsType<typeof getServerSideProps>
@@ -39,7 +41,7 @@ const SettingsPage: NextPageWithLayout<
   const handleValidSubmission: SubmitHandler<GeneralSettingsSchema> = (
     data
   ) => {
-    updateInvestorMutation.mutate({
+     const promise = updateInvestorMutation.mutateAsync({
       updateInvestorInput: {
         id: investor.id,
         email: data?.email,
@@ -47,6 +49,12 @@ const SettingsPage: NextPageWithLayout<
         last_name: data?.last_name,
       },
     });
+
+    toast.promise(promise, {
+      loading: 'Updating your profile...',
+      success: 'Profile updated successfully',
+      error: parseApiError
+    })
   };
 
   return (
@@ -143,22 +151,6 @@ const SettingsPage: NextPageWithLayout<
 };
 
 export const getServerSideProps = getInvestorSSP();
-
-// export const getServerSideProps = async (
-//   context: GetServerSidePropsContext
-// ) => {
-//   const investorFetcher = useRetrieveInvestorQuery.fetcher({
-//     id: 13,
-//   });
-
-//   const investor = await investorFetcher();
-
-//   return {
-//     props: {
-//       investor: investor.investor,
-//     },
-//   };
-// };
 
 SettingsPage.getLayout = (page) => <SettingsLayout>{page}</SettingsLayout>;
 

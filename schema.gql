@@ -222,6 +222,30 @@ type PaginatedInvestorFundEntity {
   hasNextPage: Boolean!
 }
 
+type AssetEntity {
+  id: Int!
+  original_name: String!
+  key: String!
+  url: String!
+  mime_type: String!
+  asset_type: AssetType!
+  user_id: Int
+  investor_id: Int
+  message_id: Int
+  size: Int
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum AssetType {
+  PDF
+  IMAGE
+  WORD
+  EXCEL
+  CSV
+  UNKNOWN
+}
+
 type MessageEntity {
   id: Int!
   content: String!
@@ -242,6 +266,51 @@ enum UserType {
   INVESTOR
   ADMIN
 }
+
+type NotificationEntity {
+  id: Int!
+  title: String!
+  content: String!
+  is_archived: Boolean!
+  type: NotificationType!
+  priority: NotificationPriority!
+  channel: [NotificationChannel!]!
+  is_read: Boolean!
+  meta: JSONObject
+  user_id: Int
+  investor_id: Int
+  read_at: DateTime
+  created_at: DateTime!
+  updated_at: DateTime!
+  investor: InvestorEntity
+  user: InvestorEntity
+}
+
+enum NotificationType {
+  GENERAL
+  TRANSACTION
+  TICKET
+  MESSAGE
+  ANNOUNCEMENT
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  APP
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
 
 type TicketEntity {
   id: Int!
@@ -281,30 +350,6 @@ enum TicketStatus {
   CLOSED
   OPEN
   UNDER_REVIEW
-}
-
-type AssetEntity {
-  id: Int!
-  original_name: String!
-  key: String!
-  url: String!
-  mime_type: String!
-  asset_type: AssetType!
-  user_id: Int
-  investor_id: Int
-  message_id: Int
-  size: Int
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
-enum AssetType {
-  PDF
-  IMAGE
-  WORD
-  EXCEL
-  CSV
-  UNKNOWN
 }
 
 type ProfileEntity {
@@ -404,6 +449,14 @@ type Query {
   ticket(id: Int!): TicketEntity!
   messages: [MessageEntity!]!
   message(id: Int!): MessageEntity!
+  notifications(
+    """The page number to retrieve starting from zero"""
+    page: Int! = 0
+
+    """The number of items to retrieve for a given page"""
+    limit: Int! = 100
+  ): [NotificationEntity!]!
+  notification(id: Int!): NotificationEntity!
   assets: [AssetEntity!]!
   asset(id: Int!): AssetEntity!
   me: SessionEntity!
@@ -444,6 +497,9 @@ type Mutation {
   createMessage(createMessageInput: SendMessageInput!): MessageEntity!
   updateMessage(updateMessageInput: UpdateMessageInput!): MessageEntity!
   removeMessage(id: Int!): MessageEntity!
+  sendNotification(sendNotificationInput: SendNotificationInput!): NotificationEntity!
+  updateNotification(updateNotificationInput: UpdateNotificationInput!): NotificationEntity!
+  archiveNotification(id: Int!): NotificationEntity!
   removeAsset(id: Int!): AssetEntity!
   login(loginInput: LoginInput!): UserEntity!
   adminLogin(loginInput: LoginInput!): UserEntity!
@@ -638,6 +694,33 @@ input SendMessageInput {
 input UpdateMessageInput {
   content: String
   type: UserType
+  id: Int!
+}
+
+input SendNotificationInput {
+  title: String!
+  content: String!
+  is_archived: Boolean
+  type: NotificationType
+  priority: NotificationPriority
+  channel: [NotificationChannel!]
+  is_read: Boolean
+  meta: JSON
+  user_id: Int
+  investor_id: Int
+}
+
+input UpdateNotificationInput {
+  title: String
+  content: String
+  is_archived: Boolean
+  type: NotificationType
+  priority: NotificationPriority
+  channel: [NotificationChannel!]
+  is_read: Boolean
+  meta: JSON
+  user_id: Int
+  investor_id: Int
   id: Int!
 }
 

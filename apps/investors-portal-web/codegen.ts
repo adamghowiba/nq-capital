@@ -24,6 +24,7 @@ const REACT_QUERY_PLUGIN_CONFIG: ReactQueryRawPluginConfig = {
 const config: CodegenConfig = {
   schema: '../../schema.gql',
   documents: ['./lib/api/**/*.gql'],
+  watch: './lib/api/**/*.gql',
   generates: {
     './lib/gql/gql-client.ts': {
       plugins: [

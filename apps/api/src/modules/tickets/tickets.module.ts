@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TicketsService } from './tickets.service';
-import { TicketsResolver } from './tickets.resolver';
+import { AssetsModule } from '../assets/assets.module';
 import { MessagesModule } from '../messages/messages.module';
 import { TicketsController } from './tickets.controller';
-import { AssetsModule } from '../assets/assets.module';
+import { TicketsResolver } from './tickets.resolver';
+import { TicketsService } from './tickets.service';
 
 @Module({
   imports: [MessagesModule, AssetsModule],
