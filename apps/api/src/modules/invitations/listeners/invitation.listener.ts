@@ -15,21 +15,24 @@ export class InvitationListener {
 
   @OnEvent(InvitationEvent.INVITATION_CREATED)
   async handleInvitationCreatedEvent(payload: InvitationCreatedEvent) {
+    const applicationSignUpPath =
+      payload.type === 'INVESTOR'
+        ? `/onboarding?invitation_code=${payload.code}`
+        : `/onboarding?invitation_code=${payload.code}`;
+
+    const onboardingUrl = `${INVESTORS_PORTAL_URL.href}${applicationSignUpPath}`;
+
     const email = await this.emailService.sendEmail({
       body: {
-        html: renderEmailTemplate(),
+        html: renderEmailTemplate('investorInvitation', {
+          inviteLink: onboardingUrl,
+        }),
       },
       destination: {
         toAddress: payload.email,
       },
       subject: 'NQ Capital Invitation',
     });
-
-    // const email = await this.sendInvitationEmail({
-    //   email: payload.email,
-    //   type: payload.type,
-    //   token: payload.code,
-    // });
 
     return email;
   }

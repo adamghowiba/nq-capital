@@ -5,12 +5,16 @@ import { padId } from '@nq-capital/utils';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SendMessageInput } from './dto/create-message.input';
 import { UpdateMessageInput } from './dto/update-message.input';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { MessageEvent } from './constants/message-event.constants';
+import { TicketMessageSentEvent } from './events/message-sent.event';
 
 @Injectable()
 export class MessagesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly notification: NotificationsService
+    private readonly notification: NotificationsService,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 
   async create(
@@ -31,12 +35,20 @@ export class MessagesService {
       },
     });
 
-    const notification = await this.notification.send({
-      title: `New message on ticket #${padId(message.ticket_id || 0)}`,
-      content: message.content.slice(0, 100),
-      channel: ['APP', 'EMAIL'],
-      priority: 'HIGH',
-    });
+    this.eventEmitter.emit(
+      MessageEvent.MESSAGE_SENT,
+      new TicketMessageSentEvent({
+        message: createMessageInput.content,
+        senderType: params.user_type,
+        created_at: new Date(),
+        ticketId: createMessageInput.ticket_id || 0,
+        // @ts-ignore
+        senderDisplayName:
+          params.user_type === 'INVESTOR'
+            ? params.investor?.first_name
+            : params.user?.first_name,
+      })
+    );
 
     return message;
   }
