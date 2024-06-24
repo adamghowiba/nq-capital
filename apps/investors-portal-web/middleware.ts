@@ -1,6 +1,5 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { useMeInvestorQuery } from './lib/gql/gql-client';
+import { NextResponse } from 'next/server';
 
 export async function middleware(request: NextRequest) {
   const cookie = request.cookies.get('connect.sid')?.value;

@@ -15,6 +15,7 @@ import { TransactionsService } from './transactions.service';
 import { PrismaService } from '@nq-capital/service-database';
 import { FundEntity } from '../funds/entities/fund.entity';
 import { GqlSession } from '../../common/decorators/auth/session.decorator';
+import { ListTransactionsArgs } from './dto/get-transaction.args';
 
 @Resolver(() => TransactionEntity)
 export class TransactionsResolver {
@@ -33,8 +34,8 @@ export class TransactionsResolver {
 
   @Permission('read', 'Transaction')
   @Query(() => [TransactionEntity], { name: 'transactions' })
-  list(@GqlSession() session: SessionEntity) {
-    return this.transactionsService.list({}, session);
+  list(@Args() listTransactionArgs: ListTransactionsArgs, @GqlSession() session: SessionEntity) {
+    return this.transactionsService.list(listTransactionArgs, session);
   }
 
   @Query(() => TransactionEntity, { name: 'transaction' })

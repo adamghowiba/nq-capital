@@ -8,3 +8,25 @@ query GetFundInvestorsOverview {
     current_balance
   }
 }
+
+query ListFundInvestors($fund_id: Int, $investor_id: Int) {
+  investorFunds(fundId: $fund_id, investorId: $investor_id) {
+    data {
+      id
+      stake_percentage
+      invested_amount
+      initial_investment
+      created_at
+      updated_at
+      balance
+      investor_balance_in_fund
+      investor {
+        id
+        first_name
+        last_name
+        company_name
+        account_status
+      }
+    }
+  }
+}

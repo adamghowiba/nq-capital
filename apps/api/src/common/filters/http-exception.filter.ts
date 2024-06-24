@@ -26,6 +26,22 @@ export class HttpExceptionFilter implements ExceptionFilter {
         { field: info?.fieldName }
       );
 
+      if (exception instanceof ApiError) {
+        const apiError = new ApiError(
+          exception?.message || 'API Error occurred',
+          {
+            explanation: exception?.explanation,
+            code: exception?.code,
+            meta: exception?.meta,
+            showMessageToUser: exception?.showMessageToUser,
+            type: exception?.type,
+            statusCode: exception?.statusCode,
+          }
+        );
+
+        return apiError;
+      }
+
       return new ApiError(exception?.message || 'API Error occurred', {
         statusCode: 500,
       });
@@ -34,7 +50,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    console.log(exception)
+    console.log(exception);
 
     response.json({ error: exception?.message, stack: exception?.stack });
   }

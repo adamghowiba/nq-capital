@@ -277,6 +277,18 @@ export type FundOverviewEntity = {
   net_returns: Scalars['Float']['output'];
 };
 
+export type FundOverviewHistoryEntity = {
+  __typename?: 'FundOverviewHistoryEntity';
+  data: Array<FundOverviewHistoryItem>;
+  timespan: Timespan;
+};
+
+export type FundOverviewHistoryItem = {
+  __typename?: 'FundOverviewHistoryItem';
+  amount: Scalars['Float']['output'];
+  date: Scalars['Float']['output'];
+};
+
 export type InvestorAccountStatus =
   | 'ACTIVE'
   | 'DISABLED'
@@ -614,7 +626,7 @@ export type MutationValidatePasswordResetTokenArgs = {
 export type PaginatedInvestorFundEntity = {
   __typename?: 'PaginatedInvestorFundEntity';
   count: Scalars['Int']['output'];
-  data?: Maybe<Array<InvestorFundEntity>>;
+  data: Array<InvestorFundEntity>;
   hasNextPage: Scalars['Boolean']['output'];
   limit: Scalars['Int']['output'];
   page: Scalars['Int']['output'];
@@ -623,7 +635,7 @@ export type PaginatedInvestorFundEntity = {
 export type PaginatedUserEntity = {
   __typename?: 'PaginatedUserEntity';
   count: Scalars['Int']['output'];
-  data?: Maybe<Array<UserEntity>>;
+  data: Array<UserEntity>;
   hasNextPage: Scalars['Boolean']['output'];
   limit: Scalars['Int']['output'];
   page: Scalars['Int']['output'];
@@ -658,6 +670,7 @@ export type Query = {
   fundInvestorsOverview: Array<FundInvestorOverview>;
   fundOverview: FundOverviewEntity;
   funds: Array<FundEntity>;
+  fundsHistory: FundOverviewHistoryEntity;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
@@ -702,6 +715,12 @@ export type QueryFundInvestorsOverviewArgs = {
 
 export type QueryFundOverviewArgs = {
   fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+
+export type QueryFundsHistoryArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timespan?: InputMaybe<Timespan>;
 };
 
 
@@ -757,6 +776,14 @@ export type QueryTicketArgs = {
 
 export type QueryTransactionArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryTransactionsArgs = {
+  fundId?: InputMaybe<Scalars['Int']['input']>;
+  investorId?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Array<TransactionStatus>>;
+  type?: InputMaybe<Array<TransactionType>>;
 };
 
 
@@ -828,6 +855,10 @@ export type TicketStatus =
 export type TicketType =
   | 'DOCUMENT_REQUEST'
   | 'SUPPORT';
+
+export type Timespan =
+  | 'MONTH'
+  | 'YEAR';
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
@@ -1041,10 +1072,31 @@ export type ListFundAdjustmentsQuery = { __typename?: 'Query', fundAdjustments: 
 
 export type FundAllFragmentFragment = { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any };
 
+export type CreateFundMutationVariables = Exact<{
+  createFundInput: CreateFundInput;
+}>;
+
+
+export type CreateFundMutation = { __typename?: 'Mutation', createFund: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
+
+export type UpdateFundMutationVariables = Exact<{
+  updateFundInput: UpdateFundInput;
+}>;
+
+
+export type UpdateFundMutation = { __typename?: 'Mutation', updateFund: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
+
 export type ListFundsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ListFundsQuery = { __typename?: 'Query', funds: Array<{ __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any }> };
+
+export type RetrieveFundQueryVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type RetrieveFundQuery = { __typename?: 'Query', fund: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
 
 export type FundOverviewQueryVariables = Exact<{
   fund_ids?: InputMaybe<Array<Scalars['Int']['input']> | Scalars['Int']['input']>;
@@ -1053,10 +1105,25 @@ export type FundOverviewQueryVariables = Exact<{
 
 export type FundOverviewQuery = { __typename?: 'Query', fundOverview: { __typename?: 'FundOverviewEntity', invested_amount: number, current_amount: number, net_returns: number } };
 
+export type FundHistoryOverviewQueryVariables = Exact<{
+  timespan: Timespan;
+}>;
+
+
+export type FundHistoryOverviewQuery = { __typename?: 'Query', fundsHistory: { __typename?: 'FundOverviewHistoryEntity', timespan: Timespan, data: Array<{ __typename?: 'FundOverviewHistoryItem', date: number, amount: number }> } };
+
 export type GetFundInvestorsOverviewQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetFundInvestorsOverviewQuery = { __typename?: 'Query', fundInvestorsOverview: Array<{ __typename?: 'FundInvestorOverview', investor_id: number, first_name: string, last_name: string, email: string, invested_amount: number, current_balance: number }> };
+
+export type ListFundInvestorsQueryVariables = Exact<{
+  fund_id?: InputMaybe<Scalars['Int']['input']>;
+  investor_id?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListFundInvestorsQuery = { __typename?: 'Query', investorFunds: { __typename?: 'PaginatedInvestorFundEntity', data: Array<{ __typename?: 'InvestorFundEntity', id: number, stake_percentage: number, invested_amount: number, initial_investment: number, created_at: any, updated_at: any, balance: number, investor_balance_in_fund: number, investor: { __typename?: 'InvestorEntity', id: number, first_name: string, last_name: string, company_name?: string | null, account_status?: InvestorAccountStatus | null } }> } };
 
 export type BankAccountAllFragmentFragment = { __typename?: 'BankAccountEntity', id: number, iban?: string | null, sort_code?: string | null, bsb_number?: string | null, bank_code?: string | null, branch_code?: string | null, branch_address?: string | null, is_primary: boolean, investor_id: number, created_at: any, updated_at: any, nickname?: string | null, bank_name: string, account_number: string, account_holder_name: string, type?: BankAccountType | null, bank_country: string, currency: string, routing_number?: string | null, swift_code?: string | null };
 
@@ -1175,7 +1242,12 @@ export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?:
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
-export type ListTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ListTransactionsQueryVariables = Exact<{
+  fundId?: InputMaybe<Scalars['Int']['input']>;
+  investorId?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Array<TransactionStatus> | TransactionStatus>;
+  type?: InputMaybe<Array<TransactionType> | TransactionType>;
+}>;
 
 
 export type ListTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any, investor?: { __typename?: 'InvestorEntity', first_name: string, last_name: string, email: string, id: number, avatar?: string | null } | null, fund?: { __typename?: 'FundEntity', name: string, balance: number } | null }> };
@@ -1567,6 +1639,54 @@ useListFundAdjustmentsQuery.getKey = (variables?: ListFundAdjustmentsQueryVariab
 
 useListFundAdjustmentsQuery.fetcher = (variables?: ListFundAdjustmentsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListFundAdjustmentsQuery, ListFundAdjustmentsQueryVariables>(ListFundAdjustmentsDocument, variables, options);
 
+export const CreateFundDocument = `
+    mutation CreateFund($createFundInput: CreateFundInput!) {
+  createFund(createFundInput: $createFundInput) {
+    ...FundAllFragment
+  }
+}
+    ${FundAllFragmentFragmentDoc}`;
+
+export const useCreateFundMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateFundMutation, TError, CreateFundMutationVariables, TContext>) => {
+    
+    return useMutation<CreateFundMutation, TError, CreateFundMutationVariables, TContext>(
+      {
+    mutationKey: ['CreateFund'],
+    mutationFn: (variables?: CreateFundMutationVariables) => gqlFetcher<CreateFundMutation, CreateFundMutationVariables>(CreateFundDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useCreateFundMutation.fetcher = (variables: CreateFundMutationVariables, options?: RequestInit['headers']) => gqlFetcher<CreateFundMutation, CreateFundMutationVariables>(CreateFundDocument, variables, options);
+
+export const UpdateFundDocument = `
+    mutation UpdateFund($updateFundInput: UpdateFundInput!) {
+  updateFund(updateFundInput: $updateFundInput) {
+    ...FundAllFragment
+  }
+}
+    ${FundAllFragmentFragmentDoc}`;
+
+export const useUpdateFundMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<UpdateFundMutation, TError, UpdateFundMutationVariables, TContext>) => {
+    
+    return useMutation<UpdateFundMutation, TError, UpdateFundMutationVariables, TContext>(
+      {
+    mutationKey: ['UpdateFund'],
+    mutationFn: (variables?: UpdateFundMutationVariables) => gqlFetcher<UpdateFundMutation, UpdateFundMutationVariables>(UpdateFundDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useUpdateFundMutation.fetcher = (variables: UpdateFundMutationVariables, options?: RequestInit['headers']) => gqlFetcher<UpdateFundMutation, UpdateFundMutationVariables>(UpdateFundDocument, variables, options);
+
 export const ListFundsDocument = `
     query ListFunds {
   funds {
@@ -1597,6 +1717,41 @@ useListFundsQuery.getKey = (variables?: ListFundsQueryVariables) => variables ==
 
 
 useListFundsQuery.fetcher = (variables?: ListFundsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListFundsQuery, ListFundsQueryVariables>(ListFundsDocument, variables, options);
+
+export const RetrieveFundDocument = `
+    query RetrieveFund($id: Int!) {
+  fund(id: $id) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}
+    `;
+
+export const useRetrieveFundQuery = <
+      TData = RetrieveFundQuery,
+      TError = unknown
+    >(
+      variables: RetrieveFundQueryVariables,
+      options?: Omit<UseQueryOptions<RetrieveFundQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<RetrieveFundQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<RetrieveFundQuery, TError, TData>(
+      {
+    queryKey: ['RetrieveFund', variables],
+    queryFn: gqlFetcher<RetrieveFundQuery, RetrieveFundQueryVariables>(RetrieveFundDocument, variables),
+    ...options
+  }
+    )};
+
+useRetrieveFundQuery.document = RetrieveFundDocument;
+
+useRetrieveFundQuery.getKey = (variables: RetrieveFundQueryVariables) => ['RetrieveFund', variables];
+
+
+useRetrieveFundQuery.fetcher = (variables: RetrieveFundQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveFundQuery, RetrieveFundQueryVariables>(RetrieveFundDocument, variables, options);
 
 export const FundOverviewDocument = `
     query FundOverview($fund_ids: [Int!]) {
@@ -1630,6 +1785,41 @@ useFundOverviewQuery.getKey = (variables?: FundOverviewQueryVariables) => variab
 
 
 useFundOverviewQuery.fetcher = (variables?: FundOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables, options);
+
+export const FundHistoryOverviewDocument = `
+    query FundHistoryOverview($timespan: Timespan!) {
+  fundsHistory(timespan: $timespan) {
+    timespan
+    data {
+      date
+      amount
+    }
+  }
+}
+    `;
+
+export const useFundHistoryOverviewQuery = <
+      TData = FundHistoryOverviewQuery,
+      TError = unknown
+    >(
+      variables: FundHistoryOverviewQueryVariables,
+      options?: Omit<UseQueryOptions<FundHistoryOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FundHistoryOverviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<FundHistoryOverviewQuery, TError, TData>(
+      {
+    queryKey: ['FundHistoryOverview', variables],
+    queryFn: gqlFetcher<FundHistoryOverviewQuery, FundHistoryOverviewQueryVariables>(FundHistoryOverviewDocument, variables),
+    ...options
+  }
+    )};
+
+useFundHistoryOverviewQuery.document = FundHistoryOverviewDocument;
+
+useFundHistoryOverviewQuery.getKey = (variables: FundHistoryOverviewQueryVariables) => ['FundHistoryOverview', variables];
+
+
+useFundHistoryOverviewQuery.fetcher = (variables: FundHistoryOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundHistoryOverviewQuery, FundHistoryOverviewQueryVariables>(FundHistoryOverviewDocument, variables, options);
 
 export const GetFundInvestorsOverviewDocument = `
     query GetFundInvestorsOverview {
@@ -1666,6 +1856,53 @@ useGetFundInvestorsOverviewQuery.getKey = (variables?: GetFundInvestorsOverviewQ
 
 
 useGetFundInvestorsOverviewQuery.fetcher = (variables?: GetFundInvestorsOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<GetFundInvestorsOverviewQuery, GetFundInvestorsOverviewQueryVariables>(GetFundInvestorsOverviewDocument, variables, options);
+
+export const ListFundInvestorsDocument = `
+    query ListFundInvestors($fund_id: Int, $investor_id: Int) {
+  investorFunds(fundId: $fund_id, investorId: $investor_id) {
+    data {
+      id
+      stake_percentage
+      invested_amount
+      initial_investment
+      created_at
+      updated_at
+      balance
+      investor_balance_in_fund
+      investor {
+        id
+        first_name
+        last_name
+        company_name
+        account_status
+      }
+    }
+  }
+}
+    `;
+
+export const useListFundInvestorsQuery = <
+      TData = ListFundInvestorsQuery,
+      TError = unknown
+    >(
+      variables?: ListFundInvestorsQueryVariables,
+      options?: Omit<UseQueryOptions<ListFundInvestorsQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<ListFundInvestorsQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<ListFundInvestorsQuery, TError, TData>(
+      {
+    queryKey: variables === undefined ? ['ListFundInvestors'] : ['ListFundInvestors', variables],
+    queryFn: gqlFetcher<ListFundInvestorsQuery, ListFundInvestorsQueryVariables>(ListFundInvestorsDocument, variables),
+    ...options
+  }
+    )};
+
+useListFundInvestorsQuery.document = ListFundInvestorsDocument;
+
+useListFundInvestorsQuery.getKey = (variables?: ListFundInvestorsQueryVariables) => variables === undefined ? ['ListFundInvestors'] : ['ListFundInvestors', variables];
+
+
+useListFundInvestorsQuery.fetcher = (variables?: ListFundInvestorsQueryVariables, options?: RequestInit['headers']) => gqlFetcher<ListFundInvestorsQuery, ListFundInvestorsQueryVariables>(ListFundInvestorsDocument, variables, options);
 
 export const RetrieveInvestorDocument = `
     query RetrieveInvestor($id: Int!) {
@@ -2098,8 +2335,13 @@ useRetrieveTicketQuery.getKey = (variables: RetrieveTicketQueryVariables) => ['R
 useRetrieveTicketQuery.fetcher = (variables: RetrieveTicketQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables, options);
 
 export const ListTransactionsDocument = `
-    query ListTransactions {
-  transactions {
+    query ListTransactions($fundId: Int, $investorId: Int, $status: [TransactionStatus!], $type: [TransactionType!]) {
+  transactions(
+    fundId: $fundId
+    investorId: $investorId
+    status: $status
+    type: $type
+  ) {
     investor {
       first_name
       last_name

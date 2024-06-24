@@ -2,11 +2,14 @@ import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { AdjustFundInput } from './dto/adjust-fund.input';
 import { CreateFundInput } from './dto/create-fund.input';
-import { GetFundOverViewArgs } from './dto/get-fund-overview.args';
+import {
+  GetFundOverViewArgs,
+  GetFundOverviewHistoryArgs,
+} from './dto/get-fund-overview.args';
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundAdjustmentEntity } from './entities/fund-adjustment.entity';
 import { FundInvestorOverview } from './entities/fund-investor-overview.entity';
-import { FundOverviewEntity } from './entities/fund-overview.entity';
+import { FundOverviewEntity, FundOverviewHistoryEntity } from './entities/fund-overview.entity';
 import { FundEntity } from './entities/fund.entity';
 import { FundAggregatorService } from './fund-aggregator.service';
 import { FundsService } from './funds.service';
@@ -40,6 +43,13 @@ export class FundsResolver {
   @Query(() => FundOverviewEntity, { name: 'fundOverview' })
   fundOverview(@Args() fundOverviewArgs: GetFundOverViewArgs) {
     return this.fundAggregatorService.getOverview(fundOverviewArgs);
+  }
+
+  @Query(() => FundOverviewHistoryEntity, { name: 'fundsHistory' })
+  fundsHistory(@Args() fundOverviewHistoryArgs: GetFundOverviewHistoryArgs) {
+    return this.fundAggregatorService.getOverviewHistory(
+      fundOverviewHistoryArgs
+    );
   }
 
   @Query(() => [FundInvestorOverview], { name: 'fundInvestorsOverview' })

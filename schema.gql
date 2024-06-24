@@ -63,7 +63,7 @@ type SessionEntity {
 }
 
 type PaginatedUserEntity {
-  data: [UserEntity!]
+  data: [UserEntity!]!
   limit: Int!
   page: Int!
   count: Int!
@@ -95,6 +95,21 @@ type FundOverviewEntity {
   invested_amount: Float!
   current_amount: Float!
   net_returns: Float!
+}
+
+type FundOverviewHistoryItem {
+  date: Float!
+  amount: Float!
+}
+
+type FundOverviewHistoryEntity {
+  timespan: Timespan!
+  data: [FundOverviewHistoryItem!]!
+}
+
+enum Timespan {
+  MONTH
+  YEAR
 }
 
 type FundEntity {
@@ -215,7 +230,7 @@ type InvestorFundEntity {
 }
 
 type PaginatedInvestorFundEntity {
-  data: [InvestorFundEntity!]
+  data: [InvestorFundEntity!]!
   limit: Int!
   page: Int!
   count: Int!
@@ -378,13 +393,18 @@ type Query {
     "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
     fund_ids: [Int!]
   ): FundOverviewEntity!
+  fundsHistory(
+    "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
+    fund_ids: [Int!]
+    timespan: Timespan = YEAR
+  ): FundOverviewHistoryEntity!
   fundInvestorsOverview(
     "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
     fund_ids: [Int!]
   ): [FundInvestorOverview!]!
   fund(id: Int!): FundEntity!
   fundAdjustments: [FundAdjustmentEntity!]!
-  transactions: [TransactionEntity!]!
+  transactions(investorId: Int, fundId: Int, status: [TransactionStatus!], type: [TransactionType!]): [TransactionEntity!]!
   transaction(id: Int!): TransactionEntity!
   investorFunds(
     """The page number to retrieve starting from zero"""

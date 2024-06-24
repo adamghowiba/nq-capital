@@ -5,6 +5,7 @@ import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { TransactionEntity } from './entities/transaction.entity';
 import { SessionEntity } from '@nq-capital/iam';
+import { ListTransactionsArgs } from './dto/get-transaction.args';
 
 /**
  * Events that trigger a transaction:
@@ -48,14 +49,17 @@ export class TransactionsService {
   }
 
   async list(
-    params: unknown,
+    params: ListTransactionsArgs,
     session: SessionEntity
   ): Promise<TransactionEntity[]> {
     const transactions = await this.prisma.transaction.findMany({
       where: {
         investor_id: session.user
-          ? undefined
+          ? params.investorId || undefined
           : session.investor?.id || undefined,
+        fund_id: params.fundId || undefined,
+        status: params.status ? { in: params.status } : undefined,
+        type: params.type ? { in: params.type } : undefined,
       },
       orderBy: {
         created_at: 'desc',
