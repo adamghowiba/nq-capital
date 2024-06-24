@@ -384,7 +384,7 @@ type Query {
   ): [FundInvestorOverview!]!
   fund(id: Int!): FundEntity!
   fundAdjustments: [FundAdjustmentEntity!]!
-  transactions: [TransactionEntity!]!
+  transactions(investorId: Int, fundId: Int, status: [TransactionStatus!], type: [TransactionType!]): [TransactionEntity!]!
   transaction(id: Int!): TransactionEntity!
   investorFunds(
     """The page number to retrieve starting from zero"""

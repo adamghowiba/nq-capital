@@ -1,31 +1,23 @@
-import { Button, IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import {
-  GridActionsCellItem,
-  GridColDef,
-  GridRowParams,
+  GridColDef
 } from '@mui/x-data-grid';
 import {
   Box,
   CustomDataGrid,
-  MenuButton,
-  MenuList,
   NLink,
-  NMenu,
-  NMenuItem,
-  PageHeader,
+  PageHeader
 } from '@nq-capital/nui';
 import { formatISOForTable, formatUSDCurrency, padId } from '@nq-capital/utils';
-import { Screen } from 'apps/backoffice-web/lib/components/Screen/Screen';
+import { useMemo, useState } from 'react';
+import { Screen } from '../../lib/components/Screen/Screen';
 import {
   ListFundsQuery,
   useListFundsQuery,
   useUpdateFundMutation,
-} from 'apps/backoffice-web/lib/gql/gql-client';
-import { FundMutationDrawer } from 'apps/backoffice-web/lib/modules/funds/components/FundMutationDrawer';
-import { useMemo, useState } from 'react';
+} from '../../lib/gql/gql-client';
+import { FundMutationDrawer } from '../../lib/modules/funds/components/FundMutationDrawer';
 import { NextPageWithLayout } from '../_app';
-import moreVerticalIcon from '@iconify/icons-fluent/more-vertical-16-regular';
-import { Icon } from '@iconify/react';
 
 const FundsListPage: NextPageWithLayout = ({ ...props }) => {
   const [isFundDrawerOpen, setIsFundDrawerOpen] = useState<boolean>(false);

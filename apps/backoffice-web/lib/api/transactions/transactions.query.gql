@@ -1,5 +1,15 @@
-query ListTransactions {
-  transactions {
+query ListTransactions(
+  $fundId: Int
+  $investorId: Int
+  $status: [TransactionStatus!]
+  $type: [TransactionType!]
+) {
+  transactions(
+    fundId: $fundId
+    investorId: $investorId
+    status: $status
+    type: $type
+  ) {
     investor {
       first_name
       last_name

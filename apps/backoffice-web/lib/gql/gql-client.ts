@@ -760,6 +760,14 @@ export type QueryTransactionArgs = {
 };
 
 
+export type QueryTransactionsArgs = {
+  fundId?: InputMaybe<Scalars['Int']['input']>;
+  investorId?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Array<TransactionStatus>>;
+  type?: InputMaybe<Array<TransactionType>>;
+};
+
+
 export type QueryUserArgs = {
   id: Scalars['Int']['input'];
 };
@@ -1204,7 +1212,12 @@ export type RetrieveTicketQuery = { __typename?: 'Query', ticket: { __typename?:
 
 export type TransactionsAllFragmentFragment = { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any };
 
-export type ListTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type ListTransactionsQueryVariables = Exact<{
+  fundId?: InputMaybe<Scalars['Int']['input']>;
+  investorId?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<Array<TransactionStatus> | TransactionStatus>;
+  type?: InputMaybe<Array<TransactionType> | TransactionType>;
+}>;
 
 
 export type ListTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any, investor?: { __typename?: 'InvestorEntity', first_name: string, last_name: string, email: string, id: number, avatar?: string | null } | null, fund?: { __typename?: 'FundEntity', name: string, balance: number } | null }> };
@@ -2257,8 +2270,13 @@ useRetrieveTicketQuery.getKey = (variables: RetrieveTicketQueryVariables) => ['R
 useRetrieveTicketQuery.fetcher = (variables: RetrieveTicketQueryVariables, options?: RequestInit['headers']) => gqlFetcher<RetrieveTicketQuery, RetrieveTicketQueryVariables>(RetrieveTicketDocument, variables, options);
 
 export const ListTransactionsDocument = `
-    query ListTransactions {
-  transactions {
+    query ListTransactions($fundId: Int, $investorId: Int, $status: [TransactionStatus!], $type: [TransactionType!]) {
+  transactions(
+    fundId: $fundId
+    investorId: $investorId
+    status: $status
+    type: $type
+  ) {
     investor {
       first_name
       last_name

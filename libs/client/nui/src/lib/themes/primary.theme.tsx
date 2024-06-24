@@ -14,6 +14,7 @@ declare module '@mui/material/styles' {
       placeholder: React.CSSProperties['color'];
     };
   }
+
   interface ThemeOptions {
     common?: {
       line: React.CSSProperties['color'];
@@ -107,6 +108,9 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
         },
         warning: {
           main: '#FFBF01',
+        },
+        iris: {
+          main: '#5B5BD6',
         },
       },
       ...newTheme?.palette,
@@ -474,6 +478,16 @@ export function generateTheme(newTheme?: ThemeOptions): Theme {
             borderRadius: '8px',
             border: `1px solid ${theme.common.line}`,
           }),
+        },
+      },
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            textTransform: 'unset',
+            '&.Mui-selected': {
+              color: '#5B5BD6',
+            },
+          },
         },
       },
       MuiPopover: {
