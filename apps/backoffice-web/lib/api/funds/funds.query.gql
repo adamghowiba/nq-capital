@@ -21,3 +21,13 @@ query FundOverview($fund_ids: [Int!]) {
     net_returns
   }
 }
+
+query FundHistoryOverview($timespan: Timespan!) {
+  fundsHistory(timespan: $timespan) {
+    timespan
+    data {
+      date
+      amount
+    }
+  }
+}

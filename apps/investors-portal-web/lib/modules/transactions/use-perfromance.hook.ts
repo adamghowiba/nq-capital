@@ -65,13 +65,14 @@ export const usePortfolioPerformance = (params: { timespan: Timespan }) => {
 
           return acc;
         },
+
         timespanDates.map((date) => ({ date: date.toMillis(), amount: 0 }))
       )
       .map((period, index, allPeriods) => {
-        // Carry forward the balance to the next period if no transactions modify the period
-        if (index > 0 && period.amount === 0) {
-          period.amount = allPeriods[index - 1].amount;
-        }
+        // Carry forward the balance to the next period
+        period.amount =
+          (period?.amount || 0) + allPeriods[index - 1]?.amount || 0;
+
         return period;
       });
   }, [transactions.data, timespanDates]);

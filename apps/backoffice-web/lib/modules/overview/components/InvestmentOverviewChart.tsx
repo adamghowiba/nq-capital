@@ -1,12 +1,20 @@
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
 import { FC } from 'react';
+import { useFundHistoryOverviewQuery } from '../../../../lib/gql/gql-client';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 export interface InvestmentOverviewChart {}
 
 const InvestmentOverviewChart: FC<InvestmentOverviewChart> = ({ ...props }) => {
+  const overviewQuery = useFundHistoryOverviewQuery(
+    {
+      timespan: 'YEAR',
+    },
+    { select: (data) => data.fundsHistory }
+  );
+
   return (
     <>
       <Card variant="outlined">
@@ -23,7 +31,7 @@ const InvestmentOverviewChart: FC<InvestmentOverviewChart> = ({ ...props }) => {
           sx={{
             '&.MuiCardContent-root': {
               pb: 1,
-              pt: 0
+              pt: 0,
             },
           }}
         >
@@ -33,7 +41,10 @@ const InvestmentOverviewChart: FC<InvestmentOverviewChart> = ({ ...props }) => {
             series={[
               {
                 name: 'Account value',
-                data: [100, 150, 120, 300, 190, 490],
+                data: overviewQuery.data?.data.map((item) => ({
+                  x: item.date,
+                  y: item.amount,
+                })) || [],
               },
             ]}
             options={{
@@ -52,15 +63,15 @@ const InvestmentOverviewChart: FC<InvestmentOverviewChart> = ({ ...props }) => {
               },
               fill: {
                 gradient: {
-                  shadeIntensity: 0.9
-                }
+                  shadeIntensity: 0.9,
+                },
               },
               yaxis: {
                 tickAmount: 6,
               },
               xaxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                tickAmount: 5,
+                type: 'datetime',
+                // categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                 labels: {
                   style: {
                     colors: '#BBBBBB',

@@ -277,6 +277,18 @@ export type FundOverviewEntity = {
   net_returns: Scalars['Float']['output'];
 };
 
+export type FundOverviewHistoryEntity = {
+  __typename?: 'FundOverviewHistoryEntity';
+  data: Array<FundOverviewHistoryItem>;
+  timespan: Timespan;
+};
+
+export type FundOverviewHistoryItem = {
+  __typename?: 'FundOverviewHistoryItem';
+  amount: Scalars['Float']['output'];
+  date: Scalars['Float']['output'];
+};
+
 export type InvestorAccountStatus =
   | 'ACTIVE'
   | 'DISABLED'
@@ -658,6 +670,7 @@ export type Query = {
   fundInvestorsOverview: Array<FundInvestorOverview>;
   fundOverview: FundOverviewEntity;
   funds: Array<FundEntity>;
+  fundsHistory: FundOverviewHistoryEntity;
   investor: InvestorEntity;
   investorFund: Array<InvestorFundEntity>;
   investorFunds: PaginatedInvestorFundEntity;
@@ -702,6 +715,12 @@ export type QueryFundInvestorsOverviewArgs = {
 
 export type QueryFundOverviewArgs = {
   fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+};
+
+
+export type QueryFundsHistoryArgs = {
+  fund_ids?: InputMaybe<Array<Scalars['Int']['input']>>;
+  timespan?: InputMaybe<Timespan>;
 };
 
 
@@ -836,6 +855,10 @@ export type TicketStatus =
 export type TicketType =
   | 'DOCUMENT_REQUEST'
   | 'SUPPORT';
+
+export type Timespan =
+  | 'MONTH'
+  | 'YEAR';
 
 export type TransactionEntity = {
   __typename?: 'TransactionEntity';
@@ -1081,6 +1104,13 @@ export type FundOverviewQueryVariables = Exact<{
 
 
 export type FundOverviewQuery = { __typename?: 'Query', fundOverview: { __typename?: 'FundOverviewEntity', invested_amount: number, current_amount: number, net_returns: number } };
+
+export type FundHistoryOverviewQueryVariables = Exact<{
+  timespan: Timespan;
+}>;
+
+
+export type FundHistoryOverviewQuery = { __typename?: 'Query', fundsHistory: { __typename?: 'FundOverviewHistoryEntity', timespan: Timespan, data: Array<{ __typename?: 'FundOverviewHistoryItem', date: number, amount: number }> } };
 
 export type GetFundInvestorsOverviewQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1755,6 +1785,41 @@ useFundOverviewQuery.getKey = (variables?: FundOverviewQueryVariables) => variab
 
 
 useFundOverviewQuery.fetcher = (variables?: FundOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundOverviewQuery, FundOverviewQueryVariables>(FundOverviewDocument, variables, options);
+
+export const FundHistoryOverviewDocument = `
+    query FundHistoryOverview($timespan: Timespan!) {
+  fundsHistory(timespan: $timespan) {
+    timespan
+    data {
+      date
+      amount
+    }
+  }
+}
+    `;
+
+export const useFundHistoryOverviewQuery = <
+      TData = FundHistoryOverviewQuery,
+      TError = unknown
+    >(
+      variables: FundHistoryOverviewQueryVariables,
+      options?: Omit<UseQueryOptions<FundHistoryOverviewQuery, TError, TData>, 'queryKey'> & { queryKey?: UseQueryOptions<FundHistoryOverviewQuery, TError, TData>['queryKey'] }
+    ) => {
+    
+    return useQuery<FundHistoryOverviewQuery, TError, TData>(
+      {
+    queryKey: ['FundHistoryOverview', variables],
+    queryFn: gqlFetcher<FundHistoryOverviewQuery, FundHistoryOverviewQueryVariables>(FundHistoryOverviewDocument, variables),
+    ...options
+  }
+    )};
+
+useFundHistoryOverviewQuery.document = FundHistoryOverviewDocument;
+
+useFundHistoryOverviewQuery.getKey = (variables: FundHistoryOverviewQueryVariables) => ['FundHistoryOverview', variables];
+
+
+useFundHistoryOverviewQuery.fetcher = (variables: FundHistoryOverviewQueryVariables, options?: RequestInit['headers']) => gqlFetcher<FundHistoryOverviewQuery, FundHistoryOverviewQueryVariables>(FundHistoryOverviewDocument, variables, options);
 
 export const GetFundInvestorsOverviewDocument = `
     query GetFundInvestorsOverview {

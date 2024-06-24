@@ -97,6 +97,21 @@ type FundOverviewEntity {
   net_returns: Float!
 }
 
+type FundOverviewHistoryItem {
+  date: Float!
+  amount: Float!
+}
+
+type FundOverviewHistoryEntity {
+  timespan: Timespan!
+  data: [FundOverviewHistoryItem!]!
+}
+
+enum Timespan {
+  MONTH
+  YEAR
+}
+
 type FundEntity {
   id: Int!
   name: String!
@@ -378,6 +393,11 @@ type Query {
     "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
     fund_ids: [Int!]
   ): FundOverviewEntity!
+  fundsHistory(
+    "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
+    fund_ids: [Int!]
+    timespan: Timespan = YEAR
+  ): FundOverviewHistoryEntity!
   fundInvestorsOverview(
     "The fund ids to get the overview for. If not fund is specified\r\nthe overview for all funds will be returned."
     fund_ids: [Int!]
