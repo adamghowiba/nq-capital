@@ -123,7 +123,7 @@ const Adjustments = ({ ...props }) => {
                 variant="contained"
                 onClick={() => setIsFundDrawerOpen(true)}
               >
-                Create Fund
+                Create Adjustment
               </Button>
             </>
           }
