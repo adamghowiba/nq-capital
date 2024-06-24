@@ -48,7 +48,7 @@ export const gqlFetcher = <TData, TVariables>(
     if (json.errors) {
       const firstError = json.errors?.[0] || {};
 
-      throw new GraphQLApiError(firstError);
+      throw new GraphQLApiError(firstError?.extensions?.originalError || firstError);
     }
 
     return json.data;

@@ -42,6 +42,12 @@ const NAVBAR_ITEMS: {
     icon: <Icon icon={people20FilledIcon} width={18} height={18} />,
   },
   {
+    name: 'Funds',
+    href: '/funds',
+    icon: <Icon icon={listBar16FilledIcon} width={18} height={18} />,
+    isBeta: true,
+  },
+  {
     name: 'Adjustments',
     href: '/adjustments',
     icon: <Icon icon={listBar16FilledIcon} width={18} height={18} />,

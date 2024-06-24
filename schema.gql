@@ -63,7 +63,7 @@ type SessionEntity {
 }
 
 type PaginatedUserEntity {
-  data: [UserEntity!]
+  data: [UserEntity!]!
   limit: Int!
   page: Int!
   count: Int!
@@ -215,7 +215,7 @@ type InvestorFundEntity {
 }
 
 type PaginatedInvestorFundEntity {
-  data: [InvestorFundEntity!]
+  data: [InvestorFundEntity!]!
   limit: Int!
   page: Int!
   count: Int!

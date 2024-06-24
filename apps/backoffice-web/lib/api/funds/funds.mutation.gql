@@ -1,0 +1,11 @@
+mutation CreateFund($createFundInput: CreateFundInput!) {
+  createFund(createFundInput: $createFundInput) {
+    ...FundAllFragment
+  }
+}
+
+mutation UpdateFund($updateFundInput: UpdateFundInput!) {
+  updateFund(updateFundInput: $updateFundInput) {
+    ...FundAllFragment
+  }
+}

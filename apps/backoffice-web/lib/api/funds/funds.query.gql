@@ -4,6 +4,16 @@ query ListFunds {
   }
 }
 
+query RetrieveFund($id: Int!) {
+  fund(id: $id) {
+    id
+    name
+    balance
+    created_at
+    updated_at
+  }
+}
+
 query FundOverview($fund_ids: [Int!]) {
   fundOverview(fund_ids: $fund_ids) {
     invested_amount

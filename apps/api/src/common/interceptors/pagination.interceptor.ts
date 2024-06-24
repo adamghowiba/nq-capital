@@ -22,7 +22,7 @@ export class PaginationInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       map((value): IPaginatedType<any> => {
-        const data = value?.data ? value.data : value;
+        const data = (value?.data ? value.data : value) || [];
         const hasNextPage = data.length < limit;
 
         return {

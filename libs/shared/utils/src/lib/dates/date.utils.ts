@@ -6,6 +6,8 @@ import { DateTime } from 'luxon';
  * @returns Formatted date (e.g. Nov 14, 2023)
  */
 export const formatISOForTable = (isoDate: string) => {
+  if (!isoDate) return '';
+
   const date = DateTime.fromISO(isoDate).toFormat('MMM dd, yyyy');
 
   return date;

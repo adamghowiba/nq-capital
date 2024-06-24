@@ -129,6 +129,7 @@ model Fund {
   id               Int              @id @default(autoincrement())
   name             String           @unique
   balance          Float            @db.DoublePrecision()
+  is_primary       Boolean          @default(false)
   investors        InvestorFund[]
   fund_adjustments FundAdjustment[]
   transactions     Transaction[]

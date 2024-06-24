@@ -11,6 +11,8 @@ import {
 import { UpdateFundInput } from './dto/update-fund.input';
 import { FundEntity } from './entities/fund.entity';
 import { FundAdjustmentEntity } from './entities/fund-adjustment.entity';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { ApiError } from '../../common/exceptions/api.error';
 
 @Injectable()
 export class FundsService {
@@ -27,24 +29,34 @@ export class FundsService {
       initialBalance: initial_balance,
     });
 
-    const fund = await this.prisma.fund.create({
-      data: {
-        ...rest,
-        balance: investmentCalculations.totalInvestment,
-        investors: investmentCalculations?.investors
-          ? {
-              create: investmentCalculations.investors?.map((investor) => ({
-                initial_investment: investor.initial_investment,
-                investor_id: investor.investor_id,
-                stake_percentage: investor.stage_percentage,
-                invested_amount: investor.initial_investment,
-              })),
-            }
-          : undefined,
-      },
-    });
+    try {
+      const fund = await this.prisma.fund.create({
+        data: {
+          ...rest,
+          balance: investmentCalculations.totalInvestment,
+          investors: investmentCalculations?.investors
+            ? {
+                create: investmentCalculations.investors?.map((investor) => ({
+                  initial_investment: investor.initial_investment,
+                  investor_id: investor.investor_id,
+                  stake_percentage: investor.stage_percentage,
+                  invested_amount: investor.initial_investment,
+                })),
+              }
+            : undefined,
+        },
+      });
 
-    return fund;
+      return fund;
+    } catch (error) {
+      throw new ApiError('A fund with that name already exists', {
+        explanation: `A fund with the name '${createFundInput.name}' already exists. Please choose a different name`,
+        meta: {
+          name: createFundInput.name,
+          test: "SOme test"
+        }
+      });
+    }
   }
 
   async adjustFund(adjustFundInput: AdjustFundInput) {
