@@ -116,7 +116,13 @@ export class FundAggregatorService {
       },
     });
 
-    const fundAdjustments = await this.prisma.fundAdjustment.findMany({});
+    const fundAdjustments = await this.prisma.fundAdjustment.findMany({
+      where: {
+        created_at: {
+          gte: now.minus({ year: 1 }).startOf('month').toJSDate(),
+        },
+      },
+    });
 
     const timespanDates = this.getTimespanDates({ timespan: params.timespan });
 
