@@ -58,6 +58,7 @@ export const IdentityVerification: FC<IdentityVerificationProps> = ({
               openTo="year"
               views={['year', 'month', 'day']}
               isRequired
+              disablePast
             />
           </HStack>
 
@@ -133,6 +134,7 @@ export const IdentityVerification: FC<IdentityVerificationProps> = ({
               label="ID Expiry Date"
               openTo="year"
               views={['year', 'month', 'day']}
+              disablePast
             />
           </HStack>
         </Box>

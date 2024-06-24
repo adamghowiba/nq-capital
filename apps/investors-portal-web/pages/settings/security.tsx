@@ -14,6 +14,8 @@ import {
   securitySettingsSchema,
 } from '../../lib/modules/settings/settings.schema';
 import { NextPageWithLayout } from '../_app';
+import { toast } from 'sonner';
+import { parseApiError } from '../../lib/utils/error.utils';
 
 const SecurityPage: NextPageWithLayout<InferGetInvestorSSP> = ({
   investor,
@@ -29,14 +31,24 @@ const SecurityPage: NextPageWithLayout<InferGetInvestorSSP> = ({
     resolver: zodResolver(securitySettingsSchema),
   });
 
-  const investorMutation = useUpdateInvestorMutation();
+  const investorMutation = useUpdateInvestorMutation({
+    onMutate: () => {
+      form.reset()
+    }
+  });
 
   const handleValidSubmit: SubmitHandler<SecuritySettingsSchema> = (data) => {
-    investorMutation.mutate({
+    const promise = investorMutation.mutateAsync({
       updateInvestorInput: {
         id: investor.id,
         password: data.new_password,
       },
+    });
+
+    toast.promise(promise, {
+      loading: 'Updating password...',
+      success: 'Password updated successfully',
+      error: parseApiError
     });
   };
 

@@ -93,14 +93,14 @@ export const NCurrencyField = <
                 field.onChange(values.floatValue)
               }
               onBlur={(event) => {
-                field.onBlur?.(event);
+                field.onBlur?.();
                 onBlur?.(event);
               }}
               disabled={field.disabled}
             />
 
             {(fieldState.invalid || helperText) && (
-              <FormHelperText {...HelperTextProps}>
+              <FormHelperText component="span" {...HelperTextProps}>
                 {error ||
                   (fieldState.error?.message
                     ? fieldState.error?.message

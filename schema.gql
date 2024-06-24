@@ -449,6 +449,7 @@ type Mutation {
   createInvestor(createInvestorInput: CreateInvestorInput!): InvestorEntity!
   updateInvestor(updateInvestorInput: UpdateInvestorInput!): InvestorEntity!
   removeInvestor(id: Int!): InvestorEntity!
+  withdrawal(withdrawalInput: WithdrawalInput!): TransactionEntity!
   createFund(createFundInput: CreateFundInput!): FundEntity!
   addInvestment(addInvestmentInput: AddInvestmentInput!): FundEntity!
   updateFund(updateFundInput: UpdateFundInput!): FundEntity!
@@ -562,6 +563,12 @@ input UpdateInvestorInput {
   mobile_number: String
   address_id: Int
   id: Int!
+}
+
+input WithdrawalInput {
+  investor_id: Int!
+  amount: Float!
+  bank_account_id: Int
 }
 
 input CreateFundInput {

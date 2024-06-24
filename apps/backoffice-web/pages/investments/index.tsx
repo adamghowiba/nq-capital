@@ -20,9 +20,12 @@ import {
   useListTransactionsQuery,
 } from '../../lib/gql/gql-client';
 import { NextPageWithLayout } from '../_app';
+import { WithdrawalMutationDrawer } from 'apps/backoffice-web/lib/components/WithdrawalMutationDrawer/WithdrawalMutationDrawer';
 
 const InvestmentsPage: NextPageWithLayout = ({ ...props }) => {
   const [isInvestmentDrawerOpen, setIsInvestmentDrawerOpen] = useState(false);
+  const [isWithdrawalDrawerOpen, setIsWithdrawalDrawerOpen] = useState(false);
+
   const [filters, setFilters] = useState<GridFilterModel>({
     items: [],
   });
@@ -144,6 +147,13 @@ const InvestmentsPage: NextPageWithLayout = ({ ...props }) => {
           actions={
             <>
               <Button
+                color="secondary"
+                variant="contained"
+                onClick={() => setIsWithdrawalDrawerOpen(true)}
+              >
+                New Withdrawal
+              </Button>
+              <Button
                 color="primary"
                 variant="contained"
                 onClick={() => setIsInvestmentDrawerOpen(true)}
@@ -191,6 +201,11 @@ const InvestmentsPage: NextPageWithLayout = ({ ...props }) => {
       <InvestmentMutationDrawer
         open={isInvestmentDrawerOpen}
         onClose={() => setIsInvestmentDrawerOpen(false)}
+      />
+
+      <WithdrawalMutationDrawer
+        open={isWithdrawalDrawerOpen}
+        onClose={() => setIsWithdrawalDrawerOpen(false)}
       />
     </>
   );

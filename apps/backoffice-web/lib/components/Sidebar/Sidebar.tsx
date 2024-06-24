@@ -77,6 +77,7 @@ const Sidebar: FC<SidebarProps> = ({ children, ...props }) => {
             alt="logo"
             width={20}
             height={20}
+            unoptimized
           />
           <Typography
             fontSize="22px"
@@ -102,9 +103,9 @@ const Sidebar: FC<SidebarProps> = ({ children, ...props }) => {
           ))}
 
           <VStack gap="inherit" mt="auto" py={1.5}>
-            <SidebarItem icon={<Icon icon={infoIcon} width={18} height={18} />}>
+            {/* <SidebarItem icon={<Icon icon={infoIcon} width={18} height={18} />}>
               Help
-            </SidebarItem>
+            </SidebarItem> */}
 
             <SidebarItem
               icon={<Icon icon={settingsIcon} width={18} height={18} />}

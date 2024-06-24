@@ -441,6 +441,7 @@ export type Mutation = {
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
   validatePasswordResetToken: ValidatePasswordResetTokenEntity;
+  withdrawal: TransactionEntity;
 };
 
 
@@ -621,6 +622,11 @@ export type MutationUpdateUserArgs = {
 
 export type MutationValidatePasswordResetTokenArgs = {
   validatePasswordResetTokenInput: ValidatePasswordResetTokenInput;
+};
+
+
+export type MutationWithdrawalArgs = {
+  withdrawalInput: WithdrawalInput;
 };
 
 export type PaginatedInvestorFundEntity = {
@@ -1020,6 +1026,12 @@ export type ValidatePasswordResetTokenInput = {
   token: Scalars['String']['input'];
 };
 
+export type WithdrawalInput = {
+  amount: Scalars['Float']['input'];
+  bank_account_id?: InputMaybe<Scalars['Int']['input']>;
+  investor_id: Scalars['Int']['input'];
+};
+
 export type LoginMutationVariables = Exact<{
   loginInput: LoginInput;
 }>;
@@ -1186,6 +1198,13 @@ export type AddInvestmentMutationVariables = Exact<{
 
 
 export type AddInvestmentMutation = { __typename?: 'Mutation', addInvestment: { __typename?: 'FundEntity', id: number, name: string, balance: number, created_at: any, updated_at: any } };
+
+export type WithdrawalMutationVariables = Exact<{
+  withdrawalInput: WithdrawalInput;
+}>;
+
+
+export type WithdrawalMutation = { __typename?: 'Mutation', withdrawal: { __typename?: 'TransactionEntity', id: number, type: TransactionType, amount: number, currency_code: string, balance_after: number, description?: string | null, fee?: number | null, external_id?: string | null, status: TransactionStatus, updated_at: any, created_at: any } };
 
 export type DeleteInvitationMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -2137,6 +2156,30 @@ export const useAddInvestmentMutation = <
 
 
 useAddInvestmentMutation.fetcher = (variables: AddInvestmentMutationVariables, options?: RequestInit['headers']) => gqlFetcher<AddInvestmentMutation, AddInvestmentMutationVariables>(AddInvestmentDocument, variables, options);
+
+export const WithdrawalDocument = `
+    mutation Withdrawal($withdrawalInput: WithdrawalInput!) {
+  withdrawal(withdrawalInput: $withdrawalInput) {
+    ...TransactionsAllFragment
+  }
+}
+    ${TransactionsAllFragmentFragmentDoc}`;
+
+export const useWithdrawalMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<WithdrawalMutation, TError, WithdrawalMutationVariables, TContext>) => {
+    
+    return useMutation<WithdrawalMutation, TError, WithdrawalMutationVariables, TContext>(
+      {
+    mutationKey: ['Withdrawal'],
+    mutationFn: (variables?: WithdrawalMutationVariables) => gqlFetcher<WithdrawalMutation, WithdrawalMutationVariables>(WithdrawalDocument, variables)(),
+    ...options
+  }
+    )};
+
+
+useWithdrawalMutation.fetcher = (variables: WithdrawalMutationVariables, options?: RequestInit['headers']) => gqlFetcher<WithdrawalMutation, WithdrawalMutationVariables>(WithdrawalDocument, variables, options);
 
 export const DeleteInvitationDocument = `
     mutation DeleteInvitation($id: Int!) {

@@ -14,11 +14,11 @@ export const securitySettingsSchema = z
     new_password: z.string().min(1, 'New password is required'),
   })
   .superRefine((args, ctx) => {
-    if (args.current_password !== args.new_password) {
+    if (args.current_password == args.new_password) {
       return ctx.addIssue({
         code: z.ZodIssueCode.custom,
         path: ['new_password'],
-        message: 'New password must be the same as current password',
+        message: `New password cannot be the same as the current password`,
       });
     }
   });

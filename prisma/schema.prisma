@@ -93,7 +93,7 @@ enum BankAccountType {
 }
 
 model BankAccount {
-  id                  Int              @id @default(autoincrement())
+  id                  Int                 @id @default(autoincrement())
   nickname            String?
   bank_name           String
   account_number      String
@@ -109,11 +109,12 @@ model BankAccount {
   bank_code           String? // Used in some countries instead of routing number/sort code
   branch_code         String? // Specific branch code if applicable
   branch_address      String? // Physical address of the bank's branch
-  is_primary          Boolean          @default(false)
-  investor            Investor         @relation(fields: [investor_id], references: [id], onDelete: Cascade)
+  is_primary          Boolean             @default(false)
+  investor            Investor            @relation(fields: [investor_id], references: [id], onDelete: Cascade)
   investor_id         Int
-  created_at          DateTime         @default(now())
-  updated_at          DateTime         @updatedAt
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  withdrawal_requests WithdrawalRequest[]
 }
 
 enum PaymentMethodType {
@@ -202,13 +203,26 @@ enum RequestStatus {
 }
 
 model Request {
-  id          Int         @id @default(autoincrement())
-  type        RequestType @default(WITHDRAWAL)
-  investor    Investor    @relation(fields: [investor_id], references: [id])
-  investor_id Int
-  status      TicketStatus
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @updatedAt
+  id                  Int                 @id @default(autoincrement())
+  type                RequestType         @default(WITHDRAWAL)
+  investor            Investor            @relation(fields: [investor_id], references: [id])
+  investor_id         Int
+  status              RequestStatus
+  withdrawal_requests WithdrawalRequest[]
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+}
+
+model WithdrawalRequest {
+  id              Int          @id @default(autoincrement())
+  request         Request      @relation(fields: [request_id], references: [id])
+  request_id      Int
+  bank_account    BankAccount? @relation(fields: [bank_account_id], references: [id])
+  bank_account_id Int?
+  amount          Float        @db.DoublePrecision()
+  currency        String       @default("USD")
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
 }
 
 enum TicketStatus {

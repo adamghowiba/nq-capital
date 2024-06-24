@@ -38,6 +38,12 @@ mutation AddInvestment($addInvestmentInput: AddInvestmentInput!) {
   }
 }
 
+mutation Withdrawal($withdrawalInput: WithdrawalInput!) {
+  withdrawal(withdrawalInput: $withdrawalInput) {
+    ...TransactionsAllFragment
+  }
+}
+
 mutation DeleteInvitation($id: Int!) {
   removeInvitation(id: $id) {
     ...InvitationBaseFragment

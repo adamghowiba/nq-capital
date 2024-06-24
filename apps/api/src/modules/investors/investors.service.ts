@@ -2,14 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { InvestorEntity } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { Transaction } from '@prisma/client';
+import { hashSync } from 'bcrypt';
+import { ApiError } from '../../common/exceptions/api.error';
+import { TransactionEntity } from '../transactions/entities/transaction.entity';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
+import { WithdrawalInput } from './dto/withdrawal.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
-import { hashSync } from 'bcrypt';
+import { FundsService } from '../funds/funds.service';
 
 @Injectable()
 export class InvestorsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly fundsService: FundsService) {}
 
   async create(
     createInvestorInput: CreateInvestorInput
@@ -22,7 +26,7 @@ export class InvestorsService {
       data: {
         ...createInvestorInput,
         bank_accounts: createInvestorInput.bankAccountsCreateMany,
-        password: hashedPassword
+        password: hashedPassword,
       },
     });
 
@@ -165,17 +169,61 @@ export class InvestorsService {
     id: number,
     updateInvestorInput: UpdateInvestorInput
   ): Promise<InvestorEntity> {
-    const hashedPassword = updateInvestorInput.password ? hashSync(updateInvestorInput.password, 10) : undefined;
+    const hashedPassword = updateInvestorInput.password
+      ? hashSync(updateInvestorInput.password, 10)
+      : undefined;
 
     const investor = await this.prisma.investor.update({
       where: { id },
       data: {
         ...updateInvestorInput,
-        password: hashedPassword
+        password: hashedPassword,
       },
     });
 
     return investor;
+  }
+
+  async withdrawal(
+    withdrawalInput: WithdrawalInput
+  ): Promise<TransactionEntity> {
+    // TODO: Switch to using transaction emitter, and switch transaction emitter to use new AWS Command like system
+    throw new ApiError("Withdrawals are currently disabled", {showMessageToUser: true})
+
+    const portfolio = await this.getInvestorPortfolio(
+      withdrawalInput.investor_id
+    );
+
+    if (portfolio.total_balance < withdrawalInput.amount) {
+      throw new ApiError('Insufficient funds', {
+        explanation: "You don't have enough funds to withdraw that amount",
+      });
+    }
+
+    const withdrawalTransaction = await this.prisma.transaction.create({
+      data: {
+        balance_after: portfolio.total_balance - withdrawalInput.amount,
+        amount: withdrawalInput.amount,
+        investor_id: withdrawalInput.investor_id,
+        status: 'COMPLETED',
+        type: 'WITHDRAWAL',
+      },
+    });
+
+    const request = await this.prisma.request.create({
+      data: {
+        status: 'COMPLETED',
+        investor_id: withdrawalInput.investor_id,
+        withdrawal_requests: {
+          create: {
+            amount: withdrawalInput.amount,
+            bank_account_id: withdrawalInput.bank_account_id,
+          },
+        },
+      },
+    });
+
+    return withdrawalTransaction;
   }
 
   async remove(id: number): Promise<InvestorEntity> {

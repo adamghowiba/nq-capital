@@ -5,7 +5,7 @@ import {
   Parent,
   Query,
   ResolveField,
-  Resolver
+  Resolver,
 } from '@nestjs/graphql';
 import { InvestorEntity, Permission } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
@@ -18,6 +18,8 @@ import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
 import { InvestorsService } from './investors.service';
+import { WithdrawalInput } from './dto/withdrawal.input';
+import { TransactionEntity } from '../transactions/entities/transaction.entity';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
@@ -41,9 +43,7 @@ export class InvestorsResolver {
   }
 
   @Query(() => InvestorEntity, { name: 'investor' })
-  retrieve(
-    @Args('id', { type: () => Int }) id: number,
-  ) {
+  retrieve(@Args('id', { type: () => Int }) id: number) {
     return this.investorsService.retrieve(id);
   }
 
@@ -62,7 +62,9 @@ export class InvestorsResolver {
     @Args() args: GetInvestorPortfolioArgs,
     @InvestorSession() investor: InvestorEntity
   ) {
-    return this.investorsService.getInvestorPortfolioWithStake(args?.id || investor?.id);
+    return this.investorsService.getInvestorPortfolioWithStake(
+      args?.id || investor?.id
+    );
   }
 
   @Mutation(() => InvestorEntity)
@@ -78,6 +80,11 @@ export class InvestorsResolver {
   @Mutation(() => InvestorEntity)
   removeInvestor(@Args('id', { type: () => Int }) id: number) {
     return this.investorsService.remove(id);
+  }
+
+  @Mutation(() => TransactionEntity)
+  withdrawal(@Args('withdrawalInput') withdrawalInput: WithdrawalInput) {
+    return this.investorsService.withdrawal(withdrawalInput);
   }
 
   @ResolveField(() => AddressEntity, {

@@ -29,26 +29,29 @@ import {
   useListFundsQuery,
   useListInvestorsQuery,
   useListTransactionsQuery,
+  useWithdrawalMutation,
 } from '../../gql/gql-client';
 import {
   InvestmentSchema,
+  WithdrawalSchema,
   investmentSchema,
+  withdrawalSchema,
 } from '../../modules/investments/investment.schema';
 import { toast } from 'sonner';
 import { parseApiError } from '../../utils/error.utils';
 
-export interface InvestmentMutationDrawerProps extends DrawerProps {}
+export interface WithdrawalMutationDrawerProps extends DrawerProps {}
 
-export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
+export const WithdrawalMutationDrawer: FC<WithdrawalMutationDrawerProps> = ({
   ...props
 }) => {
-  const form = useForm<InvestmentSchema>({
+  const form = useForm<WithdrawalSchema>({
     defaultValues: {
       amount: 0,
-      notes: '',
-      reference_id: '',
+      bank_account_id: undefined,
+      investor_id: undefined,
     },
-    resolver: zodResolver(investmentSchema),
+    resolver: zodResolver(withdrawalSchema),
   });
 
   const queryClient = useQueryClient();
@@ -58,38 +61,27 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
     { staleTime: Infinity, select: (data) => data.investors }
   );
 
-  const fundsQuery = useListFundsQuery(
-    {},
-    { staleTime: Infinity, select: (data) => data.funds }
-  );
-
-  const addInvestmentMutation = useAddInvestmentMutation({
+  const addInvestmentMutation = useWithdrawalMutation({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: useListTransactionsQuery.getKey(),
       });
       form.reset();
-    },
-    onMutate: () => {
       props?.onClose?.({}, 'backdropClick');
     },
   });
 
   const handleValidSubmission: SubmitHandler<InvestmentSchema> = (data) => {
     const promise = addInvestmentMutation.mutateAsync({
-      addInvestmentInput: {
+      withdrawalInput: {
         amount: data.amount,
-        // @ts-expect-error TODO: Handle this being required, but shouldn't be required
-        fund_id: data.fund_id,
         investor_id: data.investor_id,
-        notes: data.notes,
-        reference_id: data.reference_id,
       },
     });
 
     toast.promise(promise, {
-      loading: 'Creating investment...',
-      success: 'Investment created',
+      loading: 'Adding withdrawal...',
+      success: 'Withdrawal added successfully',
       error: parseApiError,
     });
   };
@@ -105,7 +97,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
       >
         <DrawerContent>
           <DrawerHeader onClose={() => props?.onClose?.({}, 'backdropClick')}>
-            <Typography>Add investment</Typography>
+            <Typography>New Withdrawal</Typography>
           </DrawerHeader>
 
           <DrawerBody>
@@ -130,7 +122,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
 
                     <FormHelperText>
                       {form.formState?.errors?.amount?.message ||
-                        'Amount you would like to invest in USD'}
+                        'Amount to withdrawal from the investor account'}
                     </FormHelperText>
                   </FormControl>
                 )}
@@ -170,9 +162,10 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
                 )}
               />
 
-              <Controller
+              {/* TODO: Unsure of having bank account for withdrawal on admin side. Remove or implement */}
+              {/* <Controller
                 control={form.control}
-                name="fund_id"
+                name="bank_account_id"
                 render={({ field, fieldState }) => (
                   <FormControl error={fieldState.invalid}>
                     <FormLabel>Fund</FormLabel>
@@ -209,29 +202,26 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
                     </FormHelperText>
                   </FormControl>
                 )}
-              />
+              /> */}
 
-              <NTextField
-                control={form.control}
-                name="reference_id"
-                label="Reference ID"
-                placeholder="CHS-092-1"
-                helperText="Attach a custom reference ID"
-              />
-
-              <NTextField
+              {/* TODO: Remove or implement */}
+              {/* <NTextField
                 control={form.control}
                 name="notes"
                 label="Notes"
                 multiline
                 minRows={4}
                 helperText="Notes or description of the investment"
-              />
+              /> */}
             </VStack>
           </DrawerBody>
 
           <DrawerFooter>
-            <Button variant="contained" color="secondary" onClick={() => props.onClose?.({}, "backdropClick")}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => props.onClose?.({}, 'backdropClick')}
+            >
               Cancel
             </Button>
 
@@ -240,7 +230,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
               color="primary"
               onClick={form.handleSubmit(handleValidSubmission, console.error)}
             >
-              Create investment
+              Add withdrawal
             </Button>
           </DrawerFooter>
         </DrawerContent>
@@ -248,5 +238,3 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
     </>
   );
 };
-
-export default InvestmentMutationDrawer;
