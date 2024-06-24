@@ -143,8 +143,6 @@ const Index = () => {
             ]}
           />
         </Box>
-
-        <InvestorFundsDataTable />
       </Screen>
     </>
   );

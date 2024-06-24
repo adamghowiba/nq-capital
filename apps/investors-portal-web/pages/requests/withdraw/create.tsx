@@ -9,14 +9,24 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { Box, HStack, NDateField, NTextField, VStack } from '@nq-capital/nui';
+import {
+  Box,
+  HStack,
+  NCurrencyField,
+  NDateField,
+  NTextField,
+  VStack,
+} from '@nq-capital/nui';
 import { DateTime } from 'luxon';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
-import { useAddInvestmentMutation } from '../../../lib/gql/gql-client';
+import {
+  useAddInvestmentMutation,
+  useInvestorPortfolioQuery,
+} from '../../../lib/gql/gql-client';
 import { useInvestor } from '../../../lib/hooks/use-investor';
 import OnboardingTopbar from '../../../lib/modules/onboarding/components/OnboardingTopbar';
 import RequestSuccessCard from '../../../lib/modules/requests/components/RequestSuccessCard';
@@ -30,7 +40,7 @@ import { NextPageWithLayout } from '../../_app';
 const STEPS = ['details', 'review', 'success'] as const;
 type Step = (typeof STEPS)[number];
 
-const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
+const WithdrawRequestPage: NextPageWithLayout = ({ ...props }) => {
   const [currentStep, setCurrentStep] = useState<Step>('details');
   const investor = useInvestor();
 
@@ -46,19 +56,16 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
     resolver: zodResolver(investmentRequest),
   });
 
-  const investmentMutation = useAddInvestmentMutation();
+  const investorPortfolio = useInvestorPortfolioQuery(
+    { id: investor?.data?.id || 0 },
+    { enabled: !!investor?.data?.id, select: (data) => data.investorPortfolio }
+  );
 
   const data = form.watch();
   const currentStepIndex = STEPS.indexOf(currentStep);
 
   const handleSubmit: SubmitHandler<InvestmentRequest> = (data) => {
-    investmentMutation.mutate({
-      addInvestmentInput: {
-        fund_id: 2,
-        investor_id: 14 || investor.data!.id,
-        amount: data.amount,
-      },
-    });
+    // TODO: Handle submit
   };
 
   const handleBackClick = () => {
@@ -75,6 +82,23 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
     if (!valid) return;
 
     setCurrentStep(STEPS[currentStepIndex + 1]);
+  };
+
+  const handleValidateAmount = () => {
+    const balance = investorPortfolio.data?.total_balance || 0;
+    const amount = data.amount;
+
+    if (amount > balance) {
+      form.setError('amount', {
+        type: 'min',
+        message: `You cannot withdraw more than your current balance of ${formatUSDCurrency(
+          balance
+        )}`,
+      });
+      return;
+    }
+
+    form.clearErrors('amount');
   };
 
   return (
@@ -132,42 +156,29 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
           <Box mx="auto" overflow="auto" maxWidth="600px" width="100%">
             {currentStep === 'details' && (
               <>
-                <Typography variant="h3">New investment</Typography>
+                <Typography variant="h3">Withdraw request</Typography>
                 <Typography variant="subtitle2" mb={3}>
-                  Enter details for a new investment
+                  Request a withdrawal from your investment account
                 </Typography>
 
                 <VStack gap={3}>
-                  <Controller
+                  <NCurrencyField
                     control={form.control}
+                    label="Amount"
                     name="amount"
-                    render={({ field, fieldState }) => (
-                      <FormControl required error={fieldState.invalid}>
-                        <FormLabel>Amount</FormLabel>
+                    onBlur={handleValidateAmount}
+                    helperText={
+                      <VStack justify="space-between">
+                        <span>Amount you would like to invest in USD</span>
 
-                        <NumericFormat
-                          prefix="$"
-                          thousandSeparator
-                          customInput={TextField}
-                          value={field.value || ''}
-                          onValueChange={(values, sourceInfo) =>
-                            field.onChange(values.floatValue)
-                          }
-                        />
-
-                        <FormHelperText>
-                          {form.formState?.errors?.amount?.message ||
-                            'Amount you would like to invest in USD'}
-                        </FormHelperText>
-                      </FormControl>
-                    )}
-                  />
-
-                  <NDateField
-                    control={form.control}
-                    isRequired
-                    name="investment_date"
-                    label="Investment date"
+                        <Box color="grey.900" fontWeight="medium">
+                          Current Balance:{' '}
+                          {formatUSDCurrency(
+                            investorPortfolio.data?.total_balance
+                          )}
+                        </Box>
+                      </VStack>
+                    }
                   />
 
                   <NTextField
@@ -184,14 +195,15 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
 
             {currentStep === 'review' && (
               <>
-                <Typography variant="h3">New investment</Typography>
+                <Typography variant="h3">Review Withdraw</Typography>
                 <Typography variant="subtitle2" mb={3}>
-                  Enter details for a new investment
+                  Review the below details to ensure they are correct. Once the
+                  withdraw has been processed we will send you a notification.
                 </Typography>
 
                 <VStack>
                   <VStack>
-                    <Typography variant="caption">Investing</Typography>
+                    <Typography variant="caption">Withdrawing</Typography>
                     <Typography variant="h1">
                       {formatUSDCurrency(data.amount || 0)}
                     </Typography>
@@ -205,10 +217,10 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
                         sx={{ width: '200px', color: '#808080' }}
                         flexShrink={0}
                       >
-                        Investment date
+                        Request date
                       </Typography>
                       <Typography>
-                        {DateTime.fromISO(data.investment_date).toLocaleString(
+                        {DateTime.now().toLocaleString(
                           DateTime.DATE_FULL
                         )}
                       </Typography>
@@ -222,6 +234,17 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
                         Payment Mode
                       </Typography>
                       <Typography>Bank Transfer</Typography>
+                    </HStack>
+
+                    <HStack>
+                      <Typography
+                        sx={{ width: '200px', color: '#808080' }}
+                        flexShrink={0}
+                      >
+                        Bank Account
+                      </Typography>
+
+                      <Typography>1231 12313 12</Typography>
                     </HStack>
                   </VStack>
 
@@ -261,7 +284,7 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
                     ? form.handleSubmit(handleSubmit, console.error)
                     : handleNextClick
                 }
-                loading={investmentMutation.isPending}
+                // loading={investmentMutation.isPending}
               >
                 {currentStep === 'details' ? 'Review' : 'Submit'}
               </LoadingButton>
@@ -273,6 +296,6 @@ const CreateInvestmentPage: NextPageWithLayout = ({ ...props }) => {
   );
 };
 
-CreateInvestmentPage.getLayout = (page) => page;
+WithdrawRequestPage.getLayout = (page) => page;
 
-export default CreateInvestmentPage;
+export default WithdrawRequestPage;

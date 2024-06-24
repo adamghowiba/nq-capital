@@ -68,6 +68,7 @@ export const InvestmentMutationDrawer: FC<InvestmentMutationDrawerProps> = ({
       queryClient.invalidateQueries({
         queryKey: useListTransactionsQuery.getKey(),
       });
+      form.reset();
     },
     onMutate: () => {
       props?.onClose?.({}, 'backdropClick');

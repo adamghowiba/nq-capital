@@ -104,9 +104,8 @@ const TicketsPage: NextPageWithLayout = ({ ...props }) => {
                 </MenuButton>
 
                 <MenuList>
-                  <NMenuItem>Withdrawal</NMenuItem>
-                  <NMenuItem href="/requests/investment/create">
-                    Investment
+                  <NMenuItem href="/requests/withdraw/create">
+                    Withdrawal
                   </NMenuItem>
                   <NMenuItem
                     onClick={() => setIsTicketDrawerOpen((open) => !open)}

@@ -68,12 +68,13 @@ model Investor {
   invested_funds        InvestorFund[]
   bank_accounts         BankAccount[]
   tickets               Ticket[]
-  created_at            DateTime              @default(now())
-  updated_at            DateTime              @updatedAt
   messages              Message[]
   assets                Asset[]
   transactions          Transaction[]
   password_reset_tokens PasswordResetToken[]
+  requests              Request[]
+  created_at            DateTime              @default(now())
+  updated_at            DateTime              @updatedAt
 }
 
 model Note {
@@ -189,6 +190,26 @@ enum TransactionStatus {
   CANCELLED
   REVERSED
   FAILED
+}
+
+enum RequestType {
+  WITHDRAWAL
+}
+
+enum RequestStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Request {
+  id          Int         @id @default(autoincrement())
+  type        RequestType @default(WITHDRAWAL)
+  investor    Investor    @relation(fields: [investor_id], references: [id])
+  investor_id Int
+  status      TicketStatus
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
 }
 
 enum TicketStatus {

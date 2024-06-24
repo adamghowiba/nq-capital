@@ -33,6 +33,7 @@ export interface NCurrencyFieldProps<
       | 'allowLeadingZeros'
       | 'suffix'
       | 'prefix'
+      | 'onBlur'
     > {
   helperText?: ReactNode;
   label?: string;
@@ -56,6 +57,7 @@ export const NCurrencyField = <
   label,
   placeholder,
   isRequired,
+  onBlur,
   defaultValue,
   disabled,
   rules,
@@ -90,7 +92,10 @@ export const NCurrencyField = <
               onValueChange={(values, sourceInfo) =>
                 field.onChange(values.floatValue)
               }
-              onBlur={field.onBlur}
+              onBlur={(event) => {
+                field.onBlur?.(event);
+                onBlur?.(event);
+              }}
               disabled={field.disabled}
             />
 
