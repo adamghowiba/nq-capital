@@ -1,5 +1,5 @@
 import { Popper, PopperProps, Typography } from '@mui/material';
-import { ButtonTab, ButtonTabs, HStack, VStack } from '@nq-capital/nui';
+import { Box, ButtonTab, ButtonTabs, HStack, VStack } from '@nq-capital/nui';
 import { FC, useMemo, useState } from 'react';
 
 export interface NotificationPopoverProps extends PopperProps {}
@@ -10,24 +10,24 @@ const MOCK_NOTIFICATIONS: {
   id: number;
   read_at?: string;
 }[] = [
-  {
-    id: 1,
-    title: 'New Investment',
-    description: "You've successfully invested $1,000",
-  },
-  {
-    id: 2,
-    title: 'Withdraw completed',
-    description: 'Your scheduled withdrawal of $500 is completed',
-    read_at: '2023-01-25',
-  },
-  {
-    id: 3,
-    title: 'Maintenon notice',
-    description:
-      'Scheduled maintenon on Jan 25, 2023 is postponed to Jan 30, 2023',
-    read_at: '2023-01-25',
-  },
+  // {
+  //   id: 1,
+  //   title: 'New Investment',
+  //   description: "You've successfully invested $1,000",
+  // },
+  // {
+  //   id: 2,
+  //   title: 'Withdraw completed',
+  //   description: 'Your scheduled withdrawal of $500 is completed',
+  //   read_at: '2023-01-25',
+  // },
+  // {
+  //   id: 3,
+  //   title: 'Maintenon notice',
+  //   description:
+  //     'Scheduled maintenon on Jan 25, 2023 is postponed to Jan 30, 2023',
+  //   read_at: '2023-01-25',
+  // },
 ];
 const NotificationPopover: FC<NotificationPopoverProps> = ({ ...props }) => {
   const [tab, setTab] = useState('all');
@@ -77,6 +77,7 @@ const NotificationPopover: FC<NotificationPopoverProps> = ({ ...props }) => {
             gap={1}
             px="4px"
             maxHeight="400px"
+            minHeight={'100px'}
             overflow="auto"
             sx={{
               '&::-webkit-scrollbar': {
@@ -87,7 +88,25 @@ const NotificationPopover: FC<NotificationPopoverProps> = ({ ...props }) => {
                 borderRadius: '100px',
               },
             }}
+            flexGrow={1}
+            flexShrink={0}
           >
+            {!filteredNotifications.length && (
+              <VStack
+                p={1}
+                height="100%"
+                width="100%"
+                justify="center"
+                align="center"
+                flexGrow={1}
+                flexShrink={0}
+              >
+                <Typography color="grey.400" mt="-1rem">
+                  No notifications
+                </Typography>
+              </VStack>
+            )}
+
             {filteredNotifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
