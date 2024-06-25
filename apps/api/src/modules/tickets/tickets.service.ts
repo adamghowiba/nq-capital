@@ -43,21 +43,6 @@ export class TicketsService {
       params
     );
 
-    // const ticketMessage = await this.prisma.message.create({
-    //   data: {
-    //     ...sendMessageInput,
-    //     type: params.user_type,
-    //     sent_by_investor_id:
-    //       params.user_type === 'INVESTOR' && params.investor?.id
-    //         ? params.investor.id
-    //         : undefined,
-    //     sent_by_user_id:
-    //       params.user_type === 'ADMIN' && params.user?.id
-    //         ? params.user.id
-    //         : undefined,
-    //   },
-    // });
-
     return ticketMessage;
   }
 

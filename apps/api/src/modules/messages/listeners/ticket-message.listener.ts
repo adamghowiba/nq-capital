@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
 import { renderEmailTemplate } from '@nq-capital/email-templates';
+import { PrismaService } from '@nq-capital/service-database';
 import { padId } from '@nq-capital/utils';
 import { INVESTORS_PORTAL_URL } from '@nq-capital/utils-constants';
 import { DateTime } from 'luxon';
 import { EmailService } from '../../../common/services/email/email.service';
 import { NotificationsService } from '../../notifications/notifications.service';
-import { TicketMessageSentEvent } from '../events/message-sent.event';
-import { OnEvent } from '@nestjs/event-emitter';
 import { MessageEvent } from '../constants/message-event.constants';
-import { PrismaService } from '@nq-capital/service-database';
+import { TicketMessageSentEvent } from '../events/message-sent.event';
 
 @Injectable()
 export class TicketMessageListener {
@@ -20,8 +20,6 @@ export class TicketMessageListener {
 
   @OnEvent(MessageEvent.MESSAGE_SENT)
   async handleEmailNotification(payload: TicketMessageSentEvent) {
-    if (payload.senderType === 'INVESTOR') return;
-
     const ticket = await this.prisma.ticket.findUnique({
       where: {
         id: payload.ticketId,
@@ -39,12 +37,21 @@ export class TicketMessageListener {
 
     if (!ticket) return;
 
+    const toAddresses =
+      payload.senderType === 'ADMIN'
+        ? ticket.investor.email
+        : (await this.prisma.user.findMany({ select: { email: true } })).map(
+            (user) => user.email
+          );
+
     const notification = await this.notificationService.send({
       title: `New message on ticket #${padId(payload.ticketId)}`,
       content: payload.message.slice(0, 100),
       channel: ['EMAIL', 'APP'],
       priority: 'HIGH',
     });
+
+    if (!toAddresses.length) return;
 
     const ticketUrl = `${INVESTORS_PORTAL_URL.href}/tickets/${payload.ticketId}`;
 
@@ -62,7 +69,7 @@ export class TicketMessageListener {
     this.emailService.sendEmail({
       subject: `New message on ticket #${padId(payload.ticketId)}`,
       destination: {
-        toAddress: ticket.investor.email,
+        toAddress: toAddresses,
       },
       body: {
         html: template,

@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ApplicationSessionEntity } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
-import { padId } from '@nq-capital/utils';
+import { ApiError } from '../../common/exceptions/api.error';
+import {
+  NotificationEmitter,
+  SendTicketMessageCommand,
+} from '../notifications/notification-emitter.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { SendMessageInput } from './dto/create-message.input';
 import { UpdateMessageInput } from './dto/update-message.input';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { MessageEvent } from './constants/message-event.constants';
 import { TicketMessageSentEvent } from './events/message-sent.event';
 
@@ -14,13 +18,17 @@ export class MessagesService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly notification: NotificationsService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
+    private readonly notificationEmitter: NotificationEmitter
   ) {}
 
   async create(
     createMessageInput: SendMessageInput,
     params: ApplicationSessionEntity
   ) {
+    if (!params.user && !params.investor)
+      throw new ApiError('Unable to determine sender');
+
     const message = await this.prisma.message.create({
       data: {
         ...createMessageInput,
@@ -35,6 +43,14 @@ export class MessagesService {
       },
     });
 
+    // this.notificationEmitter.emit(
+    //   new SendTicketMessageCommand({
+    //     message: createMessageInput.content,
+    //     recipient: 'adam@webrevived.com',
+    //     date: "",
+    //   })
+    // );
+
     this.eventEmitter.emit(
       MessageEvent.MESSAGE_SENT,
       new TicketMessageSentEvent({
@@ -42,11 +58,9 @@ export class MessagesService {
         senderType: params.user_type,
         created_at: new Date(),
         ticketId: createMessageInput.ticket_id || 0,
-        // @ts-ignore
-        senderDisplayName:
-          params.user_type === 'INVESTOR'
-            ? params.investor?.first_name
-            : params.user?.first_name,
+        senderDisplayName: (params.user_type === 'INVESTOR'
+          ? params.investor?.first_name
+          : params.user?.first_name) as string,
       })
     );
 
