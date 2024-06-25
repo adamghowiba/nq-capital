@@ -7,7 +7,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { InvestorEntity, Permission, SessionEntity } from '@nq-capital/iam';
+import { ApplicationSessionEntity, InvestorEntity, Permission, SessionEntity } from '@nq-capital/iam';
 import { CreateTransactionInput } from './dto/create-transaction.input';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { TransactionEntity } from './entities/transaction.entity';
@@ -34,7 +34,7 @@ export class TransactionsResolver {
 
   @Permission('read', 'Transaction')
   @Query(() => [TransactionEntity], { name: 'transactions' })
-  list(@Args() listTransactionArgs: ListTransactionsArgs, @GqlSession() session: SessionEntity) {
+  list(@Args() listTransactionArgs: ListTransactionsArgs, @GqlSession() session: ApplicationSessionEntity) {
     return this.transactionsService.list(listTransactionArgs, session);
   }
 

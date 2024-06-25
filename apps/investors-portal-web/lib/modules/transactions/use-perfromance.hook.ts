@@ -19,10 +19,11 @@ export const getTimespanDates = (params?: { timespan?: Timespan }) => {
     return Array.from({ length: 13 }, (_, i) => start.plus({ month: i }));
   }
 
-  const start = now.minus({ month: 1 });
+  const start = now.endOf("day").minus({ month: 1 });
+  const diff = Math.ceil(Math.abs(start.diffNow('days').days))
 
-  return Array.from({ length: now.daysInMonth }, (_, i) =>
-    start.plus({ day: i })
+  return Array.from({ length: diff + 1}, (_, i) =>
+    start.plus({ day: i }).endOf("day")
   );
 };
 
@@ -35,6 +36,8 @@ export const usePortfolioPerformance = (params: { timespan: Timespan }) => {
   const timespanDates = useMemo(() => {
     return getTimespanDates({ timespan: params.timespan });
   }, [params.timespan]);
+
+  console.log(timespanDates.map(date => date.toFormat("MM-dd")));
 
   const aggregatedTransactions = useMemo(() => {
     if (!transactions.data) {

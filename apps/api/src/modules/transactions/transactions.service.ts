@@ -1,38 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { ApplicationSessionEntity } from '@nq-capital/iam';
 import { PrismaService } from '@nq-capital/service-database';
 import { GraphQLError } from 'graphql';
+import { ApiError } from '../../common/exceptions/api.error';
 import { CreateTransactionInput } from './dto/create-transaction.input';
+import { ListTransactionsArgs } from './dto/get-transaction.args';
 import { UpdateTransactionInput } from './dto/update-transaction.input';
 import { TransactionEntity } from './entities/transaction.entity';
-import { SessionEntity } from '@nq-capital/iam';
-import { ListTransactionsArgs } from './dto/get-transaction.args';
-
-/**
- * Events that trigger a transaction:
- * - Investors invests in a fund
- * - Investor withdraws from a fund
- *
- * Maybe Events:
- * - Admin increases fund value
- *
- *
- * History:
- * Fund A: $100
- *
- * Investor A invests $50
- * Investor B invests $50
- * Both investor A & B own 50% of the fund
- *
-//  * Fund goes up by $100 totaling $200.
-//  * Each investor has $100 in there portfolio.
- *
- * Investor C invests $100 totaling 100% of the fund.
- * Investor A & B have a new ownership of 25%.
- *
- * Current fund amount: $300
- * Investor C balance (50% stake): $150
- * Investor A & B balance (25% stake): $75
- */
 
 @Injectable()
 export class TransactionsService {
@@ -50,13 +24,17 @@ export class TransactionsService {
 
   async list(
     params: ListTransactionsArgs,
-    session: SessionEntity
+    session: ApplicationSessionEntity
   ): Promise<TransactionEntity[]> {
+    if (session.user_type === 'INVESTOR' && !session.investor?.id)
+      throw new ApiError('Insufficient permissions');
+
     const transactions = await this.prisma.transaction.findMany({
       where: {
-        investor_id: session.user
-          ? params.investorId || undefined
-          : session.investor?.id || undefined,
+        investor_id:
+          session.user_type === 'INVESTOR'
+            ? session.investor?.id
+            : params.investorId || undefined,
         fund_id: params.fundId || undefined,
         status: params.status ? { in: params.status } : undefined,
         type: params.type ? { in: params.type } : undefined,

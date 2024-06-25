@@ -12,20 +12,18 @@ import { PrismaService } from '@nq-capital/service-database';
 import { InvestorSession } from '../../common/decorators/auth/session.decorator';
 import { AddressEntity } from '../addresses/entities/address.entity';
 import { BankAccountEntity } from '../bank-accounts/entities/bank-account.entity';
-import { FundsService } from '../funds/funds.service';
+import { TransactionEntity } from '../transactions/entities/transaction.entity';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { GetInvestorPortfolioArgs } from './dto/investor-portfilo.args';
 import { UpdateInvestorInput } from './dto/update-investor.input';
+import { WithdrawalInput } from './dto/withdrawal.input';
 import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
 import { InvestorsService } from './investors.service';
-import { WithdrawalInput } from './dto/withdrawal.input';
-import { TransactionEntity } from '../transactions/entities/transaction.entity';
 
 @Resolver(() => InvestorEntity)
 export class InvestorsResolver {
   constructor(
     private readonly investorsService: InvestorsService,
-    private readonly fundsService: FundsService,
     private readonly prisma: PrismaService
   ) {}
 

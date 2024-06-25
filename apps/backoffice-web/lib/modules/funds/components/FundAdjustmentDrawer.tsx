@@ -63,6 +63,9 @@ export const FundAdjustmentDrawer: FC<FundAdjustmentDrawerProps> = ({
       })
       form.reset();
     },
+    onMutate: () => {
+      props.onClose?.({}, 'backdropClick');
+    }
   });
 
   const handleAdjustFund: SubmitHandler<FundAdjustmentSchema> = async (

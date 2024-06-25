@@ -22,6 +22,8 @@ const AccountValueChart: FC<AccountValueChartProps> = ({
 }) => {
   const performance = usePortfolioPerformance({ timespan: dateFilter });
 
+  console.log(performance)
+
   return (
     <>
       <Card variant="outlined">

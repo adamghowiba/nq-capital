@@ -8,12 +8,14 @@ import { TransactionEntity } from '../transactions/entities/transaction.entity';
 import { CreateInvestorInput } from './dto/create-investor.input';
 import { UpdateInvestorInput } from './dto/update-investor.input';
 import { WithdrawalInput } from './dto/withdrawal.input';
-import { InvestorPortfolioEntity } from './entities/investor-portfilo.entity';
-import { FundsService } from '../funds/funds.service';
+import {
+  InvestorPortfolioEntity,
+  PortfolioTotalEntity,
+} from './entities/investor-portfilo.entity';
 
 @Injectable()
 export class InvestorsService {
-  constructor(private readonly prisma: PrismaService, private readonly fundsService: FundsService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(
     createInvestorInput: CreateInvestorInput
@@ -133,6 +135,26 @@ export class InvestorsService {
   }
 
   /**
+   * Get an investors total balance.
+   * @TODO as data get's larger this will be inefficient
+   * @param id Investor Id
+   * @returns Aggregated balance
+   */
+  async getBalance(id: number): Promise<PortfolioTotalEntity> {
+    const transactions = await this.prisma.transaction.findMany({
+      where: { investor_id: id },
+    });
+
+    const overallTotals = this.getTransactionTotal(transactions);
+
+    return {
+      total_balance: overallTotals.total_balance,
+      total_invested: overallTotals.total_invested,
+      total_pending_transactions: overallTotals.total_pending_transactions,
+    };
+  }
+
+  /**
    * Get investor portfolio by taking the current value of a portfolio by there stake in the portfolio
    */
   async getInvestorPortfolioWithStake(
@@ -188,7 +210,9 @@ export class InvestorsService {
     withdrawalInput: WithdrawalInput
   ): Promise<TransactionEntity> {
     // TODO: Switch to using transaction emitter, and switch transaction emitter to use new AWS Command like system
-    throw new ApiError("Withdrawals are currently disabled", {showMessageToUser: true})
+    throw new ApiError('Withdrawals are currently disabled', {
+      showMessageToUser: true,
+    });
 
     const portfolio = await this.getInvestorPortfolio(
       withdrawalInput.investor_id

@@ -70,6 +70,100 @@ type PaginatedUserEntity {
   hasNextPage: Boolean!
 }
 
+type AddressEntity {
+  id: Int!
+  street: String!
+  street_2: String
+  city: String!
+  state_province: String!
+  postal_zip_code: String
+  country: String!
+  country_code: String!
+  latitude: Float!
+  longitude: Float!
+  verified: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BankAccountEntity {
+  id: Int!
+  nickname: String
+  bank_name: String!
+  account_number: String!
+  account_holder_name: String!
+  type: BankAccountType
+  bank_country: String!
+  currency: String!
+  routing_number: String
+  swift_code: String
+  iban: String
+  sort_code: String
+  bsb_number: String
+  bank_code: String
+  branch_code: String
+  branch_address: String
+  is_primary: Boolean!
+  investor_id: Int!
+  created_at: DateTime!
+  updated_at: DateTime!
+}
+
+enum BankAccountType {
+  CHECKING
+  SAVINGS
+}
+
+type TransactionEntity {
+  id: Int!
+  type: TransactionType!
+  amount: Float!
+  currency_code: String!
+  balance_after: Float!
+  description: String
+  fee: Float
+  external_id: String
+  notes: String
+  investor_id: Int
+  fund_id: Int
+  status: TransactionStatus!
+  created_at: DateTime!
+  updated_at: DateTime!
+  investor: InvestorEntity
+  fund: FundEntity
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  ADJUSTMENT
+  FEE
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REVERSED
+  FAILED
+}
+
+type PortfolioTotalEntity {
+  total_invested: Float!
+  total_balance: Float!
+  total_pending_transactions: Float!
+}
+
+type InvestorPortfolioEntity {
+  total_invested: Float!
+  total_balance: Float!
+  total_pending_transactions: Float!
+  previous_month: PortfolioTotalEntity!
+  balance_change_percentage: Float!
+  balance_change_amount: Float!
+}
+
 type FundAdjustmentEntity {
   id: Int!
   description: String
@@ -118,100 +212,6 @@ type FundEntity {
   balance: Float!
   created_at: DateTime!
   updated_at: DateTime!
-}
-
-type TransactionEntity {
-  id: Int!
-  type: TransactionType!
-  amount: Float!
-  currency_code: String!
-  balance_after: Float!
-  description: String
-  fee: Float
-  external_id: String
-  notes: String
-  investor_id: Int
-  fund_id: Int
-  status: TransactionStatus!
-  created_at: DateTime!
-  updated_at: DateTime!
-  investor: InvestorEntity
-  fund: FundEntity
-}
-
-enum TransactionType {
-  DEPOSIT
-  WITHDRAWAL
-  ADJUSTMENT
-  FEE
-  REFUND
-}
-
-enum TransactionStatus {
-  PENDING
-  COMPLETED
-  CANCELLED
-  REVERSED
-  FAILED
-}
-
-type AddressEntity {
-  id: Int!
-  street: String!
-  street_2: String
-  city: String!
-  state_province: String!
-  postal_zip_code: String
-  country: String!
-  country_code: String!
-  latitude: Float!
-  longitude: Float!
-  verified: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type BankAccountEntity {
-  id: Int!
-  nickname: String
-  bank_name: String!
-  account_number: String!
-  account_holder_name: String!
-  type: BankAccountType
-  bank_country: String!
-  currency: String!
-  routing_number: String
-  swift_code: String
-  iban: String
-  sort_code: String
-  bsb_number: String
-  bank_code: String
-  branch_code: String
-  branch_address: String
-  is_primary: Boolean!
-  investor_id: Int!
-  created_at: DateTime!
-  updated_at: DateTime!
-}
-
-enum BankAccountType {
-  CHECKING
-  SAVINGS
-}
-
-type PortfolioTotalEntity {
-  total_invested: Float!
-  total_balance: Float!
-  total_pending_transactions: Float!
-}
-
-type InvestorPortfolioEntity {
-  total_invested: Float!
-  total_balance: Float!
-  total_pending_transactions: Float!
-  previous_month: PortfolioTotalEntity!
-  balance_change_percentage: Float!
-  balance_change_amount: Float!
 }
 
 type InvestorFundEntity {

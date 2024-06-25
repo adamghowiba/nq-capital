@@ -14,7 +14,7 @@ import { Screen } from '../../lib/components/Screen/Screen';
 import {
   ListFundInvestorsQuery,
   useListFundInvestorsQuery,
-  useRetrieveFundQuery
+  useRetrieveFundQuery,
 } from '../../lib/gql/gql-client';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
@@ -31,6 +31,14 @@ const FundDetailPage: NextPageWithLayout = ({ ...props }) => {
     { enabled: !!fundId, select: (data) => data.fund }
   );
 
+
+  const fundInvestors = useListFundInvestorsQuery(
+    {
+      fund_id: fundId,
+    },
+    { select: (data) => data.investorFunds?.data, enabled: !!fundId }
+  );
+
   const fundKPIS = useMemo(() => {
     if (!fund.data) return [];
 
@@ -41,7 +49,7 @@ const FundDetailPage: NextPageWithLayout = ({ ...props }) => {
       },
       {
         label: 'Investors',
-        value: 0,
+        value: fundInvestors.data?.length || 0,
       },
       {
         label: 'Default Fund',
@@ -49,13 +57,6 @@ const FundDetailPage: NextPageWithLayout = ({ ...props }) => {
       },
     ];
   }, [fund.data]);
-
-  const fundInvestors = useListFundInvestorsQuery(
-    {
-      fund_id: fundId,
-    },
-    { select: (data) => data.investorFunds?.data, enabled: !!fundId }
-  );
 
   const fundInvestorColumns = useMemo((): GridColDef<
     ListFundInvestorsQuery['investorFunds']['data'][number]
@@ -76,7 +77,9 @@ const FundDetailPage: NextPageWithLayout = ({ ...props }) => {
         renderCell: (params) => (
           <NLink href={`/users/${params.row.investor.id}`} underline="none">
             <HStack align="center" gap={1.5}>
-              <NAvatar size="sm">{params.row?.investor?.first_name?.[0]} </NAvatar>
+              <NAvatar size="sm">
+                {params.row?.investor?.first_name?.[0]}{' '}
+              </NAvatar>
               <Typography>
                 {params.row.investor?.first_name}{' '}
                 {params.row.investor.last_name}
@@ -86,8 +89,8 @@ const FundDetailPage: NextPageWithLayout = ({ ...props }) => {
         ),
       },
       {
-        field: 'invested_amount',
-        headerName: 'Investment Amount',
+        field: 'balance',
+        headerName: 'Current Balance',
         width: 150,
         valueFormatter: ({ value }) => formatUSDCurrency(value),
       },
@@ -95,11 +98,12 @@ const FundDetailPage: NextPageWithLayout = ({ ...props }) => {
         field: 'stake_percentage',
         headerName: 'Stake Percentage',
         width: 150,
-        valueFormatter: ({ value }) => `${(value * 100 as number)?.toFixed(2)}%`,
+        valueFormatter: ({ value }) =>
+          `${((value * 100) as number)?.toFixed(2)}%`,
       },
       {
-        field: 'balance',
-        headerName: 'Current Balance',
+        field: 'invested_amount',
+        headerName: 'Investment Amount',
         width: 150,
         valueFormatter: ({ value }) => formatUSDCurrency(value),
       },

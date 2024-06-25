@@ -29,22 +29,10 @@ const Adjustments = ({ ...props }) => {
     resolver: zodResolver(fundAdjustmentSchema),
   });
 
-  const fundsQuery = useListFundsQuery(
-    {},
-    { staleTime: Infinity, select: (data) => data.funds }
-  );
-
   const adjustmentsQuery = useListFundAdjustmentsQuery(
     {},
     { select: (data) => data.fundAdjustments }
   );
-
-  const adjustmentMutation = useAdjustFundMutation({
-    onSuccess: () => {
-      adjustmentsQuery.refetch();
-      form.reset();
-    },
-  });
 
   const adjustmentColumns = useMemo((): GridColDef<
     ListFundAdjustmentsQuery['fundAdjustments'][number]

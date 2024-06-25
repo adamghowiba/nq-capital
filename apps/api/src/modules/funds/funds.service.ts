@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@nq-capital/service-database';
 import { GraphQLError } from 'graphql';
+import { ApiError } from '../../common/exceptions/api.error';
 import { AddInvestmentInput } from '../investor-funds/dto/update-fund-investors.input';
 import { TransactionEmitter } from '../transactions/event-manager/transaction-emitter.service';
 import { AdjustFundInput } from './dto/adjust-fund.input';
@@ -9,10 +10,8 @@ import {
   CreateNestedInvestorFundWithoutFundInput,
 } from './dto/create-fund.input';
 import { UpdateFundInput } from './dto/update-fund.input';
-import { FundEntity } from './entities/fund.entity';
 import { FundAdjustmentEntity } from './entities/fund-adjustment.entity';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { ApiError } from '../../common/exceptions/api.error';
+import { FundEntity } from './entities/fund.entity';
 
 @Injectable()
 export class FundsService {
@@ -53,8 +52,8 @@ export class FundsService {
         explanation: `A fund with the name '${createFundInput.name}' already exists. Please choose a different name`,
         meta: {
           name: createFundInput.name,
-          test: "SOme test"
-        }
+          test: 'SOme test',
+        },
       });
     }
   }
@@ -108,8 +107,10 @@ export class FundsService {
     return fundAdjustments;
   }
 
+  /**
+   * Add an investment to a fund
+   */
   async addInvestment(addFundInvestorInput: AddInvestmentInput) {
-    // TODO: Needs to be transaction
     const fund = await this.prisma.fund.update({
       where: { id: addFundInvestorInput.fund_id },
       data: {

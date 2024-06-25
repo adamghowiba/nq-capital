@@ -1,24 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { PrismaService } from '@nq-capital/service-database';
-import { InvestorPortfolioEntity } from '../../investors/entities/investor-portfilo.entity';
-import { TRANSACTION_EVENTS } from '../event-manager/transaction-emitter.service';
-import { InvestmentEvent } from '../events/investment.event';
-import { FundAdjustmentEvent } from '../events/fund-adjustment.event';
 import { Prisma } from '@prisma/client';
+import { InvestorsService } from '../../investors/investors.service';
+import { TRANSACTION_EVENTS } from '../event-manager/transaction-emitter.service';
+import { FundAdjustmentEvent } from '../events/fund-adjustment.event';
+import { InvestmentEvent } from '../events/investment.event';
 
+/**
+ * Transaction listener is in charge of listening to events that require
+ * a transaction to be created
+ */
 @Injectable()
 export class TransactionListener {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly investorService: InvestorsService
+  ) {}
 
   @OnEvent(TRANSACTION_EVENTS.new_investment)
   async handleInvestmentAdded(payload: InvestmentEvent) {
-    const investor = await this.getInvestorBalance(payload.investor_id);
+    const investor = await this.investorService.getBalance(payload.investor_id);
 
     const transaction = await this.prisma.transaction.create({
       data: {
         amount: payload.amount,
-        balance_after: investor.total_balance,
+        balance_after: investor.total_balance + payload.amount,
         type: 'DEPOSIT',
         currency_code: 'USD',
         status: 'COMPLETED',
@@ -51,7 +58,7 @@ export class TransactionListener {
 
         return {
           amount: transactionAmount,
-          balance_after: investorFund.balance + payload.amount,
+          balance_after: investorFund.balance,
           type: 'ADJUSTMENT',
           currency_code: 'USD',
           status: 'COMPLETED',
@@ -65,30 +72,5 @@ export class TransactionListener {
     await this.prisma.transaction.createMany({
       data: transactions,
     });
-  }
-
-  private async getInvestorBalance(investorId: number) {
-    const investor = await this.prisma.investorFund.findMany({
-      where: { investor_id: investorId },
-    });
-
-    const totals = investor.reduce(
-      (
-        acc: Pick<InvestorPortfolioEntity, 'total_balance' | 'total_invested'>,
-        curr
-      ) => {
-        acc.total_invested += curr.invested_amount;
-
-        acc.total_balance += curr.balance;
-        return acc;
-      },
-      { total_invested: 0, total_balance: 0 }
-    );
-
-    return {
-      total_balance: totals.total_balance,
-      total_invested: totals.total_invested,
-      total_pending_transactions: 0,
-    };
   }
 }
