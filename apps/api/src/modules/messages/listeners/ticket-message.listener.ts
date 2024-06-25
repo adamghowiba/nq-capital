@@ -6,9 +6,8 @@ import { padId } from '@nq-capital/utils';
 import { INVESTORS_PORTAL_URL } from '@nq-capital/utils-constants';
 import { DateTime } from 'luxon';
 import { EmailService } from '../../../common/services/email/email.service';
+import { SendTicketMessageEvent } from '../../notifications/events/ticket.events';
 import { NotificationsService } from '../../notifications/notifications.service';
-import { MessageEvent } from '../constants/message-event.constants';
-import { TicketMessageSentEvent } from '../events/message-sent.event';
 
 @Injectable()
 export class TicketMessageListener {
@@ -18,8 +17,8 @@ export class TicketMessageListener {
     private readonly prisma: PrismaService
   ) {}
 
-  @OnEvent(MessageEvent.MESSAGE_SENT)
-  async handleEmailNotification(payload: TicketMessageSentEvent) {
+  @OnEvent(SendTicketMessageEvent.commandName)
+  async handleEmailNotification(payload: SendTicketMessageEvent) {
     const ticket = await this.prisma.ticket.findUnique({
       where: {
         id: payload.ticketId,
@@ -78,4 +77,5 @@ export class TicketMessageListener {
 
     return notification;
   }
+
 }

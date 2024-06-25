@@ -9,20 +9,27 @@ import {
 } from './entities/notification.entity';
 import { ApiError } from '../../common/exceptions/api.error';
 import { EmailService } from '../../common/services/email/email.service';
+import {
+  BaseNotificationCommand,
+  NotificationEmitter,
+} from './notification-emitter.service';
 
 @Injectable()
 export class NotificationsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly email: EmailService
+    private readonly email: EmailService,
+    private readonly emitter: NotificationEmitter
   ) {}
 
-  async send(createNotificationInput: SendNotificationInput): Promise<NotificationEntity> {
+  async send(
+    createNotificationInput: SendNotificationInput
+  ): Promise<NotificationEntity> {
     const notification = await this.prisma.notification.create({
       data: { ...createNotificationInput },
     });
 
-    return notification
+    return notification;
   }
 
   async list(params: PaginationArgs): Promise<PaginatedNotification> {

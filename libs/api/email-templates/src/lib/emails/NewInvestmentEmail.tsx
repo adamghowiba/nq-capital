@@ -5,13 +5,13 @@ import {
   Preview,
   Section,
   Tailwind,
-  Text
+  Text,
 } from '@react-email/components';
 import { BasicLayout } from './_components/BasicLayout';
 import { EmailButton } from './_components/EmailButton';
 import { EmailHeader } from './_components/EmailHeader';
 
-export interface InvestorInvitationEmailProps {
+export interface NewInvestmentEmail {
   /**
    * The investors display name
    */
@@ -19,10 +19,10 @@ export interface InvestorInvitationEmailProps {
   resetUrl?: string;
 }
 
-export const InvestorInvitationEmail = ({
+export const NewInvestmentEmail = ({
   displayName,
   resetUrl,
-}: InvestorInvitationEmailProps) => {
+}: NewInvestmentEmail) => {
   const previewText = `Join the NQ Capital investment portal`;
 
   return (
@@ -57,9 +57,9 @@ export const InvestorInvitationEmail = ({
   );
 };
 
-InvestorInvitationEmail.PreviewProps = {
+NewInvestmentEmail.PreviewProps = {
   displayName: 'alanturing',
   resetUrl: 'http://localhost:4200/onboarding?token=123123123',
-} as InvestorInvitationEmailProps;
+} as NewInvestmentEmail;
 
-export default InvestorInvitationEmail;
+export default NewInvestmentEmail;
