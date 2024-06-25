@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import { useRetrieveInvestorQuery } from '../../gql/gql-client';
+import { useMeSettingsQuery } from '../../gql/gql-client';
 
 export type InferGetInvestorSSP = InferGetServerSidePropsType<
   ReturnType<typeof getInvestorSSP>
@@ -7,15 +7,19 @@ export type InferGetInvestorSSP = InferGetServerSidePropsType<
 
 export const getInvestorSSP =
   () => async (context: GetServerSidePropsContext) => {
-    const investorFetcher = useRetrieveInvestorQuery.fetcher({
-      id: 13,
-    });
+    const investorFetcher = useMeSettingsQuery.fetcher(
+      {},
+      // @ts-expect-error Ignored
+      {
+        Cookie: context.req.headers?.cookie,
+      }
+    );
 
     const investor = await investorFetcher();
 
     return {
       props: {
-        investor: investor.investor,
+        investor: investor.meInvestor,
       },
     };
   };

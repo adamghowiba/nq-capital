@@ -20,6 +20,8 @@ export type Scalars = {
   Decimal: { input: any; output: any; }
   /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+  JSONObject: { input: any; output: any; }
 };
 
 export type AcceptInvestorInvitationInput = {
@@ -408,6 +410,7 @@ export type Mutation = {
   addInvestment: FundEntity;
   adjustFund: FundEntity;
   adminLogin: UserEntity;
+  archiveNotification: NotificationEntity;
   createBankAccount: BankAccountEntity;
   createFund: FundEntity;
   createInvestor: InvestorEntity;
@@ -431,12 +434,14 @@ export type Mutation = {
   removeUser: UserEntity;
   requestPasswordReset: ProfileEntity;
   resetPassword: ProfileEntity;
+  sendNotification: NotificationEntity;
   sendTicketMessage: MessageEntity;
   updateBankAccount: BankAccountEntity;
   updateFund: FundEntity;
   updateInvestor: InvestorEntity;
   updateInvitation: InvitationEntity;
   updateMessage: MessageEntity;
+  updateNotification: NotificationEntity;
   updateTicket: TicketEntity;
   updateTransaction: TransactionEntity;
   updateUser: UserEntity;
@@ -462,6 +467,11 @@ export type MutationAdjustFundArgs = {
 
 export type MutationAdminLoginArgs = {
   loginInput: LoginInput;
+};
+
+
+export type MutationArchiveNotificationArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -575,6 +585,11 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationSendNotificationArgs = {
+  sendNotificationInput: SendNotificationInput;
+};
+
+
 export type MutationSendTicketMessageArgs = {
   sendTicketMessageInput: SendTicketMessageInput;
 };
@@ -605,6 +620,11 @@ export type MutationUpdateMessageArgs = {
 };
 
 
+export type MutationUpdateNotificationArgs = {
+  updateNotificationInput: UpdateNotificationInput;
+};
+
+
 export type MutationUpdateTicketArgs = {
   updateTicketInput: UpdateTicketInput;
 };
@@ -628,6 +648,44 @@ export type MutationValidatePasswordResetTokenArgs = {
 export type MutationWithdrawalArgs = {
   withdrawalInput: WithdrawalInput;
 };
+
+export type NotificationChannel =
+  | 'APP'
+  | 'EMAIL'
+  | 'SMS';
+
+export type NotificationEntity = {
+  __typename?: 'NotificationEntity';
+  channel: Array<NotificationChannel>;
+  content: Scalars['String']['output'];
+  created_at: Scalars['DateTime']['output'];
+  id: Scalars['Int']['output'];
+  investor?: Maybe<InvestorEntity>;
+  investor_id?: Maybe<Scalars['Int']['output']>;
+  is_archived: Scalars['Boolean']['output'];
+  is_read: Scalars['Boolean']['output'];
+  meta?: Maybe<Scalars['JSONObject']['output']>;
+  priority: NotificationPriority;
+  read_at?: Maybe<Scalars['DateTime']['output']>;
+  title: Scalars['String']['output'];
+  type: NotificationType;
+  updated_at: Scalars['DateTime']['output'];
+  user?: Maybe<InvestorEntity>;
+  user_id?: Maybe<Scalars['Int']['output']>;
+};
+
+export type NotificationPriority =
+  | 'HIGH'
+  | 'LOW'
+  | 'MEDIUM'
+  | 'URGENT';
+
+export type NotificationType =
+  | 'ANNOUNCEMENT'
+  | 'GENERAL'
+  | 'MESSAGE'
+  | 'TICKET'
+  | 'TRANSACTION';
 
 export type PaginatedInvestorFundEntity = {
   __typename?: 'PaginatedInvestorFundEntity';
@@ -690,6 +748,8 @@ export type Query = {
   meUser: UserEntity;
   message: MessageEntity;
   messages: Array<MessageEntity>;
+  notification: NotificationEntity;
+  notifications: Array<NotificationEntity>;
   ticket: TicketEntity;
   tickets: Array<TicketEntity>;
   transaction: TransactionEntity;
@@ -775,6 +835,17 @@ export type QueryMessageArgs = {
 };
 
 
+export type QueryNotificationArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type QueryNotificationsArgs = {
+  limit?: Scalars['Int']['input'];
+  page?: Scalars['Int']['input'];
+};
+
+
 export type QueryTicketArgs = {
   id: Scalars['Int']['input'];
 };
@@ -816,6 +887,19 @@ export type ResetPasswordInput = {
 export type SendMessageInput = {
   content: Scalars['String']['input'];
   type: UserType;
+};
+
+export type SendNotificationInput = {
+  channel?: InputMaybe<Array<NotificationChannel>>;
+  content: Scalars['String']['input'];
+  investor_id?: InputMaybe<Scalars['Int']['input']>;
+  is_archived?: InputMaybe<Scalars['Boolean']['input']>;
+  is_read?: InputMaybe<Scalars['Boolean']['input']>;
+  meta?: InputMaybe<Scalars['JSON']['input']>;
+  priority?: InputMaybe<NotificationPriority>;
+  title: Scalars['String']['input'];
+  type?: InputMaybe<NotificationType>;
+  user_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type SendTicketMessageInput = {
@@ -955,6 +1039,20 @@ export type UpdateMessageInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['Int']['input'];
   type?: InputMaybe<UserType>;
+};
+
+export type UpdateNotificationInput = {
+  channel?: InputMaybe<Array<NotificationChannel>>;
+  content?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['Int']['input'];
+  investor_id?: InputMaybe<Scalars['Int']['input']>;
+  is_archived?: InputMaybe<Scalars['Boolean']['input']>;
+  is_read?: InputMaybe<Scalars['Boolean']['input']>;
+  meta?: InputMaybe<Scalars['JSON']['input']>;
+  priority?: InputMaybe<NotificationPriority>;
+  title?: InputMaybe<Scalars['String']['input']>;
+  type?: InputMaybe<NotificationType>;
+  user_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type UpdateTicketInput = {

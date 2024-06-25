@@ -41,6 +41,7 @@ const InviteSingleInvestorDialog: FC<InviteSingleInvestorDialogProps> = ({
     },
     reValidateMode: 'onChange',
     mode: 'all',
+    shouldUnregister: true,
     resolver: zodResolver(inviteInvestorSchema),
   });
 

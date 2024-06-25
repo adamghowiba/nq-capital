@@ -33,6 +33,7 @@ model User {
   assigned_tickets     Ticket[]
   messages             Message[]
   assets               Asset[]
+  notifications        Notification[]
 }
 
 enum InvestorAccountStatus {
@@ -73,6 +74,7 @@ model Investor {
   transactions          Transaction[]
   password_reset_tokens PasswordResetToken[]
   requests              Request[]
+  notifications         Notification[]
   created_at            DateTime              @default(now())
   updated_at            DateTime              @updatedAt
 }
@@ -324,6 +326,46 @@ model Invitation {
   updated_at         DateTime         @updatedAt
 
   @@unique([email, type])
+}
+
+enum NotificationType {
+  GENERAL
+  TRANSACTION
+  TICKET
+  MESSAGE
+  ANNOUNCEMENT
+}
+
+enum NotificationPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  APP
+}
+
+model Notification {
+  id          Int                   @id @default(autoincrement())
+  title       String
+  content     String
+  is_archived Boolean               @default(false)
+  type        NotificationType      @default(GENERAL)
+  priority    NotificationPriority  @default(LOW)
+  channel     NotificationChannel[]
+  is_read     Boolean               @default(false)
+  meta        Json?
+  user        User?                 @relation(fields: [user_id], references: [id])
+  user_id     Int?
+  investor    Investor?             @relation(fields: [investor_id], references: [id])
+  investor_id Int?
+  read_at     DateTime?
+  created_at  DateTime              @default(now())
+  updated_at  DateTime              @updatedAt
 }
 
 model Address {

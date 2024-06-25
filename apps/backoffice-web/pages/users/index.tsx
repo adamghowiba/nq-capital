@@ -58,7 +58,7 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
   const inviteInvestorMutation = useInviteInvestorMutation({
     onSuccess: () => {
       setIsInviteDialogOpen(false);
-      investorsQuery.refetch();
+      invitationsQuery.refetch();
     },
   });
 
@@ -84,10 +84,9 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
       error: (error) => parseApiError(error, { allowMessage: true }),
       description: (data) => {
         const isError = data instanceof Error;
+        if (isError) return;
 
-        return isError
-          ? `The email has been sent to there inbox. Once they complete the onboarding form they'll be given access to the investors portal`
-          : '';
+        return `The email has been sent to there inbox. Once they complete the onboarding form they'll be given access to the investors portal`;
       },
     });
   };
@@ -334,9 +333,7 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
                           color="error"
                           size="small"
                           onClick={() =>
-                            deleteInvitationMutation.mutate({
-                              id: selectedRows[0] as number,
-                            })
+                            handleDeleteInvitation(selectedRows[0] as number)
                           }
                         >
                           Delete

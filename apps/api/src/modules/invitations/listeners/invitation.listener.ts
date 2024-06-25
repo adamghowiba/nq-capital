@@ -5,6 +5,7 @@ import { InvitationCreatedEvent } from '../events/invite.event';
 import { EmailService } from '../../../common/services/email/email.service';
 import { InvitationType } from '@prisma/client';
 import { INVESTORS_PORTAL_URL } from '@nq-capital/utils-constants';
+import { renderEmailTemplate } from '@nq-capital/email-templates';
 
 @Injectable()
 export class InvitationListener {
@@ -14,10 +15,23 @@ export class InvitationListener {
 
   @OnEvent(InvitationEvent.INVITATION_CREATED)
   async handleInvitationCreatedEvent(payload: InvitationCreatedEvent) {
-    const email = await this.sendInvitationEmail({
-      email: payload.email,
-      type: payload.type,
-      token: payload.code,
+    const applicationSignUpPath =
+      payload.type === 'INVESTOR'
+        ? `/onboarding?invitation_code=${payload.code}`
+        : `/onboarding?invitation_code=${payload.code}`;
+
+    const onboardingUrl = `${INVESTORS_PORTAL_URL.href}${applicationSignUpPath}`;
+
+    const email = await this.emailService.sendEmail({
+      body: {
+        html: renderEmailTemplate('investorInvitation', {
+          inviteLink: onboardingUrl,
+        }),
+      },
+      destination: {
+        toAddress: payload.email,
+      },
+      subject: 'NQ Capital Invitation',
     });
 
     return email;

@@ -17,6 +17,12 @@ export const TicketAttachmentsList: FC<TicketAttachmentsListProps> = ({
   return (
     <VStack gap={1.5}>
       <Typography>Attachments</Typography>
+      {!assets.length && (
+        <VStack>
+          <Typography variant="subtitle2">No attachments</Typography>
+        </VStack>
+      )}
+
       {assets?.map((asset) => {
         return (
           <HStack key={asset.id} color="#646464" gap={1}>

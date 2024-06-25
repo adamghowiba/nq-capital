@@ -20,3 +20,9 @@ query MeInvestor {
     ...InvestorBaseFragment
   }
 }
+
+query MeSettings {
+  meInvestor {
+    ...InvestorAllFragment
+  }
+}

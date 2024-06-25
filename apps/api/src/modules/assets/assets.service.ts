@@ -1,20 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { UploadAssetDto } from './dto/upload-asset.dto';
-import { UpdateAssetInput } from './dto/update-asset.input';
 import { PrismaService } from '@nq-capital/service-database';
-import { S3StorageService } from '../../common/services/storage/s3.service';
-import { ApiError } from '../../common/exceptions/api.error';
-import { v4 as uuidV4 } from 'uuid';
-import path from 'path';
-import { Prisma } from '@prisma/client';
 import { getFileType, omit } from '@nq-capital/utils';
+import { v4 as uuidV4 } from 'uuid';
+import { ApiError } from '../../common/exceptions/api.error';
+import { S3StorageService } from '../../common/services/storage/s3.service';
+import { UploadAssetDto } from './dto/upload-asset.dto';
 import {
   AssetEntity,
   BatchUploadEntity,
   FailedUploadOutput,
   SuccessfulUploadOutput,
 } from './entities/asset.entity';
-import { ObjectNotInActiveTierError } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class AssetsService {
