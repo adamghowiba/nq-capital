@@ -82,10 +82,6 @@ const TransactionsToolbar: FC<TransactionsToolbar> = ({
       </HStack>
 
       <HStack ml="auto" gap={1}>
-        <Button variant="contained" color="secondary">
-          Filter
-        </Button>
-
         <Button
           variant="contained"
           color="secondary"

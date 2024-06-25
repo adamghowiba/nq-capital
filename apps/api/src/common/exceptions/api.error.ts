@@ -21,6 +21,8 @@ export class ApiError extends HttpException implements ApiErrorParams {
 
   constructor(readonly message: string, params?: ApiErrorParams) {
     const statusCode = params?.statusCode || 400;
+    const explanation =
+      params?.explanation || params?.showMessageToUser ? message : undefined;
 
     super({ message, ...params }, statusCode);
 
@@ -28,8 +30,7 @@ export class ApiError extends HttpException implements ApiErrorParams {
     this.statusCode = statusCode;
     this.code = params?.code;
     this.meta = params?.meta;
-    this.explanation =
-      params?.explanation ?? this.showMessageToUser ? message : undefined;
+    this.explanation = explanation;
     this.type = params?.type || 'api_error';
   }
 

@@ -167,3 +167,5 @@ export { useConfirmation } from './lib/hooks/use-confirmation';
 export { useDebounce } from './lib/hooks/use-debounce';
 export { useGql } from './lib/hooks/use-gql.hook';
 export { theme } from './lib/themes/primary.theme';
+
+export {GraphQLApiError, gqlFetcherFactory} from './lib/utils/gql-fetcher'

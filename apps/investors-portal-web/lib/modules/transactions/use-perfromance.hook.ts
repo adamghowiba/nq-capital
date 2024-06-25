@@ -37,8 +37,6 @@ export const usePortfolioPerformance = (params: { timespan: Timespan }) => {
     return getTimespanDates({ timespan: params.timespan });
   }, [params.timespan]);
 
-  console.log(timespanDates.map(date => date.toFormat("MM-dd")));
-
   const aggregatedTransactions = useMemo(() => {
     if (!transactions.data) {
       return [];

@@ -21,7 +21,6 @@ export const parseApiError = (error: any, options?: ParseApiErrorOptions) => {
   const allowMessage = options?.allowMessage || false;
   const defaultErrorMessage = options?.defaultErrorMessage || DEFAULT_ERROR_MESSAGE;
 
-
   if (error instanceof GraphQLApiError) {
     return error?.explanation || allowMessage
       ? error.message

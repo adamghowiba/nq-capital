@@ -255,7 +255,13 @@ const UserListPage: NextPageWithLayout = ({ ...props }) => {
             </MenuButton>
 
             <MenuList>
-              <NMenuItem disabled>Resend</NMenuItem>
+              <NMenuItem
+                onClick={() =>
+                  handleInviteInvestor({ email: params.row.email })
+                }
+              >
+                Resend
+              </NMenuItem>
               <NMenuItem onClick={() => handleDeleteInvitation(params.row.id)}>
                 Delete
               </NMenuItem>
